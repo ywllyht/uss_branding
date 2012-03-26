@@ -1,0 +1,19 @@
+<script type="text/javascript" language="javascript">
+function reloadyemian()
+{
+window.location.href="{{next_url}}"; 
+}
+window.setTimeout("reloadyemian();",3000);
+
+
+</script>
+
+
+<p>&nbsp;</p>
+<h1> {{ msg }} </h1>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p> auto jump back in 3 seconds...</p>
+<p> if this page does not auto jump, please click this <a href="{{next_url}}">link</a>
+%rebase base.htm title=title,user=user

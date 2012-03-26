@@ -1,0 +1,53 @@
+
+<form action="." method="POST">
+
+<table border="1">
+  
+  
+    <tr>
+      <td>
+        username
+      </td>
+      <td>
+        <input type="text" name="username" value="{{users[1]}}">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        password
+      </td>
+      <td>
+        <input type="password" name="password" value="{{users[2]}}">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        fullname
+      </td>
+      <td>
+        <input type="text" name="fullname" value="{{users[3]}}">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        email
+      </td>
+      <td>
+        <input type="text" name="email" value="{{users[4]}}">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input type="submit" value="submit">
+      </td>
+      
+      <td>
+        <input type="reset" value="reset">
+      </td>
+      
+    </tr>
+  </table>
+
+</form>
+
+%rebase base.htm title="modify thew user",user=user

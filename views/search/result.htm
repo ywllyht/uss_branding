@@ -1,0 +1,11 @@
+%for r in rs:
+    <p>{{r[0]}}</p>
+    %for line in r[1]:
+        {{line}}<br>
+    %end
+%end
+
+
+
+
+%rebase base.htm title=title,user=user

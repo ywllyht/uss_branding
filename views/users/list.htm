@@ -1,0 +1,25 @@
+
+
+<table border="1">
+  <tr>
+    <td>id</td>
+    <td>username</td>
+    <td>fullname</td>
+    <td>email</td>
+    <td>password</td>
+    <td>manage</td>
+  </tr>
+%for user2 in users:
+  <tr>
+      <td>{{user2[0]}}</td>
+      <td>{{user2[1]}}</td>
+      <td>{{user2[2]}}</td>
+      <td>{{user2[3]}}</td>
+      <td>{{user2[4]}}</td>
+      <td><a href="../delete/{{user2[0]}}">delete</a> &nbsp;
+        <a href="../modify/{{user2[0]}}/">modify</a>
+      </td>
+  </tr>
+%end
+</table>
+%rebase base.htm title=title,user=user

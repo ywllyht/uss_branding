@@ -1,0 +1,28 @@
+<table border="1">
+  <tr>
+    <td>id</td>
+    <td>{{users[0]}}</td>
+  </tr>
+  <tr>
+    <td>username</td>
+      <td>{{users[1]}}</td>
+  </tr>
+  <tr>
+    <td>fullname</td>
+    <td>{{users[2]}}</td>
+  </tr>
+  <tr>
+    <td>email</td>
+    <td>{{users[3]}}</td>
+  </tr>
+  <tr>
+    <td>password</td>
+    <td>{{users[4]}}</td>
+  </tr>
+  <tr>
+    <td>manager</td>
+    <td><a href="http://127.0.0.1:8080/delete/{{users[0]}}" >delete</a>&nbsp;<a href="http://127.0.0.1:8080/modify/{{users[0]}}/">modify</a></td>
+  </tr>
+
+</table>
+%rebase base.htm title=title,user=user
