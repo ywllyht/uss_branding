@@ -33,7 +33,9 @@ def login_required(fn):
     #    abort(401,"sorry, you need to login first!")
     def _fn(*args, **kwargs):
         if request.user.username == "":
-            abort(401,'sorry, you need to login first!')
+            msg = 'sorry, you need to login first!'
+	    return template("mydirect.htm",title="login required", msg=msg, next_url="/users/login/", user=request.user)
+            #abort(401,'sorry, you need to login first!')
         return fn(*args,**kwargs)
     return _fn 
 
@@ -178,7 +180,8 @@ def user_login_post():
 def user_logout():
     response.delete_cookie("username",path="/")
     response.delete_cookie("userid",path="/")
-    return "Logout successful!"
+    msg = "Logout successful!"
+    return template("mydirect.htm",title="login required", msg=msg, next_url="/", user=request.user)
 
 
 

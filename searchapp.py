@@ -56,7 +56,10 @@ def search():
 
 
  #  return "unimplemented"                                                                                  
-AQpath = r"E:\test\python\Bottle\AQUSS"
+_curpath = os.path.dirname(__file__)
+_uppath = os.path.dirname(_curpath)
+AQpath = os.path.join(_uppath,"AQUSS")
+#AQpath = r"E:\test\python\Bottle\AQUSS"
 
 
 def search1(catalog1,key):
