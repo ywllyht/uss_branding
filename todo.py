@@ -105,7 +105,9 @@ def edit_item(no):
     else:
         conn = sqlite3.connect('branding.db')
         c = conn.cursor()
-        c.execute("SELECT task,status FROM todo WHERE id LIKE ?", (str(no)))
+        command = "SELECT task,status FROM todo WHERE id=%s" % no
+        c.execute(command)
+        #c.execute("SELECT task,status FROM todo WHERE id=%d ?", (str(no)))
         cur_data = c.fetchone()
         #print cur_data
         if cur_data[1] == 1:
