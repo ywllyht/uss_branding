@@ -3,13 +3,17 @@
 # filename: index.py
 # ywllyht@yahoo.com.cn
 
-from bottle import Bottle, run,request
+from bottle import Bottle, run,request, static_file
 from bottle import template,view,SimpleTemplate
 from users import users_app,User
 from searchapp import search_app
 from todo import todo_app
+import os
 
 app = Bottle()
+
+_curpath = os.path.dirname(__file__)
+_staticpath = os.path.join(_curpath,"static")
 
 @app.hook('before_request')
 @users_app.hook('before_request')
@@ -46,6 +50,10 @@ app.mount("/todo/",todo_app)
 @app.route('/')
 def index():
     return template('index.htm',user=request.user)
+
+@app.route('/static/<path:path>')
+def statics(path):
+    return static_file(path,root=_staticpath)
 
 # @app.route('/search/')
 # def search():
