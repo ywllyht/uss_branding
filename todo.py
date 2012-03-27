@@ -22,7 +22,7 @@ def todo_list():
     conn = sqlite3.connect('branding.db')
     c = conn.cursor()
     #c.execute("SELECT id, task FROM todo WHERE status LIKE '1'")
-    c.execute("SELECT id, task, status FROM todo")
+    c.execute("SELECT id, task, status,username FROM todo")
     result = c.fetchall()
     c.close()
     output = template('todo/make_table.htm',rows=result)
@@ -62,7 +62,7 @@ def new_item():
         conn = sqlite3.connect('branding.db')
         c = conn.cursor()
     
-        c.execute("INSERT INTO todo (task,status) VALUES (?,?)", (new,1))
+        c.execute("INSERT INTO todo (task,status,username) VALUES (?,?,?)", (new,1,""))
         new_id = c.lastrowid
     
         conn.commit()
@@ -89,6 +89,7 @@ def edit_item(no):
     if request.GET.get('save','').strip():
         edit = request.GET.get('task','').strip()
         status = request.GET.get('status','').strip()
+        username = request.GET.get('username','').strip()
 
         if status == 'open':
             status = 1
@@ -97,7 +98,7 @@ def edit_item(no):
 
         conn = sqlite3.connect('branding.db')
         c = conn.cursor()
-        c.execute("UPDATE todo SET task = ?, status = ? WHERE id LIKE ?", (edit, status, no))
+        c.execute("UPDATE todo SET task = ?, status = ?, username= ? WHERE id LIKE ?", (edit, status, username, no))
         conn.commit()
 
         msg = 'The item number %s was successfully updated' % no
@@ -105,7 +106,7 @@ def edit_item(no):
     else:
         conn = sqlite3.connect('branding.db')
         c = conn.cursor()
-        command = "SELECT task,status FROM todo WHERE id=%s" % no
+        command = "SELECT task,status,username FROM todo WHERE id=%s" % no
         c.execute(command)
         #c.execute("SELECT task,status FROM todo WHERE id=%d ?", (str(no)))
         cur_data = c.fetchone()
