@@ -25,7 +25,7 @@ def todo_list():
     c.execute("SELECT id, task, status,username FROM todo")
     result = c.fetchall()
     c.close()
-    output = template('todo/make_table.htm',rows=result)
+    output = template('todo/make_table.htm',rows=result, title="todo list", user=request.user)
     #return str(result)
     return output
 
@@ -71,7 +71,7 @@ def new_item():
         return template("mydirect.htm",title="create new task ok",msg=msg,next_url="../todo",user=request.user)
         #return '<p>The new task was inserted into the database, the ID is %s</p>' % new_id
     else:
-        return template('todo/new_task.htm')
+        return template('todo/new_task.htm',title="new task", user=request.user)
 
 #    ------------------------ new_task.htm ---------------------------
 #    <p>Add a new task to the ToDo list:</p>
@@ -116,7 +116,7 @@ def edit_item(no):
         else:
             options = [ "","selected"]
         #print options
-        return template('todo/edit_task.htm', old=cur_data, no=no, options=options)
+        return template('todo/edit_task.htm', old=cur_data, no=no, options=options, title="edit", user=request.user)
 
 #   ---------------------------- edit_task.htm  ----------------------------------
 #    %#template for editing a task

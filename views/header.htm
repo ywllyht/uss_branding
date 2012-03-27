@@ -1,8 +1,10 @@
+<p align="right"> 
 <a href="/">home</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 %if user.username:
-    Hi,{{user.username}},{{user.userid}}&nbsp;&nbsp;<a href="/users/logout/">logout</a>
+    Hi,{{user.username}}&nbsp;&nbsp;<a href="/users/logout/">logout</a>
 %else:
     welcome, guest, please <a href="/users/login/">login</a>
 %end
+</p>
 <hr>
 <br>
