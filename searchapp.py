@@ -26,7 +26,7 @@ catalog_list = [
 @login_required
 def search():                                                                                               
     searchtext = request.query.searchtext                                                                   
-    searchtext = searchtext.encode("utf-8")
+    #searchtext = searchtext.encode("utf-8")
     #print searchtext                                                                                        
     #print request.query.searchtext                                                                          
     if searchtext == "":                                                                                    
@@ -77,6 +77,7 @@ def search1(catalog1,key):
             if not os.path.isfile(member2):
                 continue
             for line in open(member2,'rb'):
+                line = line.decode("utf-8","ignore")
                 if line.find(key) >= 0:
                     result.append(catalog1+"/"+ds+"/"+member+", "+line)
     return result
