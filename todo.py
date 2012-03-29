@@ -135,11 +135,12 @@ def edit_item(no):
 
 
 #@todo_app.route('/item:item#[1-9]+#')
-@todo_app.route('/item<item:re:[1-9]+>')
+@todo_app.route('/item<item:re:[0-9]+>')
 def show_item(item):
     conn = sqlite3.connect('branding.db')
     c = conn.cursor()
-    c.execute("SELECT task FROM todo WHERE id LIKE ?", (item))
+    command = "SELECT task FROM todo WHERE id='%s' " % item
+    c.execute(command)
     result = c.fetchall()
     c.close()
     if not result:
