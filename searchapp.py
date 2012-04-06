@@ -30,7 +30,7 @@ def search():
     #print searchtext                                                                                        
     #print request.query.searchtext                                                                          
     if searchtext == "":                                                                                    
-        return template("search/index.htm",title="USS FVT Search ",user=request.user)                            
+        return template("search/index.htm",title="USS FVT Search ",user=request.user)                           
     else:    
         search_targs = []
         for s in catalog_list:
@@ -45,8 +45,7 @@ def search():
             r = search1(s,searchtext)
             search_result.append((s,r))
         #print search_result
-        return template("search/result.htm",title="USS FVT Search result",rs=search_result, user=request.user)                            
-    return "unimplemented" 
+        return template("search/result.htm",title="USS FVT Search result",rs=search_result, user=request.user)                           
 
 # print search_result
 # [
@@ -74,12 +73,14 @@ def search1(catalog1,key):
         members = os.listdir(ds2)
         for member in members:
             member2 = os.path.join(ds2,member)
+            line_num = 0
             if not os.path.isfile(member2):
                 continue
             for line in open(member2,'rb'):
                 line = line.decode("utf-8","ignore")
+                line_num = line_num + 1
                 if line.find(key) >= 0:
-                    result.append(catalog1+"/"+ds+"/"+member+", "+line)
+                    result.append(catalog1+"/"+ds+"/"+member+", "+str(line_num)+", "+line)
     return result
 
 if __name__ == '__main__':                                                                                  

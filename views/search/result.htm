@@ -1,11 +1,18 @@
 %for r in rs:
     <p>{{r[0]}}</p>
-    %for line in r[1]:
-        {{line}}<br>
+     %last_fn=''
+     %cur_fn=''
+     %for line in r[1]:
+        %cur_fn= line.split(',')[0] 
+        %if cur_fn == last_fn:
+            %line = line.replace(cur_fn+',',' ').replace(',',':',1)
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{line}}<br>        
+        %else:
+            &nbsp;&nbsp;&nbsp;&nbsp;{{cur_fn}}<br>
+            %line = line.replace(cur_fn+',',' ').replace(',',':',1)
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{line}}<br>
+            %last_fn = cur_fn
+        %end
     %end
 %end
-
-
-
-
 %rebase base.htm title=title,user=user
