@@ -73,14 +73,12 @@ def search1(catalog1,key):
         members = os.listdir(ds2)
         for member in members:
             member2 = os.path.join(ds2,member)
-            line_num = 0
             if not os.path.isfile(member2):
                 continue
-            for line in open(member2,'rb'):
+            for line_num,line in enumerate(open(member2,'rb')):
                 line = line.decode("utf-8","ignore")
-                line_num = line_num + 1
                 if line.find(key) >= 0:
-                    result.append(catalog1+"/"+ds+"/"+member+", "+str(line_num)+", "+line)
+                    result.append(catalog1+"/"+ds+"/"+member+", "+str(line_num+1)+", "+line)
     return result
 
 if __name__ == '__main__':                                                                                  
