@@ -24,8 +24,15 @@ def todo_list():
     #c.execute("SELECT id, task FROM todo WHERE status LIKE '1'")
     c.execute("SELECT id, task, status,username FROM todo")
     result = c.fetchall()
+    count = len(result)
+    done_count = 0
+    for line in result:
+        if line[2] == 0:
+            done_count = done_count+1    
     c.close()
-    output = template('todo/make_table.htm',rows=result, title="todo list", user=request.user)
+    print count
+    print done_count 
+    output = template('todo/make_table.htm',rows=result, title="todo list", count=count, done_count=done_count, user=request.user)
     #return str(result)
     return output
 
