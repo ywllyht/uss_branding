@@ -7,6 +7,9 @@ from bottle import route, run, Bottle, template, request, abort, redirect, respo
 import sqlite3 as sqlite
 import md5
 import bottle
+import time
+
+
 bottle.debug(True)
 
 # create table users(
@@ -166,10 +169,15 @@ def user_login_post():
     #print str(rs)
     #print username+","+password2+","+rs[0][1]
     if password2 == rs[0][1]:
-        response.set_cookie("username",username,path="/")
-        response.set_cookie("userid",str(rs[0][0]),path="/")
+        #response.set_cookie("username",username,path="/")
+        #response.set_cookie("userid",str(rs[0][0]),path="/")
 
-        s = bottle.request.environ.get('beaker.session')
+        s = request.environ.get('beaker.session')
+        t = request.forms.get("two_weeks")
+        if t:
+            s.cookie[s.key]['path'] = s._path
+            s.cookie[s.key]['expires'] = time.strftime("%a, %d-%b-%Y %H:%M:%S GMT", time.gmtime(time.time() + 86400*14))
+            s._update_cookie_out()
         s['username'] = username
         s['userid'] = str(rs[0][0])
         s.save()
@@ -183,14 +191,12 @@ def user_login_post():
 
 @users_app.route("/logout/")
 def user_logout():
-    response.delete_cookie("username",path="/")
-    response.delete_cookie("userid",path="/")
+    #response.delete_cookie("username",path="/")
+    #response.delete_cookie("userid",path="/")
     msg = "Logout successful!"
 
-    s = bottle.request.environ.get('beaker.session')
-    s['username'] = ""
-    s['userid'] = "0"
-    s.save()
+    s = request.environ.get('beaker.session')
+    s.delete()
     return template("mydirect.htm",title="login required", msg=msg, next_url="/", user=request.user)
 
 

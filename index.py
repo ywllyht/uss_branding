@@ -9,7 +9,11 @@ from users import users_app,User
 from searchapp import search_app
 from todo import todo_app
 import os
+import datetime
+import time
 from beaker.middleware import SessionMiddleware
+from beaker.session import SessionObject
+
 
 index_app = Bottle()
 
@@ -24,7 +28,7 @@ session_opts = {
     'session.type': 'file',
     'session.cookie_expires': 86400,
     'session.data_dir': _beakerpath,
-    'session.auto': True
+    'session.auto': False
 }
 
 
@@ -81,9 +85,31 @@ def statics(path):
 
 @index_app.route('/hello')
 def hello():
+    print request.environ.keys()
+
     s = request.environ.get('beaker.session')
+    print type(s)
+    #print type(request.environ)
+    #print dir(s)
+    print s.cookie_expires
     s['test'] = s.get('test',0) + 1
+    #s.cookie_expires = datetime.timedelta(14,0)
+    s.cookie[s.key]['path'] = s._path
+    s.cookie[s.key]['expires'] = time.strftime("%a, %d-%b-%Y %H:%M:%S GMT", time.gmtime(time.time() + 86400*14))
+    s._update_cookie_out()
     s.save()
+    #s.load()
+    print s['_creation_time']
+    print s['_accessed_time']
+
+    #print s.cookie_expires
+    #print s.namespace_class,type(s.namespace_class)
+    #print dir(s.namespace)
+    #print s.namespace.keys()
+    #print s.items()
+    #s.load()
+    #print s2.cookie_expires
+
     return "Hello World!" + ' Test counter: %d' % s['test']
     
 @index_app.route('/favicon.ico')
@@ -92,6 +118,7 @@ def favicon():
 
 
 index_app_beaker = SessionMiddleware(index_app, session_opts)
+
 if __name__ == '__main__':
     run(index_app_beaker,host="0.0.0.0",reloader=True)
 
