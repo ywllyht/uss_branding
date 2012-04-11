@@ -9,21 +9,40 @@ from users import users_app,User
 from searchapp import search_app
 from todo import todo_app
 import os
+from beaker.middleware import SessionMiddleware
 
-app = Bottle()
+index_app = Bottle()
 
 _curpath = os.path.dirname(__file__)
 _staticpath = os.path.join(_curpath,"static")
+_beakerpath = os.path.join(os.path.dirname(_curpath),"beaker")
 
-@app.hook('before_request')
+if not os.path.isdir(_beakerpath):
+    os.mkdir(_beakerpath)
+
+session_opts = {
+    'session.type': 'file',
+    'session.cookie_expires': 86400,
+    'session.data_dir': _beakerpath,
+    'session.auto': True
+}
+
+
+
+@index_app.hook('before_request')
 @users_app.hook('before_request')
 @search_app.hook('before_request')
 @todo_app.hook('before_request')
 def get_user_request():
-    userid = request.get_cookie("userid","0")
-    username = request.get_cookie("username","")
+    #userid = request.get_cookie("userid","0")
+    #username = request.get_cookie("username","")
     #print "get_user_request",userid,username
-    request.user = User(userid,username)
+
+    s = request.environ.get('beaker.session')
+    userid2 = s.get('userid',"0")
+    username2 = s.get('username',"")
+    request.user = User(userid2,username2)
+    #print "get_user_request2",userid2,username2
 
 
 # @search_app.hook('before_request')
@@ -43,32 +62,36 @@ def get_user_request():
 
 
 
-app.mount("/users/",users_app)
-app.mount("/search/",search_app)
-app.mount("/todo/",todo_app)
+index_app.mount("/users/",users_app)
+index_app.mount("/search/",search_app)
+index_app.mount("/todo/",todo_app)
 
-@app.route('/')
+@index_app.route('/')
 def index():
     return template('index.htm',user=request.user)
 
-@app.route('/static/<path:path>')
+@index_app.route('/static/<path:path>')
 def statics(path):
     return static_file(path,root=_staticpath)
 
-# @app.route('/search/')
+# @index_app.route('/search/')
 # def search():
 #     return template('search.htm',content="guest",user=request.user)
 
 
-@app.route('/hello')
+@index_app.route('/hello')
 def hello():
-    return "Hello World!"
+    s = request.environ.get('beaker.session')
+    s['test'] = s.get('test',0) + 1
+    s.save()
+    return "Hello World!" + ' Test counter: %d' % s['test']
     
-@app.route('/favicon.ico')
+@index_app.route('/favicon.ico')
 def favicon():
     return static_file("favicon.ico", _curpath)
 
 
+index_app_beaker = SessionMiddleware(index_app, session_opts)
 if __name__ == '__main__':
-    run(app,host="0.0.0.0",reloader=True)
+    run(index_app_beaker,host="0.0.0.0",reloader=True)
 

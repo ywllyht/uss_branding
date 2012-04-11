@@ -164,10 +164,15 @@ def user_login_post():
         abort(401,"sorry, duplicated users found")
     #cx.commit()
     #print str(rs)
-    print username+","+password2+","+rs[0][1]
+    #print username+","+password2+","+rs[0][1]
     if password2 == rs[0][1]:
         response.set_cookie("username",username,path="/")
         response.set_cookie("userid",str(rs[0][0]),path="/")
+
+        s = bottle.request.environ.get('beaker.session')
+        s['username'] = username
+        s['userid'] = str(rs[0][0])
+        s.save()
         msg = "Login successful!"
         return template("mydirect.htm",title="login successful",msg=msg,next_url="/",user=request.user)
 
@@ -181,6 +186,11 @@ def user_logout():
     response.delete_cookie("username",path="/")
     response.delete_cookie("userid",path="/")
     msg = "Logout successful!"
+
+    s = bottle.request.environ.get('beaker.session')
+    s['username'] = ""
+    s['userid'] = "0"
+    s.save()
     return template("mydirect.htm",title="login required", msg=msg, next_url="/", user=request.user)
 
 
