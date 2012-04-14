@@ -134,7 +134,7 @@ def draw_text3(string,factor=1):
     if type(string) != types.UnicodeType:
         return "Error, You must input unicode string"
     if len(string) > 4:
-        return "Error, Only support 1 characters"
+        return "Error, Only support 4 characters"
 
     data_merge = [[] for x in range(pic_size)]
     for i in range(len(string)):
