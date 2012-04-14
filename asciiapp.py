@@ -162,7 +162,7 @@ def draw_text3(string,factor=1):
                     break
             if flag:
                 break
-        right_border = ii
+        right_border = ii + 1
         #print i,right_border
 
 
