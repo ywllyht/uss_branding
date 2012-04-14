@@ -8,6 +8,7 @@ from bottle import template,view,SimpleTemplate
 from users import users_app,User
 from searchapp import search_app
 from todo import todo_app
+from asciiapp import ascii_app
 import os
 import datetime
 import time
@@ -37,6 +38,7 @@ session_opts = {
 @users_app.hook('before_request')
 @search_app.hook('before_request')
 @todo_app.hook('before_request')
+@ascii_app.hook('before_request')
 def get_user_request():
     #userid = request.get_cookie("userid","0")
     #username = request.get_cookie("username","")
@@ -69,6 +71,7 @@ def get_user_request():
 index_app.mount("/users/",users_app)
 index_app.mount("/search/",search_app)
 index_app.mount("/todo/",todo_app)
+index_app.mount("/ascii/",ascii_app)
 
 @index_app.route('/')
 def index():

@@ -1,0 +1,31 @@
+
+<form id="form1" name="form1" method=GET action=".">
+<table align=center>
+ <tr>
+   <td align=center>
+       <label>
+       <input type="text" name="inputtext" id="inputtext">
+       </label>
+   </td>
+   <td>
+     <select name="ascii_type">
+        <option value="basic">basic
+        <option value="chn" selected>chn
+     </select>
+   </td>
+   <td>
+     <label>
+       <input type="submit" name="button" id="button" value="transfer!">
+     </label> 
+    </td>
+ </tr>
+</table>
+
+<pre>
+<font face="幼圆">
+{{ascii_text}}
+</font>
+</pre>
+</form>
+
+%rebase base.htm title="ASCII ART",user=user
