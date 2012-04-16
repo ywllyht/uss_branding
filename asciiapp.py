@@ -17,7 +17,12 @@ except ImportError,e:
     unsupport = "You must install pil First!"
 
 #font_path = r"C:\Windows\Fonts\simyou.ttf"
-font_path = r"C:\Windows\Fonts\G0v1.otf"
+curpath = os.path.dirname(__file__)
+upperpath = os.path.dirname(curpath)
+asciifontpath = os.path.join(upperpath,"ascii_art")
+
+
+font_path = os.path.join(asciifontpath,"G0v1.otf")
 if not os.path.isfile(font_path):
     unsupport = "You must prepare font first!"
 font_size = 24
