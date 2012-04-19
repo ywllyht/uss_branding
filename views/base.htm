@@ -143,12 +143,32 @@
       #tooltip {
         color: #666;
       }
+      
+      body,#head {height: 95%;}
+      body > #head {height: auto; min-height:100%;} /*If height of body is smaller than height of the brower, the foot will at bottom of the brower*/
+      #main {
+         overflow: auto;
+         padding-bottom: 40px;
+       } /* You must make the height the same as height of foot*/
+      #foot {
+         position: relative;
+         margin-top: -40px; /* negative value of foot height */
+         height: 40px;
+         clear: both;
+       }
+      
       -->       
     </STYLE>
     </head>
     <body>
+    <div id="head">
+    <div id="main">
     %include header.htm user=user
-    %include
+    %include    
+    </div>
+    </div>
+    <div id="foot">
     %include boot.htm year="2012"
+    </div>
     </body> 
 </html>     
