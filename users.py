@@ -8,8 +8,8 @@ import sqlite3 as sqlite
 import md5
 import bottle
 import time
-
-
+import ctypes
+MessageBox = ctypes.windll.user32.MessageBoxA 
 bottle.debug(True)
 
 # create table users(
@@ -135,13 +135,15 @@ def user_modify_post(userid):
 
 @users_app.route("/delete/<userid:int>")                   #delete a user
 def user_delete(userid):
-    cx = sqlite.connect('branding.db')
-    cu = cx.cursor()
-    command = "delete from users where id= '%d' " % userid
-    cu.execute(command)
-    cx.commit()
-    redirect("../list/")
-   # return "aa"
+    if MessageBox(None, 'Do you confirm to delete this user?', 'Delete the user', 1)==1:
+      cx = sqlite.connect('branding.db')
+      cu = cx.cursor()
+      command = "delete from users where id= '%d' " % userid
+      cu.execute(command)
+      cx.commit()
+      redirect("../list/")
+    else:
+      redirect("../list/")
 
 @users_app.route("/login/")
 def user_login():

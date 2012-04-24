@@ -9,7 +9,8 @@
 
 import sqlite3
 from bottle import Bottle, route, run, debug, template, request, validate, static_file,  error, redirect
-
+import ctypes 
+MessageBox = ctypes.windll.user32.MessageBoxA 
 todo_app = Bottle()
 
 @todo_app.route('/')
@@ -52,12 +53,15 @@ def todo_list():
 
 @todo_app.route('/delete/<no:int>')
 def todo_delete(no):
-    cx = sqlite3.connect('branding.db')
-    cu = cx.cursor()
-    command = "delete from todo where id= '%d' " % no
-    cu.execute(command)
-    cx.commit()
-    redirect("../todo")
+    if MessageBox(None, 'Do you confirm to delete this task?', 'Delete the task', 1)==1:
+      cx = sqlite3.connect('branding.db')
+      cu = cx.cursor()
+      command = "delete from todo where id= '%d' " % no
+      cu.execute(command)
+      cx.commit()
+      redirect("../todo")
+    else:
+      redirect("../todo")
 
 
 
