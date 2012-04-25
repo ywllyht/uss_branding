@@ -49,7 +49,8 @@ def get_user_request():
     username2 = s.get('username',"")
     request.user = User(userid2,username2)
     #print "get_user_request2",userid2,username2
-
+    role2=s.get('role',"")
+    request.user = User(userid2,username2,role2)
 
 # @search_app.hook('before_request')
 # def get_user_request():

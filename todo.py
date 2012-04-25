@@ -12,14 +12,17 @@ from bottle import Bottle, route, run, debug, template, request, validate, stati
 import ctypes 
 MessageBox = ctypes.windll.user32.MessageBoxA 
 todo_app = Bottle()
+from users import login_required
 
-@todo_app.route('/')
-def index():
-    return template("todo/index.htm",user=request.user)
+#@todo_app.route('/')
+#def index():
+#    return template("todo/index.htm",user=request.user)
 
 
 @todo_app.route('/todo')
+@login_required
 def todo_list():
+  #if request.user.role<"2":
     conn = sqlite3.connect('branding.db')
     c = conn.cursor()
     #c.execute("SELECT id, task FROM todo WHERE status LIKE '1'")
@@ -33,9 +36,15 @@ def todo_list():
     done_count = len([x for x in result if x[2]==0]) 
       
     c.close()
-    output = template('todo/make_table.htm',rows=result, title="todo list", count=count, done_count=done_count, user=request.user)
-    #return str(result)
-    return output
+    if request.user.role=="0":
+       output = template('todo/make_table.htm',rows=result, title="todo list", count=count, done_count=done_count, user=request.user)
+       return output
+    elif  request.user.role=="1":
+       output = template('todo/make_table1.htm',rows=result, title="todo list", count=count, done_count=done_count, user=request.user)
+       return output
+    else:
+       msg = "Sorry,you don't have the authority!"
+       return template("mydirect.htm",title="user list",msg=msg,next_url="/",user=request.user)
 
 #    --------------------------------- make_table.htm -------------------------------
 #    %#template to generate a HTML table from a list of tuples (or list of lists, or tuple of tuples or ...)

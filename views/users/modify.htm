@@ -17,7 +17,7 @@
         password
       </td>
       <td>
-        <input type="password" name="password" value="{{users[2]}}">
+        <input type="password" name="password" value="{{users[4]}}">
       </td>
     </tr>
     <tr>
@@ -25,7 +25,7 @@
         fullname
       </td>
       <td>
-        <input type="text" name="fullname" value="{{users[3]}}">
+        <input type="text" name="fullname" value="{{users[2]}}">
       </td>
     </tr>
     <tr>
@@ -33,7 +33,29 @@
         email
       </td>
       <td>
-        <input type="text" name="email" value="{{users[4]}}">
+        <input type="text" name="email" value="{{users[3]}}">
+      </td>
+    </tr>
+     <tr>
+      <td>
+        type
+      </td>
+      <td>
+     <select name="role"  readonly>
+      %if users[5] == "0"  :
+        <option value="0" selected>Adminstrator   
+        <option value="1">Superuser    
+        <option value="2">User 
+      %elif  users[5] == "1":  
+        <option value="0" >Adminstrator   
+        <option value="1" selected>Superuser    
+        <option value="2" >User  
+      %else :   
+        <option value="0" >Adminstrator   
+        <option value="1" >Superuser    
+        <option value="2" selected>User 
+      %end 
+      </select>
       </td>
     </tr>
     <tr>

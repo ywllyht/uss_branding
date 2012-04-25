@@ -26,9 +26,10 @@ users_app = Bottle()
 
 class User(object):
     
-    def __init__(self,userid=0,username=""):
+    def __init__(self,userid=0,username="",role=""):
         self.userid = userid
         self.username = username
+        self.role = role
 
 
 def login_required(fn):
@@ -64,7 +65,14 @@ def user_list():
     cu.execute('select * from users')
     rs = cu.fetchall()
     #return str(rs)
-    return template("users/list.htm",users=rs,title="user list",user=request.user)
+    if request.user.role=="0":
+       return template("users/list.htm",users=rs,title="user list",user=request.user)
+    elif   request.user.role=="1":
+       return template("users/list1.htm",users=rs,title="user list",user=request.user)
+    else:
+       msg = "Sorry,you don't have the authority!"
+       return template("mydirect.htm",title="user list",msg=msg,next_url="/users/",user=request.user)
+
     
 @users_app.route("/display/<userid:int>")
 def user_display(userid):
@@ -82,7 +90,11 @@ def user_display(userid):
 @users_app.route("/add/")
 @login_required
 def user_add():
-    return template("users/add.htm",title="add new user", user=request.user)
+    if request.user.role=='0' :
+       return template("users/add.htm",title="add new user", user=request.user)
+    else:
+       msg = "Sorry,you don't have the authority!"
+       return template("mydirect.htm",title="add new user",msg=msg,next_url="/users/",user=request.user)
 
 @users_app.route("/add/",method="POST")
 def user_add_post():
@@ -90,14 +102,18 @@ def user_add_post():
     password = request.forms.get('password')
     fullname = request.forms.get('fullname')
     email = request.forms.get('email')
+    role=request.forms.get('role')
     if not username:
-        abort(401,"sorry, username should not be empty")
+        msg="sorry, the username should not be empty "
+        return template("mydirect.htm",title="login successful",msg=msg,next_url="/users/add/",user=request.user) 
     if len(password) < 3 or len(password) > 15:
-        abort(401,"sorry, the length of password is invalid")
+        msg="sorry, the length of password is invalid "
+        return template("mydirect.htm",title="login successful",msg=msg,next_url="/users/add/",user=request.user) 
+    
     password2 = md5.md5(password).hexdigest()
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
-    command = "insert into users values(NULL,'%s','%s','%s','%s')" % (username, fullname, email, password2)
+    command = "insert into users values(NULL,'%s','%s','%s','%s','%s')" % (username, fullname, email, password2,role)
     cu.execute(command)
     cx.commit()
     #print username+","+password+","+fullname+","+email+","+password2
@@ -107,12 +123,13 @@ def user_add_post():
 
 @users_app.route("/modify/<userid:int>/")                    #Modify a user
 def user_modify(userid):
-
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
     cu.execute("select * from users where id='%d'" % userid)
     rs = cu.fetchone()
     return template("users/modify.htm",users=rs,title="modify user",user=request.user)
+    
+    
 
 @users_app.route("/modify/<userid:int>/",method="POST")      #modify a user --'POST'
 def user_modify_post(userid):
@@ -120,9 +137,10 @@ def user_modify_post(userid):
     password = request.forms.get('password')
     fullname = request.forms.get('fullname')
     email = request.forms.get('email')
+    role = request.forms.get('role')
     if not username:
         abort(401,"sorry, username should not be empty")
-    if len(password) < 3 or len(password) > 15:
+    if len(password) < 3 or len(password) > 32:
         abort(401,"sorry, the length of password is invalid")
     password2 = md5.md5(password).hexdigest()
     cx = sqlite.connect('branding.db')
@@ -131,6 +149,7 @@ def user_modify_post(userid):
     cu.execute(command)
     cx.commit()
     redirect("../../list/")
+   
 
 
 @users_app.route("/delete/<userid:int>")                   #delete a user
@@ -160,7 +179,7 @@ def user_login_post():
     password2 = md5.md5(password).hexdigest()
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
-    command = "select id,password from users where username = '%s'" % username
+    command = "select id,password,role from users where username = '%s'" % username
     cu.execute(command)
     rs = cu.fetchall()
     if len(rs) == 0:
@@ -182,12 +201,15 @@ def user_login_post():
             s._update_cookie_out()
         s['username'] = username
         s['userid'] = str(rs[0][0])
+        s['role'] = str(rs[0][2])
         s.save()
         msg = "Login successful!"
         return template("mydirect.htm",title="login successful",msg=msg,next_url="/",user=request.user)
 
     else:
-        return "password error"
+        #return "password error"
+        msg="password error,please login again!"
+        return template("mydirect.htm",title="login successful",msg=msg,next_url="/users/login/",user=request.user)
     #redirect("../list/")
 
 
