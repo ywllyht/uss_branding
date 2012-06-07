@@ -1,0 +1,27 @@
+%#template to generate a HTML table from a list of tuples (or list of lists, or tuple of tuples or ...)
+<p>The open items are as follows:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="new/">new task</a></p>
+<table border="1">
+  <tr>
+    <th>id</th>
+    <th>task</th>
+    <th>status</th>
+    <th>username</th>
+    <th>manager</th>
+  </tr>
+%for row in rows:
+  <tr>
+  %for col in row:
+    <td>{{col}}</td>
+  %end
+    <td> 
+      <a href="item{{row[0]}}">display</a> &nbsp;
+      <a href="edit/{{row[0]}}">edit</a> &nbsp;
+      <font color='gray' >delete</font> &nbsp;
+    </td>
+  </tr>
+%end
+  <tr>
+    <th colspan="5">total: {{count}}, &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;done: {{done_count}}</th>
+  </tr> 
+</table>
+%rebase base.htm title=title,user=user
