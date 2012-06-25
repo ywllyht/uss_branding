@@ -10,7 +10,7 @@
 import sqlite3
 from bottle import Bottle, route, run, debug, template, request, validate, static_file,  error, redirect
 import ctypes 
-MessageBox = ctypes.windll.user32.MessageBoxA 
+#MessageBox = ctypes.windll.user32.MessageBoxA 
 todo_app = Bottle()
 from users import login_required
 
@@ -62,7 +62,7 @@ def todo_list():
 
 @todo_app.route('/delete/<no:int>')
 def todo_delete(no):
-    if MessageBox(None, 'Do you confirm to delete this task?', 'Delete the task', 1)==1:
+    if 1==1:
       cx = sqlite3.connect('branding.db')
       cu = cx.cursor()
       command = "delete from todo where id= '%d' " % no
