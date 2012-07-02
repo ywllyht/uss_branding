@@ -17,14 +17,14 @@ from beaker.session import SessionObject
 
 
 index_app = Bottle()
-
-_curpath = os.path.dirname(__file__)
+_localDir=os.path.dirname(__file__)
+_curpath=os.path.normpath(os.path.join(os.getcwd(),_localDir))
 _staticpath = os.path.join(_curpath,"static")
 _beakerpath = os.path.join(os.path.dirname(_curpath),"beaker")
 
 produce_environment_flag_file = os.path.join(os.path.dirname(_curpath),"produce_flag.txt")
 produce_environment_flag = os.path.isfile(produce_environment_flag_file)
-
+ 
 if not os.path.isdir(_beakerpath):
     os.mkdir(_beakerpath)
 

@@ -5,7 +5,8 @@
 
 from bottle import route, run, Bottle, template, request, abort, redirect, response, hook
 import sqlite3 as sqlite
-import md5
+import hashlib
+#import md5
 import bottle
 import time
 import ctypes
@@ -110,7 +111,9 @@ def user_add_post():
         msg="sorry, the length of password is invalid "
         return template("mydirect.htm",title="login successful",msg=msg,next_url="/users/add/",user=request.user) 
     
-    password2 = md5.md5(password).hexdigest()
+    m = hashlib.md5()
+    password2 = m.update(password).hexdigest()
+    #password2 = md5.md5(password).hexdigest()
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
     command = "insert into users values(NULL,'%s','%s','%s','%s','%s')" % (username, fullname, email, password2,role)
@@ -142,7 +145,9 @@ def user_modify_post(userid):
         abort(401,"sorry, username should not be empty")
     if len(password) < 3 or len(password) > 32:
         abort(401,"sorry, the length of password is invalid")
-    password2 = md5.md5(password).hexdigest()
+    m = hashlib.md5()
+    password2 = m.update(password).hexdigest()
+    #password2 = md5.md5(password).hexdigest()
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
     command = "update users set username='%s',fullname='%s',email='%s', password='%s' where id='%d'" % (username,fullname,email,password2, userid)
@@ -177,7 +182,9 @@ def user_login_post():
         abort(401,"sorry, username should not be empty")
     if len(password) < 3 or len(password) > 15:
         abort(401,"sorry, the length of password is invalid")
-    password2 = md5.md5(password).hexdigest()
+    m = hashlib.md5()
+    password2 = m.update(password).hexdigest()
+    #password2 = md5.md5(password).hexdigest()
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
     command = "select id,password,role from users where username = '%s'" % username

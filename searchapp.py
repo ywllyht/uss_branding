@@ -5,7 +5,6 @@
 
 from bottle import route, run, Bottle, template, request, abort, redirect                                   
 import sqlite3 as sqlite                                                                                    
-import md5  
 import os                                                                                                
 from users import login_required
 

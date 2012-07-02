@@ -102,8 +102,8 @@ def new_item():
 #    
 
 
-@todo_app.route('/edit/<no>', method='GET')
-@validate(no=int)
+@todo_app.route('/edit/<no:int>', method='GET')
+#@validate(no=int)
 def edit_item(no):
 
     if request.GET.get('save','').strip():
