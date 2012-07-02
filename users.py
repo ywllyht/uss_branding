@@ -112,7 +112,8 @@ def user_add_post():
         return template("mydirect.htm",title="login successful",msg=msg,next_url="/users/add/",user=request.user) 
     
     m = hashlib.md5()
-    password2 = m.update(password).hexdigest()
+    m.update(password)
+    password2 = m.hexdigest()
     #password2 = md5.md5(password).hexdigest()
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
@@ -146,7 +147,10 @@ def user_modify_post(userid):
     if len(password) < 3 or len(password) > 32:
         abort(401,"sorry, the length of password is invalid")
     m = hashlib.md5()
-    password2 = m.update(password).hexdigest()
+    m.update(password)
+    password2 = m.hexdigest()
+    m.update(password)
+    password2 = m.hexdigest()
     #password2 = md5.md5(password).hexdigest()
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
@@ -183,7 +187,8 @@ def user_login_post():
     if len(password) < 3 or len(password) > 15:
         abort(401,"sorry, the length of password is invalid")
     m = hashlib.md5()
-    password2 = m.update(password).hexdigest()
+    m.update(password)
+    password2 = m.hexdigest()
     #password2 = md5.md5(password).hexdigest()
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
