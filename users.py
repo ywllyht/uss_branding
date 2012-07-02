@@ -10,7 +10,7 @@ import bottle
 import time
 import ctypes
 #MessageBox = ctypes.windll.user32.MessageBoxA 
-bottle.debug(True)
+
 
 # create table users(
 #         id integer primary key,
@@ -228,6 +228,7 @@ def user_logout():
 
 
 if __name__ == '__main__':
+    bottle.debug(True)
     run(users_app,host="0.0.0.0",reloader=True)
 
  

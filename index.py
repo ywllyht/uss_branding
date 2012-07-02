@@ -22,6 +22,9 @@ _curpath = os.path.dirname(__file__)
 _staticpath = os.path.join(_curpath,"static")
 _beakerpath = os.path.join(os.path.dirname(_curpath),"beaker")
 
+produce_environment_flag_file = os.path.join(os.path.dirname(_curpath),"produce_flag.txt")
+produce_environment_flag = os.path.isfile(produce_environment_flag_file)
+
 if not os.path.isdir(_beakerpath):
     os.mkdir(_beakerpath)
 
@@ -124,5 +127,9 @@ def favicon():
 index_app_beaker = SessionMiddleware(index_app, session_opts)
 
 if __name__ == '__main__':
-    run(index_app_beaker,host="0.0.0.0",reloader=True)
+    if produce_environment_flag:
+        # we will use nginx + flup  in enviroment
+        run(index_app_beaker,host="0.0.0.0",reloader=True, server='flup')
+    else:
+        run(index_app_beaker,host="0.0.0.0",reloader=True)
 
