@@ -8,41 +8,56 @@ import os
 
 dinner_app = Bottle()
 
+
+
+@dinner_app.route("/")
+def dinner_index():
+    return "Rucy not comleted"
+
 @dinner_app.route("/menu/")
 def dinner_menu():
-    return "not completed"
+    return "Rucy not completed"
 
 @dinner_app.route("/menu/add/",method='POST')
 def dinner_menu_add():
-    return "not completed"
+    return "Rucy not completed"
 
 @dinner_app.route("/menu/delete/<menuid>")
 def dinner_menu_delete(menuid):
-    return "not completed"
+    return "Rucy not completed"
 
 @dinner_app.route("/menu/active/<menuid>")
 def dinner_menu_active(menuid):
-    return "not completed"
+    return "Rucy not completed"
 
 @dinner_app.route("/menu/confirm/<menuid>")
 def dinner_menu_confirm(menuid):
-    return "not completed"
+    return "Yoga not completed"
 
-@dinner_app.route("/menu/book/<menuid>/")
-def dinner_menu_book(menuid):
-    return "not completed"
+@dinner_app.route("/menu/book_list/")
+def dinner_menu_book_list():
+    return "Yoga not completed"
+
+@dinner_app.route("/menu/book/<menuid>/<menuitemid>",method='POST')
+def dinner_menu_book(menuid,menuitemid):
+    return "Yoga not completed"
+
+@dinner_app.route("/menu/book_delete/<menuid>/<historyitemid>")
+def dinner_menu_book_delete(menuid,historyitemid):
+    return "Yoga not completed"
+
 
 @dinner_app.route("/accounts/manager/")
-def dinner_accounts_manager(menuid):
-    return "not completed"
+def dinner_accounts_manager():
+    return "Daisy not completed"
 
-@dinner_app.route("/accounts/add/")
+@dinner_app.route("/accounts/add/",method="POST")
 def dinner_accounts_add(menuid):
-    return "not completed"
+    return "Daisy not completed"
 
 @dinner_app.route("/accounts/list/")
 def dinner_accounts_list(menuid):
-    return "not completed"
+    return "Daisy not completed"
 
 
 

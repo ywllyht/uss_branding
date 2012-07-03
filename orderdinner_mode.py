@@ -9,13 +9,15 @@ import re
 import time
 
 p_block_type = re.compile("\[START_(\w+)\]")
+p_menuitem = re.compile("(?P<price>\d+.?\d+)元")
+
 _localDir=os.path.dirname(__file__)
 _curpath=os.path.normpath(os.path.join(os.getcwd(),_localDir))
 fn = os.path.join(_curpath,"orderdinner.txt")
 fn_bak = os.path.join(_curpath,"orderdinner_bak.txt")
 
 
-
+UTF8_BOM = "".join(map(lambda x:chr(int(x,16)), ["ef","bb","bf"]))
 
 def lock_write(f):
     
@@ -25,13 +27,14 @@ def lock_write(f):
         dinner.readData()
 
         r = f(dinner,*arg,**karg)
-        
-        f2.write(dinner.__str__())
-        f2.flush()
 
-        f1 = open(fn,"w+")
-        f1.write(dinner.__str__())
-        f1.close()
+        if r == "":
+            f2.write("lock!")
+            f2.flush()
+
+            f1 = open(fn,"w+")
+            f1.write(dinner.__str__())
+            f1.close()
 
         f2.close()
 
@@ -46,41 +49,50 @@ def lock_write(f):
 
 class Dinner(object):
     def __init__(self):
+        self.admins = []
+        self.users = []
         self.menus = []
         self.accounts = None
         self.history = None
+        
 
     def readData(self):
+        self.admins = []
+        self.users = []
         self.menus = []
         self.accounts = None
         self.history = None
 
         for block,block_type in self.yieldData():
             #print block,block_type
-            if block_type == "MENU":
+            if block_type == "USER":
+                r = self.readUser(block)
+                if r != "":
+                    return "Dinner.readUser() error! " + r
+
+            elif block_type == "MENU":
                 m = Menu()
                 r = m.readData(block)
-                if r == True:
+                if r == "":
                     self.menus.append(m)
                 else:
-                    print "Menu.readData() error! "
-                    return False
+                    return "Menu.readData() error! " + r
+
             elif block_type == "ACCOUNT":
                 m = Accounts()
                 r = m.readData(block)
-                if r == True:
+                if r == "":
                     self.accounts = m
                 else:
-                    print "Acount.readData() error! "
-                    return False
+                    return "Acount.readData() error! " + r
+
             elif block_type == "HISTORY":
                 m = History()
                 r = m.readData(block)
-                if r == True:
+                if r == "":
                     self.history = m
                 else:
-                    print "History.readData() error! "
-                    return False
+                    return "History.readData() error! " + r
 
         if self.accounts == None:
             self.accounts = Accounts()
@@ -88,7 +100,28 @@ class Dinner(object):
         if self.history == None:
             self.history = History()
 
-        return True
+        if len(self.admins) == 0:
+            return "Dinner.readDate() error! self.admins == 0!"
+
+        return ""
+
+    def readUser(self,block):
+        block_len = len(block)
+        if block_len != 4:
+            return "  blcok_len != 4" 
+        if block[0] != "[START_USER]":
+            return "  [START_USER] missing"
+        if block[block_len-1] != "[END_USER]":
+            return "  [END_USER] missing"
+
+        line = block[1]
+        self.admins = line.split(",")
+
+        line = block[2]
+        self.users = line.split(",")
+
+        return ""
+        
 
     def yieldData(self):
         f1 = open(fn)
@@ -100,6 +133,8 @@ class Dinner(object):
             if len(line) <= 1:
                 continue
             if line[0] == "#":
+                continue
+            if line == UTF8_BOM:
                 continue
             if line.startswith("[START_"):
                 m = p_block_type.match(line)
@@ -117,6 +152,10 @@ class Dinner(object):
 
     def __str__(self):
         s = []
+        s.append("\n[START_USER]\n")
+        s.append(",".join(self.admins)+"\n")
+        s.append(",".join(self.users)+"\n")
+        s.append("[END_USER]\n\n")
         for m in self.menus:
             s.append(str(m)+"\n\n")
         s.append(str(self.accounts)+"\n\n")
@@ -126,80 +165,185 @@ class Dinner(object):
 
         
 
-    def menu_active(self,menuid):
+    def menu_active(self,menuid, operatorname):
+
+
         f2 = open(fn_bak,"w+")
         self.readData()
 
-        result = False
+        result = ""
+
+        if operatorname not in self.admins:
+            f2.close()
+            return "Dinner.menu_active() error, you are not authorized!"
+
+
+        findflag = False
         for menu in self.menus:
             if menu.id == menuid:
+                findflag = True
                 menu.active = time.strftime("%Y%m%d",time.localtime())
+                menu.confirm = "False"
                 menu.historyitems = []
-                result = True
                 break
+        if findflag == False:
+            result = "Dinner.menu_active() error, not find target menu " + menuid
 
-        f2.write(self.__str__())
-        f2.flush()
+        if result == "":
+            f2.write("lock")
+            f2.flush()
 
-        f1 = open(fn,"w+")
-        f1.write(self.__str__())
-        f1.close()
+            f1 = open(fn,"w+")
+            f1.write(self.__str__())
+            f1.close()
 
         f2.close()
 
         return result
 
     @lock_write
-    def menu_add(self,menu):
+    def menu_add(self,menu, operatorname):
+        if operatorname not in self.admins:
+            return "Dinner.menu_add() error, you are not authorized!"
         self.menus.append(menu)
+        return ""
 
     @lock_write
-    def menu_delete(self,menuid):
-        result = False
+    def menu_delete(self,menuid,operatorname):
+        result = ""
+
+        if operatorname not in self.admins:
+            return "Dinner.menu_delete() error, you are not authorized!"
+
+        findflag = False
         for menu in self.menus:
             if menu.id == menuid:
+                findflag = True
                 self.menus.remove(menu)
                 break
+
+        if findflag == False:
+            result = "Dinner.menu_delete() error, not find target menu " + menuid
+
         return result
         
 
     @lock_write
-    def menu_confirm(self,menuid):
-        result = False
+    def menu_confirm(self,menuid,operatorname):
+        result = ""
+
+        if operatorname not in self.admins:
+            return "Dinner.menu_confirm() error, you are not authorized!"
+
+
+        findflag = False
         for menu in self.menus:
             if menu.id == menuid:
+                findflag = True
+
+                if menu.active != time.strftime("%Y%m%d",time.localtime()):
+                    return "Dinner.menu_confirm() error, Target menu is not active "
+
+                if menu.confirm != "False":
+                    return "Dinner.menu_confirm() error, menu.confirm != 'False' "
                 menu.confirm = time.strftime("%Y%m%d",time.localtime())
 
 
                 for item in menu.historyitems:
                     self.accounts.confirm(item)                # reduce user's money in account
                     self.history.historyitems.append(item)   # move historyitem from Menu section to History section
-                menu.historyitems = []
-
-                result = True
+                #menu.historyitems = []       # we remain these temp record for facilitating copy of them, then 
+                                              # admin can send these records to restaurants
                 break
+
+        if findflag == False:
+            result = "Dinner.menu_confirm() error, not find target menu " + menuid
 
         return result
 
+
     @lock_write
-    def menu_book(self,menuid,historyitem):
-        result = False
+    def menu_book(self,menuid,itemid,operatorid,operatorname,username):
+        result = ""
+        findflag = False
+        itemfindflag = False
         for menu in self.menus:
             if menu.id == menuid:
+                findflag = True
 
-                menu.historyitems.append(historyitem)
+                if menu.active != time.strftime("%Y%m%d",time.localtime()):
+                    return "Dinner.menu_book() error, target menu has not actived! "
 
-                result = True
+                if menu.confirm != "False":
+                    return "Dinner.menu_book() error, target menu has confirmed! "
+
+                if len(menu.historyitems) > 40:
+                    return "Dinner.menu_book() error, target menu has more than 30 historyitems "
+
+                for item in menu.menuitems:
+                    if item.id == itemid:
+                        itemfindflag = True
+                        newid =  "T"+str(int(time.time()))+operatorid
+                        h = HistoryItem(newid,operatorname,username, time.strftime("%Y%m%d",time.localtime()), str(0 - item.money), item.description)
+                        menu.historyitems.append(h)
+                        break
                 break
+
+        if findflag == False:
+            result = "Dinner.menu_book() error, not find target menu " + menuid
+
+        if itemfindflag == False:
+            result = "Dinner.menu_book() error, not find target menuitem " + itemid
 
         return result
 
     @lock_write
-    def accounts_add(self,historyitem):
+    def menu_book_delete(self,menuid,itemid,operatorname):
+        result = ""
+        findflag = False
+        itemfindflag = False
+        for menu in self.menus:
+            if menu.id == menuid:
+                findflag = True
+
+                if menu.active != time.strftime("%Y%m%d",time.localtime()):
+                    return "Dinner.menu_book_delete() error, target menu has not actived! "
+
+                if menu.confirm != "False":
+                    return "Dinner.menu_book_delete() error, target menu has confirmed! "
+
+                for item in menu.historyitems:
+                    if item.id == itemid:
+                        itemfindflag = True
+                        if item.operator != operatorname and (item.operator not in self.admins):
+                            return "Dinner.menu_book_delete() error, you are not authorized! "
+                        menu.historyitems.remove(item)
+                        break
+                break
+
+        if findflag == False:
+            result = "Dinner.menu_book_delete() error, not find target menu " + menuid
+
+        if itemfindflag == False:
+            result = "Dinner.menu_book_delete() error, not find target historyitem " + itemid
+
+        return result
+
+
+
+
+
+    @lock_write
+    def accounts_add(self,historyitem, operatorname):
+
+        if operatorname not in self.admins:
+            return "Dinner.accounrts_add() error, you are not authorized!"
+      
+
         self.accounts.confirm(historyitem)                # reduce user's money in account
         self.history.historyitems.append(historyitem)   # move historyitem from Menu section to History section
  
-        return True
+        return ""
         
         
     
@@ -215,14 +359,59 @@ class Menu(object):
         self.menuitems = []
         self.historyitems = []
 
+    def create(self,menudata):
+        lines = menudata.splitlines()
+        lines_len = len(lines)
+        if lines_len < 2:
+            return "Menu.create() error! lines_len < 2"
+
+        new_id =  "M"+str(int(time.time()*100))
+        
+        line = lines[0]
+        line = line.strip()
+        if len(line) <= 0:
+            return "Menu.create() error! first line should contain shop's name"
+        new_title = line
+        
+        new_menuitems = []
+
+        itemnumber = 1
+        for line in lines[1:]:
+            line = line.strip()
+            if len(line) <= 0:
+                continue
+            m = p_menuitem.search(line)
+            if m:
+                new_itemid = "P"+str(itemnumber)
+                itemnumber += 1
+                new_money = m.group("price")
+                new_description = line.replace(new_money+"元", "")
+
+                menuitem = MenuItem()
+                menuitem.id = new_itemid
+                menuitem.money = float(new_money)
+                menuitem.description = new_description
+                
+                new_menuitems.append(menuitem)
+
+        if len(new_menuitems) == 0:
+            return "Menu.create() error! this menudata does not contain any menuitem!"
+
+        self.id = new_id
+        self.title = new_title
+        self.active = "False"
+        self.confirm = "False"
+        self.menuitems = new_menuitems
+        self.historyitems = []
+                
+
+
     def readData(self,block):
         block_len = len(block)
         if block[0] != "[START_MENU]":
-            print "  [START_MENU] missing"
-            return False
+            return "  [START_MENU] missing"
         if block[block_len-1] != "[END_MENU]":
-            print "  [END_MENU] missing"
-            return False
+            return "  [END_MENU] missing"
 
         line = block[1]
         slice1 = line.split(" ",1)
@@ -239,10 +428,11 @@ class Menu(object):
 
         for line in block[4:-1]:
             if line[0] == "P":
-                slice1 = line[1:].split(" ",1)
+                slice1 = line.split(" ",2)
                 item = MenuItem()
-                item.money = float(slice1[0])
-                item.description = slice1[1]
+                item.id = slice1[0]
+                item.money = float(slice1[1])
+                item.description = slice1[2]
                 self.menuitems.append(item)
             elif line[0] == "T":
                 slice1 = line.split(" ",5)
@@ -255,9 +445,9 @@ class Menu(object):
                 item.description = slice1[5]
                 self.historyitems.append(item)
             else:
-                print "  illegal data - ",line
-                return False
-        return True
+                return "  illegal data - "+line
+
+        return ""
 
     def __str__(self):
         s = []
@@ -277,11 +467,12 @@ class Menu(object):
 
 class MenuItem(object):
     def __init__(self):
+        self.id = ""
         self.money = 0
         self.description = ""
 
     def __str__(self):
-        return "P" + str(self.money) + " " + self.description
+        return self.id + " " + str(self.money) + " " + self.description
 
 class HistoryItem(object):
 
@@ -308,11 +499,9 @@ class Accounts(object):
     def readData(self,block): 
         block_len = len(block)
         if block[0] != "[START_ACCOUNT]":
-            print "  [START_ACCOUNT] missing"
-            return False
+            return "  [START_ACCOUNT] missing"
         if block[block_len-1] != "[END_ACCOUNT]":
-            print "  [END_ACCOUNT] missing"
-            return False
+            return "  [END_ACCOUNT] missing"
         
         for line in block[1:-1]:
             slice1 = line.split(" ",1)
@@ -321,9 +510,9 @@ class Accounts(object):
                 money = float(slice1[1])
                 self.accounts.append([username,money])
             else:
-                print "  illegal data - ",line
-                return False
-        return True
+                return "  illegal data - "+line
+
+        return ""
        
     def confirm(self,historyitem):
         ''' take care, the input money is minus number'''
@@ -358,11 +547,9 @@ class History(object):
     def readData(self,block):
         block_len = len(block)
         if block[0] != "[START_HISTORY]":
-            print "  [START_HISTORY] missing"
-            return False
+            return "  [START_HISTORY] missing"
         if block[block_len-1] != "[END_HISTORY]":
-            print "  [END_HISTORY] missing"
-            return False
+            return "  [END_HISTORY] missing"
 
         for line in block[1:-1]:
             if line[0] == "T":
@@ -376,9 +563,9 @@ class History(object):
                 item.description = slice1[5]
                 self.historyitems.append(item)
             else:
-                print "  illegal data - ",line
-                return False
-        return True
+                return "  illegal data - "+line
+
+        return ""
 
     def __str__(self):
         s = []
@@ -394,26 +581,68 @@ class History(object):
 
 
 if __name__ == '__main__':
+    
+    # a = "T5/鱼香肉丝 12.3元 fff"
+    # a = "T5/鱼香肉丝 12元 fff"
+    # m = p_menuitem.search(a)
+    # if m:
+    #     print m.group("price")
+    # else:
+    #     print "match fail"
+    
+    menudata = '''小灯笼四川 QQ11112
+T5/鱼香肉丝 12.3元 fff
+
+12元 TT/宫保鸡丁盖饭
+'''
+    m = Menu()
+    m.create(menudata)
+    print m
+
+    #sys.exit(1)
+
     d = Dinner()
-    if d.readData():
+    r = d.readData()
+    if r == "":
         print d
     else:
-        print "d.readData() error"
+        print "d.readData() error "+ r
         sys.exit(1)
 
+    
+    # r = d.menu_add(m,"yoga")
+    # if r!= "":
+    #     print r
+
+    # r = d.menu_delete("M134133013419","yoga")
+    # if r!= "":
+    #     print r
         
     menuid= "M2121211113"
-    d.menu_active(menuid)
-    
-    newid = "T"+str(int(time.time()))
-    h = HistoryItem(newid,"yujia","yujia", time.strftime("%Y%m%d",time.localtime()), -10.0, "铁板烧")
-    d.menu_book(menuid,h)
+    r = d.menu_active(menuid,"yoga")
+    if r != "":
+        print r
     
 
-    d.menu_confirm(menuid)
+    r = d.menu_book(menuid,"P1","11","yoga","lljli")
+    if r!= "":
+        print r
+    
+    # print d
+    # itemid = raw_input("input:")
+    # r = d.menu_book_delete(menuid, itemid, "yoga")
+    # if r != "":
+    #     print r
+
+
+    r = d.menu_confirm(menuid,"yoga")
+    if r != "":
+        print r
 
 
     newid =  "T"+str(int(time.time()))
-    h = HistoryItem(newid,"yujia","yujia", time.strftime("%Y%m%d",time.localtime()), 100.0, "充值")
-    d.accounts_add(h)
+    h = HistoryItem(newid,"yoga","yoga", time.strftime("%Y%m%d",time.localtime()), 100.0, "充值")
+    r = d.accounts_add(h,"yoga")
+    if r != "":
+        print r
 
