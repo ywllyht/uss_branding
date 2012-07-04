@@ -9,7 +9,7 @@ import re
 import time
 
 p_block_type = re.compile("\[START_(\w+)\]")
-p_menuitem = re.compile("(?P<price>\d+.?\d+)元")
+p_menuitem = re.compile("(?P<price>\d+.?\d{0,2})元")
 
 _localDir=os.path.dirname(__file__)
 _curpath=os.path.normpath(os.path.join(os.getcwd(),_localDir))
