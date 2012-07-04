@@ -12,7 +12,7 @@ dinner_app = Bottle()
 
 @dinner_app.route("/")
 def dinner_index():
-    return "Rucy not comleted"
+    return template('dinner/index.htm',user=request.user)
 
 @dinner_app.route("/menu/")
 def dinner_menu():
@@ -52,11 +52,11 @@ def dinner_accounts_manager():
     return "Daisy not completed"
 
 @dinner_app.route("/accounts/add/",method="POST")
-def dinner_accounts_add(menuid):
+def dinner_accounts_add():
     return "Daisy not completed"
 
 @dinner_app.route("/accounts/list/")
-def dinner_accounts_list(menuid):
+def dinner_accounts_list():
     return "Daisy not completed"
 
 
