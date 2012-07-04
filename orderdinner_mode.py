@@ -183,7 +183,7 @@ class Dinner(object):
             if menu.id == menuid:
                 findflag = True
                 menu.active = time.strftime("%Y%m%d",time.localtime())
-                menu.confirm = "False"
+                menu.confirm = "FALSE"
                 menu.historyitems = []
                 break
         if findflag == False:
@@ -244,8 +244,8 @@ class Dinner(object):
                 if menu.active != time.strftime("%Y%m%d",time.localtime()):
                     return "Dinner.menu_confirm() error, Target menu is not active "
 
-                if menu.confirm != "False":
-                    return "Dinner.menu_confirm() error, menu.confirm != 'False' "
+                if menu.confirm != "FALSE":
+                    return "Dinner.menu_confirm() error, menu.confirm != 'FALSE' "
                 menu.confirm = time.strftime("%Y%m%d",time.localtime())
 
 
@@ -274,7 +274,7 @@ class Dinner(object):
                 if menu.active != time.strftime("%Y%m%d",time.localtime()):
                     return "Dinner.menu_book() error, target menu has not actived! "
 
-                if menu.confirm != "False":
+                if menu.confirm != "FALSE":
                     return "Dinner.menu_book() error, target menu has confirmed! "
 
                 if len(menu.historyitems) > 40:
@@ -309,7 +309,7 @@ class Dinner(object):
                 if menu.active != time.strftime("%Y%m%d",time.localtime()):
                     return "Dinner.menu_book_delete() error, target menu has not actived! "
 
-                if menu.confirm != "False":
+                if menu.confirm != "FALSE":
                     return "Dinner.menu_book_delete() error, target menu has confirmed! "
 
                 for item in menu.historyitems:
@@ -399,10 +399,12 @@ class Menu(object):
 
         self.id = new_id
         self.title = new_title
-        self.active = "False"
-        self.confirm = "False"
+        self.active = "FALSE"
+        self.confirm = "FALSE"
         self.menuitems = new_menuitems
         self.historyitems = []
+
+        return ""
                 
 
 

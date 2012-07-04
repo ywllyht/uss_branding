@@ -1,0 +1,87 @@
+
+
+<script language="javascript">
+    function delcfm() {
+        if (!confirm("Are you sure?")) {
+            window.event.returnValue = false;
+        }
+    }
+</script>
+
+<table border="5">
+%for menu in dinner.menus:
+  %if menu.active == today:
+   <tr>
+     <td>
+
+      TITLE: {{menu.title}} &nbsp;<br>
+      ACTIVE: {{menu.active}}&nbsp;<br>
+      CONFIRM: {{menu.confirm}}&nbsp;<br>
+
+      <form method="POST" action=".">
+        <select name=fruits>
+        <option>Banana
+        <option selected>Apple
+        <option value=My_Favorite>Orange
+        </select><p>
+      
+      <table border="1">
+        <tr>
+          <th>id</th>
+          <th>price</th>
+          <th>description</th>
+          <th>mangager</th>
+        </tr>
+        %for menuitem in menu.menuitems:
+        <tr>
+          <td>{{menuitem.id}}</td>
+          <td>{{menuitem.money}}</td>
+          <td>{{menuitem.description}}</td>
+          <td>
+            <input type=radio name="book_select" value="{{menuitem.id}}">
+          </td>
+        </tr>
+        %end
+      </table>
+
+      <input type="submit" value="order">
+      </form>
+
+      <p>&nbsp;</p>
+
+      <table border="1">
+        <tr>
+          <th>id</th>
+          <th>operator</th>
+          <th>user</th>
+          <th>date</th>
+          <th>money</th>
+          <th>description</th>
+          <th>manager</th>
+        </tr>
+        %for historyitem in menu.historyitems:
+        <tr>
+          <td>{{historyitem.id}}</td>
+          <td>{{historyitem.operator}}</td>
+          <td>{{historyitem.user}}</td>
+          <td>{{historyitem.date}}</td>
+          <td>{{historyitem.money}}</td>
+          <td>{{historyitem.description}}</td>
+          <td>
+            <a href="../book_delete/{{menu.id}}/{{historyitem.id}}" onClick="delcfm()">delete</a>
+          </td>
+        </tr>
+        %end
+      </table>
+      
+
+    
+     </td>
+  </tr>
+  %end
+%end
+</table>
+
+
+
+%rebase base.htm title="welcome to USS FVT's site",user=user

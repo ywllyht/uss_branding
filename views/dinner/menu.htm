@@ -1,0 +1,41 @@
+
+
+<script language="javascript">
+    function delcfm() {
+        if (!confirm("Are you sure?")) {
+            window.event.returnValue = false;
+        }
+    }
+</script>
+
+<table border="1">
+  <tr>
+    <th>id</th>
+    <th>title</th>
+    <th>active</th>
+    <th>confirm</th>
+    <th>manage</th>
+  </tr>
+%for menu in dinner.menus:
+  <tr>
+      <td>{{menu.id}}</td>
+      <td>{{menu.title}}</td>
+      <td>{{menu.active}}</td>
+      <td>{{menu.confirm}}</td>
+      <td><a href="../menu/active/{{menu.id}}">active</a> &nbsp;
+        <a href="../menu/delete/{{menu.id}}" onClick="delcfm()">delete</a>
+      </td>
+  </tr>
+%end
+</table>
+
+<p>&nbsp;</p>
+
+              <form method="POST" action="../menu/add/">
+                <textarea name="menudata" rows="20" cols="80">
+                </textarea>
+               <br/>
+               <input type="submit" value="add">
+              </form>
+
+%rebase base.htm title="welcome to USS FVT's site",user=user

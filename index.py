@@ -3,7 +3,7 @@
 # filename: index.py
 # ywllyht@yahoo.com.cn
 
-from bottle import Bottle, run,request, static_file
+from bottle import Bottle, run,request, static_file,debug
 from bottle import template,view,SimpleTemplate
 from users import users_app,User
 from searchapp import search_app
@@ -134,5 +134,6 @@ if __name__ == '__main__':
         # we will use nginx + flup  in enviroment
         run(index_app_beaker,host="0.0.0.0",reloader=True, server='flup')
     else:
+        debug(True)
         run(index_app_beaker,host="0.0.0.0",reloader=True)
 
