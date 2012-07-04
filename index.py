@@ -52,7 +52,7 @@ def get_user_request():
     s = request.environ.get('beaker.session')
     userid2 = s.get('userid',"0")
     username2 = s.get('username',"")
-    request.user = User(userid2,username2)
+    #request.user = User(userid2,username2)
     #print "get_user_request2",userid2,username2
     role2=s.get('role',"")
     request.user = User(userid2,username2,role2)
