@@ -82,17 +82,21 @@ def dinner_menu_book_delete(menuid,historyitemid):
         redirect("/dinner/menu/book_list/")
 
 
-@dinner_app.route("/accounts/manager/")
+@dinner_app.route("/accounts/charge/")
 @login_required
 def dinner_accounts_manager():
-    return "Daisy not completed"
 
+    d = Dinner()
+    d.readData()
+    return template('dinner/account.htm', dinner=d, user=request.user)
+    #return "Daisy not completed"
+    #redirect("/dinner/account/manage/")
 @dinner_app.route("/accounts/add/",method="POST")
 @login_required
 def dinner_accounts_add():
     return "Daisy not completed"
 
-@dinner_app.route("/accounts/list/")
+@dinner_app.route("/accounts/review/")
 @login_required
 def dinner_accounts_list():
     return "Daisy not completed"

@@ -337,7 +337,7 @@ class Dinner(object):
     def accounts_add(self,historyitem, operatorname):
 
         if operatorname not in self.admins:
-            return "Dinner.accounrts_add() error, you are not authorized!"
+            return "Dinner.accounts_add() error, you are not authorized!"
       
 
         self.accounts.confirm(historyitem)                # reduce user's money in account
