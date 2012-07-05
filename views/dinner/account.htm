@@ -8,42 +8,44 @@
     }
 </script>
 
-<table border="5">
- 
-   <tr>
-     <font size=4> Account Management</font> &nbsp;
-   </tr>
-   <tr>
-      <td>
-       <form method="POST" action=".">
-         <select name="orderuser">
-         %for username2 in dinner.users:
-         <option 
-             %if username2 == user.username:
-                 selected
-             %end
-         >{{username2}}
-         %end
-         </select><p>
-      </td>
-      <td>  
-        <textarea name=comment rows=1 cols=10>
-        </textarea>
-        <P>
-       </td> 
-       
-       <td>
-        <textarea name=comment rows=1 cols=15>
-        </textarea>
-        <P>                                                 
+
+<font size=4> Account Management</font> &nbsp;
+
+<form method="POST" action="../add/">
+  <table border="5">
+     <tr>
+        <th>User Name</th>
+        <th>Amount of Recharge</th>
+        <th>Description</th>
+     </tr>
+     <tr>
+        <td>
+            <select name="orderuser">
+            %for username2 in dinner.users:
+              <option 
+                 %if username2 == user.username:
+                     selected
+                 %end
+              >{{username2}}
+            %end
+            </select><p>
         </td>
-     
-       <td>
-        <input type="submit" value="Recharge">
-       </td>
-      </form>
-   </tr> 
+        <td>  
+            <textarea name="money" rows=1 cols=15>
+            </textarea>
+            <P>
+        </td> 
+        <td>
+            <textarea name="description" rows=1 cols=15>
+            </textarea>
+            <P>                                                 
+        </td>
+     </tr>         
   </table>
+  
+  <input type="submit" value="Recharge">
+</form>
+
       <p>&nbsp;</p>
 
       

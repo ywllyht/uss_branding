@@ -284,7 +284,7 @@ class Dinner(object):
                     if item.id == itemid:
                         itemfindflag = True
                         newid =  "T"+str(int(time.time()))+operatorid
-                        h = HistoryItem(newid,operatorname,username, time.strftime("%Y%m%d",time.localtime()), str(0 - item.money), item.description)
+                        h = HistoryItem(newid,operatorname,username, time.strftime("%Y%m%d",time.localtime()), 0 - item.money, item.description)
                         menu.historyitems.append(h)
                         break
                 break
