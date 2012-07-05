@@ -125,6 +125,76 @@ def user_add_post():
     #return username+","+password+","+fullname+","+email
 
 
+@users_app.route("/changepw/")                    #change password
+@login_required
+def user_changepw():
+    userid = request.user.userid
+    if userid == "0":
+        msg = "You need to login first"
+        return template("mydirect.htm",title="You need to login first",msg=msg,next_url="/users/login/",user=request.user) 
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    cu.execute("select * from users where id='%s'" % userid)
+    rs = cu.fetchone()
+    return template("users/changepw.htm",users=rs,title="change password",user=request.user)
+
+@users_app.route("/changepw/",method="POST")                    #change passwor
+@login_required
+def user_changepw_post():
+    userid = request.user.userid
+    if userid == "0":
+        msg = "You need to login first"
+        return template("mydirect.htm",title="You need to login first",msg=msg,next_url="/users/login/",user=request.user) 
+
+    oldpassword = request.forms.get('oldpassword')
+    newpassword = request.forms.get('newpassword')
+    newpassword2 = request.forms.get('newpassword2')
+
+    if len(newpassword) <= 4:
+        msg = "The length password should > 4"
+        return template("mydirect.htm",title="Error",msg=msg,next_url="/users/changepw/",user=request.user) 
+    if newpassword != newpassword2:
+        msg = "The two new password are not the same!"
+        return template("mydirect.htm",title="Error",msg=msg,next_url="/users/changepw/",user=request.user) 
+    if newpassword.find("'") >=0 or newpassword.find('"') >=0:
+        msg = "You new password is illegal"
+        return template("mydirect.htm",title="Error",msg=msg,next_url="/users/changepw/",user=request.user) 
+
+
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+
+    command = "select id,password,role from users where username = '%s'" % request.user.username
+    cu.execute(command)
+    rs = cu.fetchall()
+    if len(rs) == 0:
+        abort(401,"sorry, no such users")
+    if len(rs) > 1:
+        abort(401,"sorry, duplicated users found")
+
+    m = hashlib.md5()
+    m.update(oldpassword)
+    password2 = m.hexdigest()
+
+    if password2 != rs[0][1]:
+        msg = "you password is not correct"
+        return template("mydirect.htm",title="Error",msg=msg,next_url="/users/changepw/",user=request.user) 
+
+    m = hashlib.md5()
+    m.update(newpassword)
+    password2 = m.hexdigest()
+
+    command = "update users set password='%s' where id='%s'" % (password2, userid)
+    cu.execute(command)
+    cx.commit()
+    redirect("/")
+
+
+    return template("users/changepw.htm",users=rs,title="change password",user=request.user)
+
+
+
+
 @users_app.route("/modify/<userid:int>/")                    #Modify a user
 def user_modify(userid):
     cx = sqlite.connect('branding.db')
@@ -147,8 +217,6 @@ def user_modify_post(userid):
     if len(password) < 3 or len(password) > 32:
         abort(401,"sorry, the length of password is invalid")
     m = hashlib.md5()
-    m.update(password)
-    password2 = m.hexdigest()
     m.update(password)
     password2 = m.hexdigest()
     #password2 = md5.md5(password).hexdigest()
