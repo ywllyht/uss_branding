@@ -46,9 +46,25 @@
   <input type="submit" value="Recharge">
 </form>
 
-      <p>&nbsp;</p>
+  <p>&nbsp;</p>
+    <table border="1">
+        <tr>
+          <font size=4> Users Accounts Information</font> &nbsp;
+        </tr>
+        <tr>
+          <th>User Name </th>
+          <th>Accounts</th>
 
-      
+          
+        </tr>
+         %for account in dinner.accounts.accounts:
+          <tr>
+             <td>{{account[0]}} </td>
+             <td>{{account[1]}} </td>
+          </tr>
+         %end
+      </table>       
+    <p>&nbsp;</p>
       <table border="1">
         <tr>
           <font size=4> History list</font> &nbsp;
@@ -64,12 +80,12 @@
         </tr>
          %for historyitem in dinner.history.historyitems:
          <tr>
-          <td>{{historyitem.id}}</td>
-          <td>{{historyitem.operator}}</td>
-          <td>{{historyitem.user}}</td>
-          <td>{{historyitem.date}}</td>
-          <td>{{historyitem.money}}</td>
-          <td>{{historyitem.description}}</td>
+          <td>{{historyitem.id}} </td>
+          <td>{{historyitem.operator}} </td>
+          <td>{{historyitem.user}} </td>
+          <td>{{historyitem.date}} </td>
+          <td>{{historyitem.money}} </td>
+          <td>{{historyitem.description}} </td>
           
         </tr>
          %end
