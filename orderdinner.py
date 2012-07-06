@@ -51,25 +51,46 @@ def dinner_menu_delete(menuid):
 @dinner_app.route("/menu/active/<menuid>")
 @login_required
 def dinner_menu_active(menuid):
-    return "Rucy not completed"
+    return "Rucy not completed" 
 
 @dinner_app.route("/menu/confirm/<menuid>")
 @login_required
 def dinner_menu_confirm(menuid):
-    return "Yoga not completed"
+    d = Dinner()
+    r = d.menu_confirm(menuid,request.user.username)
+    if r != "":
+        return template("mydirect.htm",title="reservation delete fail", msg=r, next_url="/dinner/menu/book_list/", user=request.user)
+    else:
+        redirect("/dinner/menu/book_list/")   
 
 @dinner_app.route("/menu/book_list/")
 @login_required
 def dinner_menu_book_list():
     d = Dinner()
     d.readData()
+    balance = 0
+    for account in d.accounts.accounts:
+        if request.user.username == account[0]:
+            balance = account[1]
+            break
+    #print "balance=",balance
     today = time.strftime("%Y%m%d",time.localtime())
-    return template('dinner/book_list.htm', dinner=d, today=today, user=request.user)
+    return template('dinner/book_list.htm', dinner=d, today=today, user=request.user, balance=balance)
 
-@dinner_app.route("/menu/book/<menuid>/<menuitemid>",method='POST')
+@dinner_app.route("/menu/book_list/",method='POST')
 @login_required
-def dinner_menu_book(menuid,menuitemid):
-    return "Yoga not completed"
+def dinner_menu_book():
+    d = Dinner()
+    menuid= request.forms.get('menuid')
+    itemid= request.forms.get('book_select')
+    username= request.forms.get('users')
+    #print "itemid,username,menuid",itemid,username,menuid
+    r = d.menu_book(menuid, itemid, request.user.userid, request.user.username,username)
+    if r != "":
+        return template("mydirect.htm",title="reservation delete fail", msg=r, next_url="/dinner/menu/book_list/", user=request.user)
+    else:
+        redirect("/dinner/menu/book_list/")    
+              
 
 @dinner_app.route("/menu/book_delete/<menuid>/<historyitemid>")
 @login_required

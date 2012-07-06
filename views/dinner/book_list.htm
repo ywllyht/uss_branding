@@ -8,21 +8,30 @@
     }
 </script>
 
+<div align="center">
+   Your balance is:{{balance}}
+</div>
 <table border="5">
 %for menu in dinner.menus:
   %if menu.active == today:
    <tr>
      <td>
 
-      TITLE: {{menu.title}} &nbsp;<br>
+      RESTAURANT: {{menu.title}} &nbsp;<br>
       ACTIVE: {{menu.active}}&nbsp;<br>
       CONFIRM: {{menu.confirm}}&nbsp;<br>
 
-      <form method="POST" action=".">
-        <select name=fruits>
-        <option>Banana
-        <option selected>Apple
-        <option value=My_Favorite>Orange
+      <form method="POST" action="."> 
+       
+        <input type=hidden name="menuid" value="{{menu.id}}" readonly="true"> <br>
+        Owner:
+        <select name=users>
+        %for user_temp in dinner.users:
+            %if user_temp == user:
+                <option selected value={{user_temp}}>{{user_temp}}
+            %end
+            <option value={{user_temp}}>{{user_temp}}
+        %end
         </select><p>
       
       <table border="1">
@@ -38,13 +47,25 @@
           <td>{{menuitem.money}}</td>
           <td>{{menuitem.description}}</td>
           <td>
-            <input type=radio name="book_select" value="{{menuitem.id}}">
+            <input type=radio name="book_select" value="{{menuitem.id}}" checked>
           </td>
         </tr>
         %end
       </table>
-
-      <input type="submit" value="order">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="submit" value="order" 
+       %if menu.confirm != "FALSE":
+           disabled
+       %end
+      >
+       %if menu.confirm != "FALSE": 
+       <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      This menu has been confirmed today, if you want to order some more food, please contact the admin
+       %end
       </form>
 
       <p>&nbsp;</p>
@@ -57,8 +78,11 @@
           <th>date</th>
           <th>money</th>
           <th>description</th>
+          %if menu.confirm == "FALSE":
           <th>manager</th>
+          %end
         </tr>
+        
         %for historyitem in menu.historyitems:
         <tr>
           <td>{{historyitem.id}}</td>
@@ -68,18 +92,22 @@
           <td>{{historyitem.money}}</td>
           <td>{{historyitem.description}}</td>
           <td>
+           %if menu.confirm == "FALSE":
             <a href="../book_delete/{{menu.id}}/{{historyitem.id}}" onClick="delcfm()">delete</a>
+           %end
           </td>
         </tr>
         %end
       </table>
-      
-
-    
+      %if menu.confirm == "FALSE" and user.username in dinner.admins:
+      <a href="../confirm/{{menu.id}}" onClick="delcfm()">confirm</a>
+      %end
+      <p>&nbsp;</p>   
      </td>
   </tr>
   %end
 %end
+
 </table>
 
 

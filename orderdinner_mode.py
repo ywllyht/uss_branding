@@ -315,7 +315,7 @@ class Dinner(object):
                 for item in menu.historyitems:
                     if item.id == itemid:
                         itemfindflag = True
-                        if item.operator != operatorname and (item.operator not in self.admins):
+                        if item.operator != operatorname and (operatorname not in self.admins):
                             return "Dinner.menu_book_delete() error, you are not authorized! "
                         menu.historyitems.remove(item)
                         break
