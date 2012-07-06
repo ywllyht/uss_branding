@@ -4,7 +4,7 @@
 #  ywllyht@yahoo.com.cn  
 
 from bottle import route, run, Bottle, template, request, abort, redirect, response, hook
-from orderdinner_mode import Dinner, Menu, Accounts, History,HistoryItem
+from orderdinner_mode import Dinner, Menu, Accounts, History, HistoryItem
 from users import login_required
 import os
 import time
@@ -114,8 +114,10 @@ def dinner_accounts_add():
 @dinner_app.route("/accounts/review/")
 @login_required
 def dinner_accounts_list():
-    return "Daisy not completed"
-
+    
+    d = Dinner()
+    d.readData()
+    return template('dinner/account_list.htm', dinner=d, user=request.user)
 
 
 
