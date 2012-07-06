@@ -4,7 +4,7 @@
 #  ywllyht@yahoo.com.cn  
 
 from bottle import route, run, Bottle, template, request, abort, redirect, response, hook
-from orderdinner_mode import Dinner, Menu, Accounts, History
+from orderdinner_mode import Dinner, Menu, Accounts, History, HistoryItem
 from users import login_required
 import os
 import time
@@ -103,21 +103,42 @@ def dinner_menu_book_delete(menuid,historyitemid):
         redirect("/dinner/menu/book_list/")
 
 
-@dinner_app.route("/accounts/manager/")
+@dinner_app.route("/accounts/charge/")
 @login_required
 def dinner_accounts_manager():
-    return "Daisy not completed"
+
+    d = Dinner()
+    d.readData()
+    return template('dinner/account.htm', dinner=d, user=request.user)
 
 @dinner_app.route("/accounts/add/",method="POST")
 @login_required
 def dinner_accounts_add():
-    return "Daisy not completed"
+   d = Dinner()
+   username= request.forms.get('orderuser')
+   money = request.forms.get('money')
+   try:
+       money = float(money)
+   except ValueError,e:
+       return template("mydirect.htm",title="Recharge Fail", msg="input money is illegal", next_url="/dinner/accounts/charge/", user=request.user)
+   description = request.forms.get('description')
 
-@dinner_app.route("/accounts/list/")
+   newid =  "T"+str(int(time.time()))+request.user.userid
+   h= HistoryItem(newid,request.user.username,username, time.strftime("%Y%m%d",time.localtime()),money,description)
+     
+   r= d.accounts_add(h,request.user.username)
+   if r != "":
+        return template("mydirect.htm",title="Recharge Fail", msg=r, next_url="/dinner/accounts/charge/", user=request.user)
+   else:
+        redirect("/dinner/accounts/charge/")
+        
+@dinner_app.route("/accounts/review/")
 @login_required
 def dinner_accounts_list():
-    return "Daisy not completed"
-
+    
+    d = Dinner()
+    d.readData()
+    return template('dinner/account_list.htm', dinner=d, user=request.user)
 
 
 
