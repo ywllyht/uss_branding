@@ -6,20 +6,132 @@
             window.event.returnValue = false;
         }
     }
+
+    function  closeReport(reportid){
+    //alert(reportid);
+    //confirm('hahah');
+    var bookreport = document.getElementById(reportid);
+    bookreport.style.display='none';
+    return   false;
+    }
+
+    function  openReport(reportid){
+    //alert(reportid);
+    var bookreport = document.getElementById(reportid);
+    bookreport.style.display='block';
+    return   false;
+    }
+
+
+    var consume_report = function(bb){
+    //var dd = bb.parentNode;
+    var dd2 = document.getElementById("consume_report_div");
+    if(bb.value == "+"){
+    bb.value = "-";
+    dd2.style.display = "block";
+    }else{
+    bb.value = "+";
+    dd2.style.display = "none";
+    }
+  
+
+}
 </script>
 
+<STYLE TYPE="text/css">
+      .white{
+        background-color:#FFFFFF;
+        /* background-color:#F5E2EC; */
+      }
+
+      .whitesubmit{
+        background-color:#FFFFFF;
+        border-left: ButtonHighlight 0px solid;
+        border-right: ButtonShadow 0px solid;
+        border-top: ButtonHighlight 0px solid;
+        border-bottom: ButtonShadow 0px solid;
+      
+      }
+
+      table.menu0{
+        border-bottom:  10px dotted #6699cc;
+        padding-bottom: 30px;
+      }
+
+
+      td.menu0 {
+
+        border-left: ButtonHighlight 0px solid;
+        border-right: ButtonShadow 0px solid;
+        border-top: 10px inset #6699cc;
+        border-bottom: 10px outset #6699cc;
+
+        padding-left: 3px;
+        padding-right: 2px;
+        padding-bottom: 30px;
+        overflow: hidden;
+
+        background: #FFFFFF;
+
+        margin: 1em 2em 3em 40em;
+      }
+
+
+      table.menu {
+        margin-top: 1em;
+        margin-bottom: 1em;
+        border: 0;
+      }
+
+
+      td.menu {
+        font-size: 14px;
+
+        border-left: ButtonHighlight 0px solid;
+        border-right: ButtonShadow 0px solid;
+        border-top: ButtonHighlight 1px dotted;
+        border-bottom: ButtonShadow 2px dotted #6699cc;
+
+        padding-left: 3px;
+        padding-right: 2px;
+        overflow: hidden;
+
+        background: #F5E2EC;
+      }
+
+      th.menu {
+        font-size: 14px;
+        border-left: ButtonHighlight 0px solid;
+        border-right: ButtonShadow 0px solid;
+        border-top: ButtonHighlight 0px solid;
+        border-bottom: ButtonShadow 1px solid;
+        padding-left: 3px;
+        padding-right: 2px;
+        overflow: hidden;
+        background: #FFCC00;
+      }
+
+</STYLE>
+
 <div align="center">
-   Your balance is:{{balance}}
+   <b>Your balance is :{{balance}}元</b>&nbsp;<input type="button" title="+" value="+" onclick="consume_report(this)">
 </div>
-<table border="5">
+    <div id="consume_report_div" style="display:none; width:800px; position:absolute; left:400px; top:120px; z-index:3; ">
+         <textarea name="menudata" rows="22" cols="80" style="background:#BBBBBB;">{{consume_report}}
+         </textarea>
+    </div>
+
+<table class="menu0" border="5" cellspacing="20"  width="800px">
+% menucount = 0
 %for menu in dinner.menus:
   %if menu.active == today:
+   % menucount += 1
    <tr>
-     <td>
-
-      RESTAURANT: {{menu.title}} &nbsp;<br>
-      ACTIVE: {{menu.active}}&nbsp;<br>
-      CONFIRM: {{menu.confirm}}&nbsp;<br>
+     <td class="menu0" bgcolor="white">
+       <p>&nbsp;</p>
+      <b>RESTAURANT:</b> {{menu.title}} &nbsp;<br>
+      <b>ACTIVE:</b> {{menu.active}}&nbsp;<br>
+      <b>CONFIRM:</b> {{menu.confirm}}&nbsp;<br>
 
       <form method="POST" action="."> 
        
@@ -34,68 +146,70 @@
         %end
         </select><p>
       
-      <table border="1">
+      <table class="menu" border="0" >
         <tr>
-          <th>id</th>
-          <th>price</th>
-          <th>description</th>
-          <th>mangager</th>
+          <th class="menu" width="30px">id</th>
+          <th class="menu" width="60px">price</th>
+          <th class="menu" width="500px">description</th>
+          <th class="menu" width="70px">select</th>
         </tr>
         %for menuitem in menu.menuitems:
         <tr>
-          <td>{{menuitem.id}}</td>
-          <td>{{menuitem.money}}</td>
-          <td>{{menuitem.description}}</td>
-          <td>
+          <td class="menu">{{menuitem.id}}</td>
+          <td class="menu">{{menuitem.money}}</td>
+          <td class="menu">{{menuitem.description}}</td>
+          <td class="menu" align="center">
             <input type=radio name="book_select" value="{{menuitem.id}}" checked>
           </td>
         </tr>
         %end
+        <tr>
+          <td colspan="4" class="whitesubmit" align="right">
+
+            <input  type=submit value="order" 
+                   %if menu.confirm != "FALSE":
+                   disabled
+                   %end
+            >
+
+          </td>
+        </tr>
       </table>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <input type="submit" value="order" 
-       %if menu.confirm != "FALSE":
-           disabled
-       %end
-      >
+
        %if menu.confirm != "FALSE": 
        <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       This menu has been confirmed today, if you want to order some more food, please contact the admin
        %end
       </form>
 
       <p>&nbsp;</p>
-
+      <p><b>book record:</b>&nbsp;&nbsp; <input type="button" title="+" value="display for copy" onclick="openReport('bookreport{{menu.id}}')"></p> 
       <table border="1">
         <tr>
-          <th>id</th>
           <th>operator</th>
           <th>user</th>
           <th>date</th>
           <th>money</th>
-          <th>description</th>
+          <th width="500px">description</th>
           %if menu.confirm == "FALSE":
-          <th>manager</th>
+          <th>operate</th>
           %end
         </tr>
         
+
         %for historyitem in menu.historyitems:
-        <tr>
-          <td>{{historyitem.id}}</td>
+         <tr>
           <td>{{historyitem.operator}}</td>
           <td>{{historyitem.user}}</td>
           <td>{{historyitem.date}}</td>
           <td>{{historyitem.money}}</td>
           <td>{{historyitem.description}}</td>
-          <td>
            %if menu.confirm == "FALSE":
+          <td>
             <a href="../book_delete/{{menu.id}}/{{historyitem.id}}" onClick="delcfm()">delete</a>
-           %end
           </td>
+         %end
         </tr>
         %end
       </table>
@@ -103,6 +217,29 @@
       <a href="../confirm/{{menu.id}}" onClick="delcfm()">confirm</a>
       %end
       <p>&nbsp;</p>   
+
+      <!--          display detail report          -->      
+
+<div id="bookreport{{menu.id}}" align="center" style="display:none; width:200px; position:relative; left:50px; top:-40px; z-index:3;  " >
+
+<table width="600" border="0" cellpadding="0" cellspacing="0" style="border: 0 solid #e7e3e7; border-collapse: collapse ;" >
+<tr>
+<th>
+<div align="right">{{menu.title}}&nbsp;&nbsp;&nbsp;&nbsp;<a href=JavaScript:; class="STYLE1" onclick="closeReport('bookreport{{menu.id}}');">[关闭]</a> &nbsp;&nbsp;&nbsp;&nbsp;</div>
+</th>
+</tr>
+<tr>
+<td height="130" align="center">
+                <textarea name="menudata" rows="18" cols="80">{{menu.reporttext}}
+                </textarea>
+</td>
+</tr>
+</table>
+</div>
+
+
+
+
      </td>
   </tr>
   %end
@@ -110,6 +247,18 @@
 
 </table>
 
+%if menucount == 0:
+<div align="center">
+   <b>The admin has not published any menu today. Contact Yu Jia first.</b>
+</div>
+%end
+
+
+
+
+
 
 
 %rebase base.htm title="welcome to USS FVT's site",user=user
+
+

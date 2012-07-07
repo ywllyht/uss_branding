@@ -68,14 +68,40 @@ def dinner_menu_confirm(menuid):
 def dinner_menu_book_list():
     d = Dinner()
     d.readData()
+
+    today = time.strftime("%Y%m%d",time.localtime())
+    # calculate consume report for user
     balance = 0
     for account in d.accounts.accounts:
         if request.user.username == account[0]:
             balance = account[1]
             break
+    hs = []
+    for h in d.history.historyitems:
+        if h.user == request.user.username:
+            msg = "  %s for %s, %d元, %s, %s" %(h.operator,h.user,h.money,h.date,h.description)
+            hs.append(msg);
+    hs.reverse()
+    if len(hs) >= 20:
+        hs = hs[:20]
+    hs.insert(0,"You recent consume records are as below:")
+    hs.insert(1,"----------------------------------------")
+    consume_report = "\n".join(hs)
     #print "balance=",balance
-    today = time.strftime("%Y%m%d",time.localtime())
-    return template('dinner/book_list.htm', dinner=d, today=today, user=request.user, balance=balance)
+
+    # calculate book report
+    for menu in d.menus:
+        if menu.active == today:
+            reportdetail = []
+            totalmoney = 0
+            for historyitem in menu.historyitems:
+                msg = "%s, %10.2f元, %s" %(historyitem.user , 0-historyitem.money, historyitem.description)
+                reportdetail.append(msg)
+                totalmoney -= historyitem.money
+            reporttext = "\n".join(reportdetail)+"\n------------------------------------------------\ntotal: "+str(totalmoney) +"元"
+            menu.reporttext = reporttext
+
+    return template('dinner/book_list.htm', dinner=d, today=today, user=request.user, balance=balance,consume_report=consume_report)
 
 @dinner_app.route("/menu/book_list/",method='POST')
 @login_required
@@ -134,8 +160,7 @@ def dinner_accounts_add():
         
 @dinner_app.route("/accounts/review/")
 @login_required
-def dinner_accounts_list():
-    
+def dinner_accounts_list():    
     d = Dinner()
     d.readData()
     return template('dinner/account_list.htm', dinner=d, user=request.user)
