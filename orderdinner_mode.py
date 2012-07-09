@@ -202,6 +202,27 @@ class Dinner(object):
         return result
 
     @lock_write
+    def menu_deactive(self,menuid, operatorname):
+        if operatorname not in self.admins:
+            return "Dinner.menu_deactive() error, you are not authorized!"
+       
+        findflag = False
+        for menu in self.menus:
+            if menu.id == menuid:
+                findflag = True
+                if menu.confirm == time.strftime("%Y%m%d",time.localtime()):
+                    return "Dinner.menu_deactive() error, menu has confirmed!"
+                menu.active = "FALSE"
+                menu.confirm = "FALSE"
+                menu.historyitems = []
+                break
+        if findflag == False:
+            result = "Dinner.menu_active() error, not find target menu " + menuid        
+        
+        
+        return ""
+
+    @lock_write
     def menu_add(self,menu, operatorname):
         if operatorname not in self.admins:
             return "Dinner.menu_add() error, you are not authorized!"

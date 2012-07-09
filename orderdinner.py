@@ -22,7 +22,8 @@ def dinner_index():
 def dinner_menu():
     d = Dinner()
     d.readData()
-    return template('dinner/menu.htm', dinner=d, user=request.user)
+    today = time.strftime("%Y%m%d",time.localtime())
+    return template('dinner/menu.htm', dinner=d, today=today, user=request.user)
 
 
 @dinner_app.route("/menu/add/",method='POST')
@@ -64,7 +65,17 @@ def dinner_menu_active(menuid):
             return template("mydirect.htm",title="menu active fail", msg=r, next_url="/dinner/menu/", user=request.user)
     else:
             redirect("/dinner/menu/")
-   
+
+@dinner_app.route("/menu/deactive/<menuid>")
+@login_required
+def dinner_menu_deactive(menuid):
+
+    d=Dinner()
+    r=d.menu_deactive(menuid, request.user.username)
+    if r != "":
+            return template("mydirect.htm",title="menu active fail", msg=r, next_url="/dinner/menu/", user=request.user)
+    else:
+            redirect("/dinner/menu/")   
 
 
 @dinner_app.route("/menu/confirm/<menuid>")

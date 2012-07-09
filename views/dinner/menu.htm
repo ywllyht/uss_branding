@@ -22,12 +22,22 @@
       <td>{{menu.title}}</td>
       <td>{{menu.active}}</td>
       <td>{{menu.confirm}}</td>
-      <td><a href="../menu/active/{{menu.id}}">active</a> &nbsp;
-        <a href="../menu/delete/{{menu.id}}" onClick="delcfm()">delete</a>
+      <td>
+        %if menu.active == today: 
+        <a href="../menu/active/{{menu.id}}">reactive</a> &nbsp;
+        %else:
+        <a href="../menu/active/{{menu.id}}">active</a> &nbsp;
+        %end
+        <a href="../menu/delete/{{menu.id}}" onClick="delcfm()">delete</a>&nbsp;
+        %if menu.active == today and menu.confirm != today: 
+        <a href="../menu/deactive/{{menu.id}}">deactive</a> &nbsp;
+        %end
       </td>
   </tr>
 %end
 </table>
+
+<p><a href="/dinner/menu/book_list/">book reserve</p>
 
 <p>&nbsp;</p>
 

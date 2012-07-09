@@ -139,10 +139,11 @@
         Owner:
         <select name=users>
         %for user_temp in dinner.users:
-            %if user_temp == user:
+            %if user_temp == user.username:
                 <option selected value={{user_temp}}>{{user_temp}}
-            %end
+            %else:
             <option value={{user_temp}}>{{user_temp}}
+            %end
         %end
         </select><p>
       
