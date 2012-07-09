@@ -7,6 +7,7 @@ import os
 import sys
 import re
 import time
+import string
 
 p_block_type = re.compile("\[START_(\w+)\]")
 p_menuitem = re.compile("(?P<price>\d+.?\d{0,2})元")
@@ -317,6 +318,35 @@ class Dinner(object):
             result = "Dinner.menu_book() error, not find target menuitem " + itemid
 
         return result
+        
+    @lock_write
+    def menu_book_input(self,menuid,itemprice,itemdescription,operatorid,operatorname,username):
+        result = ""
+        findflag = False
+        for menu in self.menus:
+            if menu.id == menuid:
+                findflag = True
+
+                if menu.active != time.strftime("%Y%m%d",time.localtime()):
+                    return "Dinner.menu_book() error, target menu has not actived! "
+
+                if menu.confirm != "FALSE":
+                    return "Dinner.menu_book() error, target menu has confirmed! "
+
+                if len(menu.historyitems) > 40:
+                    return "Dinner.menu_book() error, target menu has more than 30 historyitems "
+
+                newid =  "T"+str(int(time.time()))+operatorid
+                h = HistoryItem(newid,operatorname,username, time.strftime("%Y%m%d",time.localtime()), 0 -  float(itemprice), itemdescription)
+                menu.historyitems.append(h)
+
+        if findflag == False:
+            result = "Dinner.menu_book() error, not find target menu " + menuid
+
+
+        return result
+        
+             
 
     @lock_write
     def menu_book_delete(self,menuid,itemid,operatorname):

@@ -8,6 +8,7 @@ from orderdinner_mode import Dinner, Menu, Accounts, History, HistoryItem
 from users import login_required
 import os
 import time
+import re
 
 dinner_app = Bottle()
 
@@ -135,12 +136,29 @@ def dinner_menu_book():
     menuid= request.forms.get('menuid')
     itemid= request.forms.get('book_select')
     username= request.forms.get('users')
-    #print "itemid,username,menuid",itemid,username,menuid
-    r = d.menu_book(menuid, itemid, request.user.userid, request.user.username,username)
-    if r != "":
-        return template("mydirect.htm",title="reservation delete fail", msg=r, next_url="/dinner/menu/book_list/", user=request.user)
-    else:
-        redirect("/dinner/menu/book_list/")    
+    print "itemid,username,menuid",itemid,username,menuid
+    if itemid == "0":
+        itemprice=request.forms.get('item_price')
+        itemdescription=request.forms.get('item_description')
+        print "itemprice,itemdescription",itemprice,itemdescription
+        regex=ur"^[1-9]\d*|^[1-9]\d*\.\d*|^0\.\d*[1-9]\d*$" 
+  
+        if itemdescription == "":
+            return template("mydirect.htm",title="reservation delete fail", msg="you didn't input the dish!", next_url="/dinner/menu/book_list/", user=request.user) 
+        elif re.search(regex, itemprice):  
+            r=d.menu_book_input(menuid,itemprice,itemdescription, request.user.userid, request.user.username,username)
+            if r != "":
+                return template("mydirect.htm",title="reservation delete fail", msg=r, next_url="/dinner/menu/book_list/", user=request.user) 
+            else: 
+                redirect("/dinner/menu/book_list/")   
+        else:
+            return template("mydirect.htm",title="reservation delete fail", msg="your money is not correct!", next_url="/dinner/menu/book_list/", user=request.user)  
+    else:          
+        r = d.menu_book(menuid, itemid, request.user.userid, request.user.username,username)
+        if r != "":
+            return template("mydirect.htm",title="reservation delete fail", msg=r, next_url="/dinner/menu/book_list/", user=request.user)
+        else:
+            redirect("/dinner/menu/book_list/")    
               
 
 @dinner_app.route("/menu/book_delete/<menuid>/<historyitemid>")
