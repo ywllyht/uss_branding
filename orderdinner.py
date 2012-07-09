@@ -46,12 +46,24 @@ def dinner_menu_add():
 @dinner_app.route("/menu/delete/<menuid>")
 @login_required
 def dinner_menu_delete(menuid):
-    return "Rucy not completed"
+    d=Dinner()
+    r=d.menu_delete(menuid, request.user.username)
+    if r != "":
+            return template("mydirect.htm",title="menu delete fail", msg=r, next_url="/dinner/menu/", user=request.user)
+    else:
+            redirect("/dinner/menu/")
+   
 
 @dinner_app.route("/menu/active/<menuid>")
 @login_required
 def dinner_menu_active(menuid):
-    return "Rucy not completed"
+    d=Dinner()
+    r=d.menu_active(menuid, request.user.username)
+    if r != "":
+            return template("mydirect.htm",title="menu active fail", msg=r, next_url="/dinner/menu/", user=request.user)
+    else:
+            redirect("/dinner/menu/")
+   
 
 @dinner_app.route("/menu/confirm/<menuid>")
 @login_required
