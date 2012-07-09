@@ -117,11 +117,18 @@ def user_add_post():
     #password2 = md5.md5(password).hexdigest()
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
+
+    command = "select id,password,role from users where username = '%s'" % request.user.username
+    cu.execute(command)
+    rs = cu.fetchall()
+    if len(rs) >= 1:
+        abort(401,"sorry, username already exist! choose another username")
+
     command = "insert into users values(NULL,'%s','%s','%s','%s','%s')" % (username, fullname, email, password2,role)
     cu.execute(command)
     cx.commit()
     #print username+","+password+","+fullname+","+email+","+password2
-    redirect("../list/")
+    redirect("/users/list/")
     #return username+","+password+","+fullname+","+email
 
 
@@ -225,7 +232,7 @@ def user_modify_post(userid):
     command = "update users set username='%s',fullname='%s',email='%s', password='%s' where id='%d'" % (username,fullname,email,password2, userid)
     cu.execute(command)
     cx.commit()
-    redirect("../../list/")
+    redirect("/users/list/")
    
 
 
@@ -238,9 +245,9 @@ def user_delete(userid):
       command = "delete from users where id= '%d' " % userid
       cu.execute(command)
       cx.commit()
-      redirect("../list/")
+      redirect("/users/list/")
     else:
-      redirect("../list/")
+      redirect("/users/list/")
 
 @users_app.route("/login/")
 def user_login():
