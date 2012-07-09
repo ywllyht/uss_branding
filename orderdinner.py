@@ -4,7 +4,7 @@
 #  ywllyht@yahoo.com.cn  
 
 from bottle import route, run, Bottle, template, request, abort, redirect, response, hook
-from orderdinner_mode import Dinner, Menu, Accounts, History
+from orderdinner_mode import Dinner, Menu, Accounts, History, HistoryItem
 from users import login_required
 import os
 import time
@@ -57,6 +57,7 @@ def dinner_menu_delete(menuid):
 @dinner_app.route("/menu/active/<menuid>")
 @login_required
 def dinner_menu_active(menuid):
+
     d=Dinner()
     r=d.menu_active(menuid, request.user.username)
     if r != "":
@@ -65,23 +66,71 @@ def dinner_menu_active(menuid):
             redirect("/dinner/menu/")
    
 
+
 @dinner_app.route("/menu/confirm/<menuid>")
 @login_required
 def dinner_menu_confirm(menuid):
-    return "Yoga not completed"
+    d = Dinner()
+    r = d.menu_confirm(menuid,request.user.username)
+    if r != "":
+        return template("mydirect.htm",title="reservation delete fail", msg=r, next_url="/dinner/menu/book_list/", user=request.user)
+    else:
+        redirect("/dinner/menu/book_list/")   
 
 @dinner_app.route("/menu/book_list/")
 @login_required
 def dinner_menu_book_list():
     d = Dinner()
     d.readData()
-    today = time.strftime("%Y%m%d",time.localtime())
-    return template('dinner/book_list.htm', dinner=d, today=today, user=request.user)
 
-@dinner_app.route("/menu/book/<menuid>/<menuitemid>",method='POST')
+    today = time.strftime("%Y%m%d",time.localtime())
+    # calculate consume report for user
+    balance = 0
+    for account in d.accounts.accounts:
+        if request.user.username == account[0]:
+            balance = account[1]
+            break
+    hs = []
+    for h in d.history.historyitems:
+        if h.user == request.user.username:
+            msg = "  %s for %s, %d元, %s, %s" %(h.operator,h.user,h.money,h.date,h.description)
+            hs.append(msg);
+    hs.reverse()
+    if len(hs) >= 20:
+        hs = hs[:20]
+    hs.insert(0,"You recent consume records are as below:")
+    hs.insert(1,"----------------------------------------")
+    consume_report = "\n".join(hs)
+    #print "balance=",balance
+
+    # calculate book report
+    for menu in d.menus:
+        if menu.active == today:
+            reportdetail = []
+            totalmoney = 0
+            for historyitem in menu.historyitems:
+                msg = "%s, %10.2f元, %s" %(historyitem.user , 0-historyitem.money, historyitem.description)
+                reportdetail.append(msg)
+                totalmoney -= historyitem.money
+            reporttext = "\n".join(reportdetail)+"\n------------------------------------------------\ntotal: "+str(totalmoney) +"元"
+            menu.reporttext = reporttext
+
+    return template('dinner/book_list.htm', dinner=d, today=today, user=request.user, balance=balance,consume_report=consume_report)
+
+@dinner_app.route("/menu/book_list/",method='POST')
 @login_required
-def dinner_menu_book(menuid,menuitemid):
-    return "Yoga not completed"
+def dinner_menu_book():
+    d = Dinner()
+    menuid= request.forms.get('menuid')
+    itemid= request.forms.get('book_select')
+    username= request.forms.get('users')
+    #print "itemid,username,menuid",itemid,username,menuid
+    r = d.menu_book(menuid, itemid, request.user.userid, request.user.username,username)
+    if r != "":
+        return template("mydirect.htm",title="reservation delete fail", msg=r, next_url="/dinner/menu/book_list/", user=request.user)
+    else:
+        redirect("/dinner/menu/book_list/")    
+              
 
 @dinner_app.route("/menu/book_delete/<menuid>/<historyitemid>")
 @login_required
@@ -94,21 +143,41 @@ def dinner_menu_book_delete(menuid,historyitemid):
         redirect("/dinner/menu/book_list/")
 
 
-@dinner_app.route("/accounts/manager/")
+@dinner_app.route("/accounts/charge/")
 @login_required
 def dinner_accounts_manager():
-    return "Daisy not completed"
+
+    d = Dinner()
+    d.readData()
+    return template('dinner/account.htm', dinner=d, user=request.user)
 
 @dinner_app.route("/accounts/add/",method="POST")
 @login_required
 def dinner_accounts_add():
-    return "Daisy not completed"
+   d = Dinner()
+   username= request.forms.get('orderuser')
+   money = request.forms.get('money')
+   try:
+       money = float(money)
+   except ValueError,e:
+       return template("mydirect.htm",title="Recharge Fail", msg="input money is illegal", next_url="/dinner/accounts/charge/", user=request.user)
+   description = request.forms.get('description')
 
-@dinner_app.route("/accounts/list/")
+   newid =  "T"+str(int(time.time()))+request.user.userid
+   h= HistoryItem(newid,request.user.username,username, time.strftime("%Y%m%d",time.localtime()),money,description)
+     
+   r= d.accounts_add(h,request.user.username)
+   if r != "":
+        return template("mydirect.htm",title="Recharge Fail", msg=r, next_url="/dinner/accounts/charge/", user=request.user)
+   else:
+        redirect("/dinner/accounts/charge/")
+        
+@dinner_app.route("/accounts/review/")
 @login_required
-def dinner_accounts_list():
-    return "Daisy not completed"
-
+def dinner_accounts_list():    
+    d = Dinner()
+    d.readData()
+    return template('dinner/account_list.htm', dinner=d, user=request.user)
 
 
 

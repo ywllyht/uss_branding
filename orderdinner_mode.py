@@ -284,7 +284,7 @@ class Dinner(object):
                     if item.id == itemid:
                         itemfindflag = True
                         newid =  "T"+str(int(time.time()))+operatorid
-                        h = HistoryItem(newid,operatorname,username, time.strftime("%Y%m%d",time.localtime()), str(0 - item.money), item.description)
+                        h = HistoryItem(newid,operatorname,username, time.strftime("%Y%m%d",time.localtime()), 0 - item.money, item.description)
                         menu.historyitems.append(h)
                         break
                 break
@@ -315,7 +315,7 @@ class Dinner(object):
                 for item in menu.historyitems:
                     if item.id == itemid:
                         itemfindflag = True
-                        if item.operator != operatorname and (item.operator not in self.admins):
+                        if item.operator != operatorname and (operatorname not in self.admins):
                             return "Dinner.menu_book_delete() error, you are not authorized! "
                         menu.historyitems.remove(item)
                         break
@@ -337,7 +337,7 @@ class Dinner(object):
     def accounts_add(self,historyitem, operatorname):
 
         if operatorname not in self.admins:
-            return "Dinner.accounrts_add() error, you are not authorized!"
+            return "Dinner.accounts_add() error, you are not authorized!"
       
 
         self.accounts.confirm(historyitem)                # reduce user's money in account
