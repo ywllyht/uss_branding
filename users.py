@@ -229,7 +229,7 @@ def user_modify_post(userid):
     #password2 = md5.md5(password).hexdigest()
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
-    command = "update users set username='%s',fullname='%s',email='%s', password='%s' where id='%d'" % (username,fullname,email,password2, userid)
+    command = "update users set username='%s',fullname='%s',email='%s', password='%s',role='%s' where id='%d'" % (username,fullname,email,password2,role, userid)
     cu.execute(command)
     cx.commit()
     redirect("/users/list/")

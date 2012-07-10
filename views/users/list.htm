@@ -8,6 +8,7 @@
     <td>fullname</td>
     <td>email</td>
     <td>password</td>
+    <td>role</td>
     <td>manage</td>
   </tr>
 %for user2 in users:
@@ -17,6 +18,7 @@
       <td>{{user2[2]}}</td>
       <td>{{user2[3]}}</td>
       <td>{{user2[4]}}</td>
+      <td>{{user2[5]}}</td>
       <td><a href="../delete/{{user2[0]}}">delete</a> &nbsp;
         <a href="../modify/{{user2[0]}}/">modify</a>
       </td>
