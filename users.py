@@ -118,7 +118,7 @@ def user_add_post():
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
 
-    command = "select id,password,role from users where username = '%s'" % request.user.username
+    command = "select id,password,role from users where username = '%s'" % username
     cu.execute(command)
     rs = cu.fetchall()
     if len(rs) >= 1:
