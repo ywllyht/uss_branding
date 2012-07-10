@@ -37,9 +37,14 @@ def login_required(fn):
     #if username == "":
     #    abort(401,"sorry, you need to login first!")
     def _fn(*args, **kwargs):
+        # print request.path
+        # print request.url
+        # print request.urlparts
+        # print request.fullpath
+        
         if request.user.username == "":
             msg = 'sorry, you need to login first!'
-	    return template("mydirect.htm",title="login required", msg=msg, next_url="/users/login/", user=request.user)
+	    return template("mydirect.htm",title="login required", msg=msg, next_url="/users/login/?next="+request.fullpath, user=request.user)
             #abort(401,'sorry, you need to login first!')
         return fn(*args,**kwargs)
     return _fn 
@@ -251,10 +256,14 @@ def user_delete(userid):
 
 @users_app.route("/login/")
 def user_login():
-    return template("users/login.htm",title="login", user=request.user)
+    nexturl = request.query.next or ""
+    #print nexturl
+    return template("users/login.htm",title="login", nexturl=nexturl,user=request.user)
 
 @users_app.route("/login/",method="POST")
 def user_login_post():
+    nexturl = request.query.next or "/"
+    #print "post",nexturl
     username = request.forms.get('username')
     password = request.forms.get('password')
     if not username:
@@ -292,12 +301,15 @@ def user_login_post():
         s['role'] = str(rs[0][2])
         s.save()
         msg = "Login successful!"
-        return template("mydirect.htm",title="login successful",msg=msg,next_url="/",user=request.user)
+        return template("mydirect.htm",title="login successful",msg=msg,next_url=nexturl,user=request.user)
 
     else:
         #return "password error"
         msg="password error,please login again!"
-        return template("mydirect.htm",title="login successful",msg=msg,next_url="/users/login/",user=request.user)
+        if nexturl == "/":
+            return template("mydirect.htm",title="login successful",msg=msg,next_url="/users/login/",user=request.user)
+        else:
+            return template("mydirect.htm",title="login successful",msg=msg,next_url="/users/login/?next="+nexturl,user=request.user)
     #redirect("../list/")
 
 
