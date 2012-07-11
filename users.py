@@ -43,10 +43,14 @@ def login_required(fn):
         #print request.urlparts
         #print request.fullpath
         #pprint(request.environ)
-        
+        try:
+	    nexturl = request.environ['REQUEST_URI']
+	except KeyError,e:
+	    nexturl = request.fullpath
+
         if request.user.username == "":
             msg = 'sorry, you need to login first!'
-	    return template("mydirect.htm",title="login required", msg=msg, next_url="/users/login/?next="+request.environ['REQUEST_URI'], user=request.user)
+	    return template("mydirect.htm",title="login required", msg=msg, next_url="/users/login/?next="+nexturl, user=request.user)
             #abort(401,'sorry, you need to login first!')
         return fn(*args,**kwargs)
     return _fn 
