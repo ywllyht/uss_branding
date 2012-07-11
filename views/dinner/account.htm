@@ -57,12 +57,18 @@
 
           
         </tr>
+         %total_money = 0
          %for account in dinner.accounts.accounts:
           <tr>
              <td>{{account[0]}} </td>
              <td>{{account[1]}} </td>
+             %total_money=total_money + account[1]
           </tr>
-         %end
+         %end 
+         <tr>
+             <td>total:</td>
+             <td>{{total_money}} </td>
+         </tr>
       </table>       
     <p>&nbsp;</p>
       <table border="1">

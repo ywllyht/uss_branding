@@ -124,7 +124,7 @@ def dinner_menu_book_list():
                 msg = "%s, %10.2f元, %s" %(historyitem.user , 0-historyitem.money, historyitem.description)
                 reportdetail.append(msg)
                 totalmoney -= historyitem.money
-            reporttext = "\n".join(reportdetail)+"\n------------------------------------------------\ntotal: "+str(totalmoney) +"元"
+            reporttext = "\n".join(reportdetail)+"\n------------------------------------------------\ntotal: "+str(totalmoney) +"元"+", "+str(len(reportdetail))+"份"
             menu.reporttext = reporttext
 
     return template('dinner/book_list.htm', dinner=d, today=today, user=request.user, balance=balance,consume_report=consume_report)
