@@ -136,11 +136,11 @@ def dinner_menu_book():
     menuid= request.forms.get('menuid')
     itemid= request.forms.get('book_select')
     username= request.forms.get('users')
-    print "itemid,username,menuid",itemid,username,menuid
+    #print "itemid,username,menuid",itemid,username,menuid
     if itemid == "0":
         itemprice=request.forms.get('item_price')
         itemdescription=request.forms.get('item_description')
-        print "itemprice,itemdescription",itemprice,itemdescription
+        #print "itemprice,itemdescription",itemprice,itemdescription
         regex=ur"^[1-9]\d*|^[1-9]\d*\.\d*|^0\.\d*[1-9]\d*$" 
   
         if itemdescription == "":
