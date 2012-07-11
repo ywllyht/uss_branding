@@ -37,14 +37,16 @@ def login_required(fn):
     #if username == "":
     #    abort(401,"sorry, you need to login first!")
     def _fn(*args, **kwargs):
-        # print request.path
-        # print request.url
-        # print request.urlparts
-        # print request.fullpath
+        #from pprint import pprint
+        #print request.path
+        #print request.url
+        #print request.urlparts
+        #print request.fullpath
+        #pprint(request.environ)
         
         if request.user.username == "":
             msg = 'sorry, you need to login first!'
-	    return template("mydirect.htm",title="login required", msg=msg, next_url="/users/login/?next="+request.fullpath, user=request.user)
+	    return template("mydirect.htm",title="login required", msg=msg, next_url="/users/login/?next="+request.environ['REQUEST_URI'], user=request.user)
             #abort(401,'sorry, you need to login first!')
         return fn(*args,**kwargs)
     return _fn 

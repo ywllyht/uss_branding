@@ -35,6 +35,12 @@ ascii_app = Bottle()
 
 @ascii_app.route("/")
 def index():
+    #from pprint import pprint
+    #print request.path
+    #print request.url
+    #print request.urlparts
+    #print request.fullpath
+    #pprint(request.environ)
     if unsupport:
         return unsupport
     inputtext = request.query.inputtext   
