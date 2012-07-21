@@ -1,4 +1,30 @@
 
+<script src="/static/js/lib/dojo/dojo.js"	data-dojo-config="isDebug: true, async: true"></script>
+
+        <script>
+
+			require(["dojo/fx", "dojo/on", "dojo/dom", "dojo/domReady!"], function(fx, on, dom) {
+			        //var report_button = dom.byId("consume_report_button"),
+		         	wipeTarget2 = dom.byId("consume_report_div");
+                    var dd2 = document.getElementById("consume_report_button");
+
+				    on(dd2, "click", function(evt){
+
+                    //alert(dd2.value);
+
+                     if(dd2.value == "+"){
+                       dd2.value = "-";
+                  	   fx.wipeIn({ node: wipeTarget2 }).play();
+                     }else{
+                       dd2.value = "+";
+                       fx.wipeOut({ node: wipeTarget2 }).play();
+                     }
+
+				});
+
+			});
+
+</script>
 
 <script language="javascript">
     function delcfm() {
@@ -22,20 +48,20 @@
     return   false;
     }
 
-
+    /*
     var consume_report = function(bb){
     //var dd = bb.parentNode;
-    var dd2 = document.getElementById("consume_report_div");
-    if(bb.value == "+"){
-    bb.value = "-";
-    dd2.style.display = "block";
-    }else{
-    bb.value = "+";
-    dd2.style.display = "none";
+      var dd2 = document.getElementById("consume_report_div");
+      if(bb.value == "+"){
+        bb.value = "-";
+        dd2.style.display = "block";
+      }else{
+        bb.value = "+";
+        dd2.style.display = "none";
+      }
     }
-  
+    */
 
-}
 </script>
 
 <STYLE TYPE="text/css">
@@ -114,7 +140,7 @@
 </STYLE>
 
 <div align="center">
-   <b>Your balance is :{{balance}}元</b>&nbsp;<input type="button" title="+" value="+" onclick="consume_report(this)">
+   <b>Your balance is :{{balance}}元</b>&nbsp;<input id="consume_report_button" type="button" value="+">
 </div>
     <div id="consume_report_div" style="display:none; width:800px; position:absolute; left:400px; top:120px; z-index:3; ">
          <textarea name="menudata" rows="22" cols="80" style="background:#BBBBBB;">{{consume_report}}
