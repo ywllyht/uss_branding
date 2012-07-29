@@ -6,6 +6,15 @@
             window.event.returnValue = false;
         }
     }
+
+    function prom(href)
+    { 
+      if(confirm("Are you sure to delete?")==true)
+      {
+      location.href=href; 
+      }
+    }
+
 </script>
 
 <table border="1">
@@ -28,7 +37,7 @@
         %else:
         <a href="../menu/active/{{menu.id}}">active</a> &nbsp;
         %end
-        <a href="../menu/delete/{{menu.id}}" onClick="delcfm()">delete</a>&nbsp;
+        <a onClick="prom('../menu/delete/{{menu.id}}')" href="#">delete</a>&nbsp;
         %if menu.active == today and menu.confirm != today: 
         <a href="../menu/deactive/{{menu.id}}">deactive</a> &nbsp;
         %end

@@ -209,6 +209,45 @@ def dinner_accounts_list():
     return template('dinner/account_list.htm', dinner=d, user=request.user)
 
 
+@dinner_app.route("/accounts/users/")
+@login_required
+def dinner_accounts_users():
+
+    d = Dinner()
+    d.readData()
+    return template('dinner/users.htm', dinner=d, user=request.user)
+
+@dinner_app.route("/accounts/adduser/",method="POST")
+@login_required
+def dinner_accounts_add():
+
+   newusername = request.forms.get('newusername')
+   newusername = newusername.strip()
+   if not newusername:
+       return template("mydirect.htm",title="Recharge Fail", msg="input username is illegal", next_url="/dinner/accounts/users/", user=request.user)
+
+   d = Dinner()     
+   r= d.users_add(newusername,request.user.username)
+   if r != "":
+        return template("mydirect.htm",title="Recharge Fail", msg=r, next_url="/dinner/accounts/users/", user=request.user)
+   else:
+        redirect("/dinner/accounts/users/")
+        
+@dinner_app.route("/accounts/deleteuser/<deleteusername>")
+@login_required
+def dinner_accounts_delete(deleteusername):
+   deleteusrname = deleteusername.strip()
+   if not deleteusername:
+       return template("mydirect.htm",title="Recharge Fail", msg="input username is illegal", next_url="/dinner/accounts/users/", user=request.user)
+
+   d = Dinner()
+   r= d.users_delete(deleteusername,request.user.username)
+   if r != "":
+        return template("mydirect.htm",title="Recharge Fail", msg=r, next_url="/dinner/accounts/users/", user=request.user)
+   else:
+        redirect("/dinner/accounts/users/")
+        
+
 
 if __name__ == '__main__':
     run(dinner_app,host="0.0.0.0",reloader=True)

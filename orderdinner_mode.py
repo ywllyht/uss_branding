@@ -8,6 +8,7 @@ import sys
 import re
 import time
 import string
+import sqlite3 as sqlite
 
 p_block_type = re.compile("\[START_(\w+)\]")
 p_menuitem = re.compile("(?P<price>\d+.?\d{0,2})元")
@@ -300,7 +301,7 @@ class Dinner(object):
                     return "Dinner.menu_book() error, target menu has confirmed! "
 
                 if len(menu.historyitems) > 40:
-                    return "Dinner.menu_book() error, target menu has more than 30 historyitems "
+                    return "Dinner.menu_book() error, target menu has more than 40 historyitems "
 
                 for item in menu.menuitems:
                     if item.id == itemid:
@@ -328,20 +329,20 @@ class Dinner(object):
                 findflag = True
 
                 if menu.active != time.strftime("%Y%m%d",time.localtime()):
-                    return "Dinner.menu_book() error, target menu has not actived! "
+                    return "Dinner.menu_book_input() error, target menu has not actived! "
 
                 if menu.confirm != "FALSE":
-                    return "Dinner.menu_book() error, target menu has confirmed! "
+                    return "Dinner.menu_book_input() error, target menu has confirmed! "
 
                 if len(menu.historyitems) > 40:
-                    return "Dinner.menu_book() error, target menu has more than 30 historyitems "
+                    return "Dinner.menu_book_input() error, target menu has more than 40 historyitems "
 
                 newid =  "T"+str(int(time.time()))+operatorid
                 h = HistoryItem(newid,operatorname,username, time.strftime("%Y%m%d",time.localtime()), 0 -  float(itemprice), itemdescription)
                 menu.historyitems.append(h)
 
         if findflag == False:
-            result = "Dinner.menu_book() error, not find target menu " + menuid
+            result = "Dinner.menu_book_input() error, not find target menu " + menuid
 
 
         return result
@@ -396,9 +397,36 @@ class Dinner(object):
  
         return ""
         
-        
-    
+    @lock_write
+    def users_add(self,username,operatorname):
+        if operatorname not in self.admins:
+            return "Dinner.users_add() error, you are not authorized!"       
+        if username in self.users:
+            return "Dinner.users_add() error, username already exists!"
 
+        cx = sqlite.connect('branding.db')
+        cu = cx.cursor()
+        command = "select id,password,role from users where username = '%s'" % username
+        cu.execute(command)
+        rs = cu.fetchall()
+        if len(rs) == 0:
+            return "Dinner.users_add() sorry, no such user in this site"
+        if len(rs) > 1:
+            return "Dinner.users_add() sorry, duplicated users found"
+        cu.close()
+
+        self.users.append(username)
+        return ""
+
+    @lock_write
+    def users_delete(self,username,operatorname):
+        if operatorname not in self.admins:
+            return "Dinner.users_delete() error, you are not authorized!"       
+        if username not in self.users:
+            return "Dinner.users_delete() error, username does not exist in dinner system!"
+
+        self.users.remove(username)
+        return ""
     
             
 class Menu(object):

@@ -1,0 +1,62 @@
+
+
+<script language="javascript">
+    function delcfm() {
+        if (!confirm("Are you sure?")) {
+            window.event.returnValue = false;
+        }
+    }
+
+    function prom(href)
+    { 
+      if(confirm("Are you sure to delete?")==true)
+      {
+      location.href=href; 
+      }
+    }
+</script>
+
+
+<font size=4> Account User Management</font> &nbsp;
+
+<form method="POST" action="../adduser/">
+  <table border="5">
+     <tr>
+        <th>new User Name</th>
+     </tr>
+     <tr>
+        <td>
+          <input type="text" name="newusername">
+        </td>
+     </tr>         
+  </table>
+  
+  <input type="submit" value="Add">
+</form>
+
+  <p>&nbsp;</p>
+    <table border="1">
+        <tr>
+          <font size=4>Current Users Information</font> &nbsp;
+        </tr>
+        <tr>
+          <th>User Name </th>
+          <th>delete </th>
+        </tr>
+         %total_money = 0
+         %for u in dinner.users:
+          <tr>
+             <td>{{u}} </td>
+             <td><a onclick="prom('../deleteuser/{{u}}')" href="#">delete</a></td>
+          </tr>
+         %end 
+          %total_users=len(dinner.users)
+         <tr>
+             <td><br>total:&nbsp;&nbsp;{{total_users}}</td>
+             <td>&nbsp;</td>
+         </tr>
+      </table>       
+    <p>&nbsp;</p>
+      
+
+%rebase base.htm title="welcome to USS FVT's site",user=user
