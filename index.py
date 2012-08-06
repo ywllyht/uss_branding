@@ -130,10 +130,15 @@ def favicon():
 index_app_beaker = SessionMiddleware(index_app, session_opts)
 
 if __name__ == '__main__':
-    if produce_environment_flag:
-        # we will use nginx + flup  in enviroment
-        run(index_app_beaker,host="0.0.0.0",reloader=True, server='flup')
-    else:
-        debug(True)
-        run(index_app_beaker,host="0.0.0.0",reloader=True)
+    # if produce_environment_flag:
+    #     # we will use nginx + flup  in enviroment
+    #     run(index_app_beaker,host="0.0.0.0",reloader=True, server='flup')
+    # else:
+    #     debug(True)
+    #     run(index_app_beaker,host="0.0.0.0",reloader=True)
+    debug(True)
+    run(index_app_beaker,host="0.0.0.0",reloader=True)
+else:
+    os.chdir(_curpath)  
+    application = index_app_beaker  
 

@@ -136,9 +136,11 @@ def user_add_post():
         abort(401,"sorry, username already exist! choose another username")
 
     command = "insert into users values(NULL,'%s','%s','%s','%s','%s')" % (username, fullname, email, password2,role)
+
     cu.execute(command)
     cx.commit()
     #print username+","+password+","+fullname+","+email+","+password2
+    cu.close()
     redirect("/users/list/")
     #return username+","+password+","+fullname+","+email
 
@@ -280,6 +282,7 @@ def user_login_post():
     m.update(password)
     password2 = m.hexdigest()
     #password2 = md5.md5(password).hexdigest()
+
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
     command = "select id,password,role from users where username = '%s'" % username
