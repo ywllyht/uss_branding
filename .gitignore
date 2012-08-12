@@ -1,7 +1,7 @@
 *.pyc
 *.bak
 branding.db
-static/ussshare/*
+static/share/*
 orderdinner.txt
 orderdinner_bak.txt
 
