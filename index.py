@@ -13,6 +13,7 @@ from orderdinner import dinner_app
 import os
 import datetime
 import time
+import urllib
 from beaker.middleware import SessionMiddleware
 from beaker.session import SessionObject
 
@@ -87,6 +88,12 @@ def index():
 @index_app.route('/static/<path:path>')
 def statics(path):
     return static_file(path,root=_staticpath)
+
+@index_app.route('/ftp/<path:path>')
+def ftp(path):
+    #path = urllib.unquote(path)
+    return static_file(path,root="/home/lljli/ftp")
+
 
 # @index_app.route('/search/')
 # def search():
