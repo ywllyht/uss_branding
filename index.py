@@ -10,6 +10,7 @@ from searchapp import search_app
 from todo import todo_app
 from asciiapp import ascii_app
 from orderdinner import dinner_app
+from mycomment import comment_app
 import os
 import datetime
 import time
@@ -45,6 +46,7 @@ session_opts = {
 @todo_app.hook('before_request')
 @ascii_app.hook('before_request')
 @dinner_app.hook('before_request')
+@comment_app.hook('before_request')
 def get_user_request():
     #userid = request.get_cookie("userid","0")
     #username = request.get_cookie("username","")
@@ -80,6 +82,7 @@ index_app.mount("/search/",search_app)
 index_app.mount("/todo/",todo_app)
 index_app.mount("/ascii/",ascii_app)
 index_app.mount("/dinner/",dinner_app)
+index_app.mount("/comment/",comment_app)
 
 @index_app.route('/')
 def index():

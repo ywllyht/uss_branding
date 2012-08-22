@@ -1,0 +1,27 @@
+<form action="." method="POST">
+  max-characters in one line:
+  <input type="text" size="10" value="{{maxcharacter}}" name="maxcharacter">
+  &nbsp;&nbsp;&nbsp;indent character:
+  <input type="text" size="10" value="{{indent}}" name="indent">
+  &nbsp;&nbsp;&nbsp;style:
+  <select name="style">
+        <option 
+                %if style=="rexx":
+                  selected 
+                %end
+                value="rexx">rexx
+        <option 
+                %if style=="c":
+                  selected
+                %end
+                value="c">c
+  </select><br>
+  <textarea name="comment" rows=20 cols=90>{{comment}}
+  </textarea>
+  <input type="submit" name="translate" value="translate">
+</form>
+<h3>&nbsp;&nbsp;result:</h3>
+<pre>
+{{result}}
+</pre>
+%rebase base.htm title=title,user=user
