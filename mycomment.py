@@ -89,12 +89,13 @@ def post_comment():
                 # start new line, 
                 r.append("\n")
                 line_len = 0
-                r.append(word+" ")
-                line_len += len(word)+1
                 r.append(indent_c)
                 line_len += indent2
                 r.append("/* ")
                 line_len += 3
+
+                r.append(word+" ")
+                line_len += len(word)+1
             else:
                 r.append(word+" ")
                 line_len += len(word)+1
