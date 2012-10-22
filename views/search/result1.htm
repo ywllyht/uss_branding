@@ -1,0 +1,9 @@
+%for r in rs:
+    <p>{{r[0]}}</p>
+     %last_fn=''
+     %cur_fn=''
+     %for line in r[1]:
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{line}}<br>        
+    %end
+%end
+%rebase base.htm title=title,user=user

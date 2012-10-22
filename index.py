@@ -103,6 +103,29 @@ def ftp(path):
 #     return template('search.htm',content="guest",user=request.user)
 
 
+@index_app.route('/common_check')
+def common_check():
+    result = []
+
+    result.append("[request.query]")
+    for r in request.query:
+        result.append(r+","+request.query[r])
+
+    result.append("[request.forms]")
+    for r in request.forms:
+        result.append(r+","+request.forms[r])
+
+
+    #result.append("app"+","+request.app())
+    result.append("path="+request.path)
+    result.append("method="+request.method)
+    result.append("[request.headers]")
+    for r in request.headers:
+        result.append("&nbsp;&nbsp;&nbsp;"+r+","+request.headers[r])
+        
+    return "<br>".join(result)
+
+
 @index_app.route('/hello')
 def hello():
     print request.environ.keys()
