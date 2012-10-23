@@ -1,9 +1,69 @@
-
-<form id="form1" name="form1" method=GET action=".">
+<!-- case search -->
+<form id="form1" name="form1" method="GET" action="case_search">
 <table align=center>
  <tr>
    <td align=center>
        <label>
+         case search:&nbsp;
+       <input type="text" name="searchtext" id="searchtext">
+       </label>
+    </td>
+    <td>
+       
+       <label>
+       <input type="submit" name="button" id="button" value="search">
+       </label> <p>
+    </td>
+ </tr>
+</table>
+
+<table align=center>
+    <tr>
+        <td align=center>
+            <input type=radio name="case_catalog" value="VSC5">
+        </td>
+        <td>
+           VSC5
+        </td>
+    </tr>
+    
+    <tr>
+        <td align=center>
+            <input type=radio name="case_catalog" value="VST5">
+        </td>
+        <td>
+            VST5
+        </td>        
+    </tr>
+    
+    <tr>
+        <td align=center>
+            <input type=radio name="case_catalog" value="VSU5">
+        </td>
+        <td>
+            VSU5
+        </td>
+    </tr>
+    
+    <tr>
+        <td align=center>
+            <input type=radio name="case_catalog" value="VSX4">
+        </td>
+        <td>
+            VSX4
+        </td>
+    </tr>
+</table>
+</form>
+
+<!-- keyword search -->
+<hr>
+
+<form id="form1" name="form1" method="GET" action="keyword_search">
+<table align=center>
+ <tr>
+   <td align=center>
+       <label>keyword search:&nbsp;
        <input type="text" name="searchtext" id="searchtext">
        </label>
     </td>
@@ -34,51 +94,6 @@
              PROBLEM
         </td>
     </tr>
-    <tr>
-        <td align=center>
-            <input type=checkbox name=VSC5>
-        </td>
-        <td>
-           VSC5
-        </td>
-    </tr>
-    
-    <tr>
-        <td align=center>
-            <input type=checkbox name=VST5>
-        </td>
-        <td>
-            VST5
-        </td>        
-    </tr>
-    
-    <tr>
-        <td align=center>
-            <input type=checkbox name=VSU5>
-        </td>
-        <td>
-            VSU5
-        </td>
-    </tr>
-    
-    <tr>
-        <td align=center>
-            <input type=checkbox name=VSX4>
-        </td>
-        <td>
-            VSX4
-        </td>
-    </tr>
-    
-    <tr>
-        <td align=center>
-             <input type=checkbox name=ZOSR12>
-        </td>
-        <td>
-            ZOSR12
-        </td>
-    </tr>
-    
 </table>
 </form>
 
