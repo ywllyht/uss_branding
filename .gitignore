@@ -1,5 +1,6 @@
 *.pyc
 *.bak
+*~
 branding.db
 static/share/*
 orderdinner.txt

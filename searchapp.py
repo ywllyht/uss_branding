@@ -28,7 +28,7 @@ case_catalog_list = [
 
 keyword_catalog_list = [
     "INSTALL",
-    "PROBLEM",
+    "problem",
     #"VSC5",
     #"VST5",
     #"VSU5",
