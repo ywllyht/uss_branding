@@ -6,6 +6,7 @@
 from bottle import route, run, Bottle, template, request, abort, redirect                                   
 import sqlite3 as sqlite                                                                                    
 import os                                                                                                
+import time
 from users import login_required
 
 
@@ -44,8 +45,9 @@ def search():
     searchtext = request.query.searchtext                                                                   
     #searchtext = searchtext.encode("utf-8")
     #print searchtext                                                                                        
-    #print request.query.searchtext                                                                          
-    return template("search/index.htm",title="USS FVT Search ",user=request.user)                           
+    #print request.query.searchtext                                                        
+    log_time = time.strftime("%Y-%m-%d %H:%M:%S",time.gmtime()) 
+    return template("search/index.htm",title="USS FVT Search ",user=request.user, log_time=log_time)
     # if searchtext == "":                                                                                    
     #     return template("search/index.htm",title="USS FVT Search ",user=request.user)                           
     # else:    
@@ -134,6 +136,31 @@ def keyword_search():
             search_result.append((s,r))
         #print search_result
         return template("search/result.htm",title="USS FVT KeyWord Search result",rs=search_result, user=request.user)                           
+
+
+
+@search_app.route("/log_analytic",method="POST") 
+@login_required
+def log_analytic():     
+    try:
+        case_catalog = request.forms['case_catalog']
+    except KeyError,e:
+        return "You should choose a catalog first, such as VSC5, VSU5..."  
+
+    try:
+        log_version = request.forms['log_version']
+    except KeyError,e:
+        return "You should input a version first, such as V533, V474..." 
+
+    try:
+        log_comment = request.forms['log_comment']
+    except KeyError,e:
+        return "You should input a version first, such as V533, V474..." 
+    
+
+    return request.user.username+" OK"
+
+
 
 
 

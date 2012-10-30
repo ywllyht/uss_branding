@@ -97,4 +97,98 @@
 </table>
 </form>
 
+
+<!-- running log analytic -->
+<hr>
+<br>
+<br>
+
+<form id="form1" name="form1" method="POST" action="log_analytic"  enctype="multipart/form-data">
+<table align=center>
+ <tr>
+   <td align=center>
+       <label>Log file:&nbsp;
+       <input type="file" name="data" />
+       </label>
+    </td>
+    <td>
+       <label>
+         &nbsp;
+       <input type="submit" name="button" id="button" value="upload">
+       </label> <p>
+    </td>
+ </tr>
+</table>
+
+<table align=center>
+    <tr>
+        <td align=center>
+            <input type=radio name="case_catalog" value="VSC5">
+        </td>
+        <td>
+           VSC5
+        </td>
+    </tr>
+    
+    <tr>
+        <td align=center>
+            <input type=radio name="case_catalog" value="VST5">
+        </td>
+        <td>
+            VST5
+        </td>        
+    </tr>
+    
+    <tr>
+        <td align=center>
+            <input type=radio name="case_catalog" value="VSU5">
+        </td>
+        <td>
+            VSU5
+        </td>
+    </tr>
+    
+    <tr>
+        <td align=center>
+            <input type=radio name="case_catalog" value="VSX4">
+        </td>
+        <td>
+            VSX4
+        </td>
+    </tr>
+
+    <tr>
+      <td>
+        version:
+      </td>
+      <td>
+        <input type="text" name="log_version" id="log_version" value="" size="10">
+      </td>
+    </tr>
+
+
+    <tr>
+      <td>
+        runtime:
+      </td>
+      <td>
+        <input type="text" name="log_time" id="log_time" value="{{log_time}}">
+      </td>
+    </tr>
+
+
+    <tr>
+      <td>
+        comment:
+      </td>
+      <td>
+        <input type="text" name="log_comment" id="comment" value="test on J16,J17" size="30" maxlength="80">
+      </td>
+    </tr>
+
+</table>
+</form>
+
+
+
 %rebase base.htm title="USS search",user=user

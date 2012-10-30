@@ -103,6 +103,7 @@ def ftp(path):
 #     return template('search.htm',content="guest",user=request.user)
 
 
+@index_app.route('/common_check',method="post")
 @index_app.route('/common_check')
 def common_check():
     result = []
@@ -110,10 +111,32 @@ def common_check():
     result.append("[request.query]")
     for r in request.query:
         result.append(r+","+request.query[r])
+    for key, value in request.query.iterallitems():
+        result.append(key+","+value)
 
     result.append("[request.forms]")
     for r in request.forms:
         result.append(r+","+request.forms[r])
+    for key, value in request.forms.iterallitems():
+        result.append(key+","+value)
+        
+    result.append("[request.POST]")
+    for name, item in request.POST.iterallitems():    
+        result.append(name+",")
+
+
+    result.append("[request.files]")
+    data = request.files.data
+    if data:
+        print "data"
+    else:
+        print "no data"
+    try:
+        if data.file:
+            result.append("filename,"+data.filename)
+    except AttributeError,e:
+        pass
+    
 
 
     #result.append("app"+","+request.app())
