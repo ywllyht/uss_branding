@@ -274,7 +274,7 @@ def log_upload():
     elif case_catalog == "VSC5":
         r = vsc_parse(newjournal_name2, newfailures_name2, case_catalog, log_version)
     elif case_catalog == "VST5":
-        r = "uncompleted!"
+        r = vst_parse(newjournal_name2, newfailures_name2, case_catalog, log_version)
     else:
         r = "unsupported!"
     
@@ -567,6 +567,54 @@ def vsc_parse(fn,fn2, case_catalog, log_version):
     f1.close()
     return tempr
 
+def vst_parse(fn,fn2, case_catalog, log_version):
+    tempr = "create "+os.path.basename(fn2)+"\n"
+    f1 = open(fn,"rb")
+    lines = f1.readlines()
+    f1.close()
+    
+    tset = ""
+    tset_num = ""
+    tset_result = ""
+
+    f1 = open(fn2,"w+")
+    for line in lines:
+        line = line.strip()
+        if line.find("/tetexec.cfg")>0:
+            tempr += "  "+line+"\n"
+        #print line
+        if line.startswith("10|"):
+            sps = line.split("|")
+            sps2 = sps[1].split()
+            tset = sps2[1]
+        if line.startswith("520|"):
+            if tset_num == "":
+                sps = line.split("|")
+                sps2 = sps[1].split()
+                tset_num = sps2[1]
+                #pos1 = line.find("#")
+                #pos2 = line.find(" ",pos1)
+                #if pos2 > pos1:
+                #    tset_num = line[pos1:pos2]
+        if line.startswith("400|"):
+            if tset_num == "":
+                sps = line.split("|")
+                sps2 = sps[1].split()
+                tset_num = sps2[1]
+        if line.startswith("220|"):
+            sps = line.split("|")
+            tset_result = sps[2]
+            #print tset,tset_num,tset_result
+            if tset_result not in VSC_ALLOW_LIST:
+                #sps2 = sps[1].split()
+                #tset_num = sps2[1]
+                temp = tset+" "+tset_num
+                temp2 = "%-56s %s\n" % (temp,tset_result)
+                f1.write(temp2)
+            tset_num = ""
+    f1.close()
+    return tempr
+
 
 
 def keyword_search1(catalog1,key):
@@ -599,10 +647,11 @@ def case_search1(catalog,case,case_no):
     f1 = open(fn1)
     lines = f1.readlines()
     f1.close()
-    for line in lines:
+    for i,line in enumerate(lines):
         line = line.strip()
         if not line:
             continue
+        line = line.decode("utf-8","ignore")
         if line.find(case+separator+case_no) >= 0:
             rs = line.split(separator)
             case = rs[0]
