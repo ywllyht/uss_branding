@@ -1,0 +1,9 @@
+<p>&nbsp;</p>
+<h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;view all log directory &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/   <a href=".">search </a></h2>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;dirlist:</h3>
+%for dir_w in dirlists:
+   <p><a href="log_view/{{dir_w}}">{{dir_w}}</a></p>
+%end
+<p>&nbsp;</p>
+
+%rebase base.htm title=title,user=user

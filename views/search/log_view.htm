@@ -1,0 +1,17 @@
+<p>&nbsp;</p>
+<h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{logdir}}</h2>
+<p><a href="../log_view_all">view all directories</a></p>
+%if readme_content:
+ <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$README PREVIEW</h3>
+ <pre>
+   {{readme_content}}
+ </pre>
+%end
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;filelist:</h3>
+%for file in filelists:
+   <p>{{file}}</p>
+%end
+<p>&nbsp;</p>
+<p><a href="../log_analytic/{{logdir}}">case analytic</a></p>
+
+%rebase base.htm title=title,user=user

@@ -12,7 +12,19 @@ from users import login_required
 
 separator = "%%^^\t"
 
+ #  return "unimplemented"                                                                                  
+_curpath = os.path.dirname(__file__)
+_uppath = os.path.dirname(_curpath)
+AQpath = os.path.join(_uppath,"AQUSS")
+datasetpath = os.path.join(AQpath,"dataset")
+new2012path = os.path.join(datasetpath,"2012")       # this directory contains new data files which uses upload, from 2012 !
+#AQpath = r"E:\test\python\Bottle\AQUSS"
+#new2012path = r"E:\test\python\Bottle\AQUSS\dataset\2012\"
 
+
+#VSU_ALLOW_LIST = ["PASS","UNSUPPORTED","UNTESTED","FIP","WARNING","NOTINUSE"]
+VSU_ALLOW_LIST = ["PASS","UNSUPPORTED","UNTESTED","WARNING","NOTINUSE"]
+VSC_ALLOW_LIST = ["PASS","UNSUPPORTED","UNTESTED","WARNING","NOTINUSE","NOT_IMPLEMENTED","UNAPPROVED_ASSERTION"]
 
 search_app = Bottle()
 
@@ -139,9 +151,21 @@ def keyword_search():
 
 
 
-@search_app.route("/log_analytic",method="POST") 
+@search_app.route("/log_upload",method="POST") 
 @login_required
-def log_analytic():     
+def log_upload():     
+    ##################################################
+    #                                                #
+    # this function only parse JOURNAL, and generate #
+    # 2 files.                                       #
+    # (1) $READ                                      #
+    # (2) FAILURES                                   #
+    #                                                #
+    ##################################################
+    analytic_result = "getting parameters from web page...\n"
+    ##########################
+    # get parameters         #
+    ##########################
     try:
         case_catalog = request.forms['case_catalog']
     except KeyError,e:
@@ -151,24 +175,398 @@ def log_analytic():
         log_version = request.forms['log_version']
     except KeyError,e:
         return "You should input a version first, such as V533, V474..." 
+    log_version = log_version.strip()
+    if not log_version:
+        return "You should input a version first, such as V533, V474......" 
+    if len(log_version) > 6:
+        return "version length should not be greater than 6"
+    if not log_version.isalnum():
+        return "version format error! only alphanumeric character is legal"
+    log_version = log_version.upper()
 
+
+    try:
+        log_time = request.forms['log_time']
+    except KeyError,e:
+        return "You should input the log time(GMT) when you kick off this test"
+
+    log_comment = ""
     try:
         log_comment = request.forms['log_comment']
     except KeyError,e:
         return "You should input a version first, such as V533, V474..." 
     
+    #print "case_catalog=",case_catalog
+    #print "log_version=",log_version
+    #print "log_comment=",log_comment
+    if len(request.user.username) > 8:
+        newusername = request.user.username[:8]
+    else:
+        newusername = request.user.username
 
-    return request.user.username+" OK"
+    log_time2 = time.strftime("D%y%m%d.T%H%M%S",time.gmtime()) 
+
+
+    data = request.files.data
+    #print "data=",data
+    try:
+        filename = data.filename
+    except AttributeError,e:
+        return "You should choose the log file"
+    #print "filename=",filename
+
+    analytic_result += "  log_version="+log_version+"\n"
+    analytic_result += "  log_time="+log_time+"\n"
+    analytic_result += "  log_comment="+log_comment+"\n"
+    
+    
+    analytic_result += "create directory and files...\n"
+    ###################################
+    # create directory and files      #
+    ###################################
+    newdirname = "POSIX.CMPL."+case_catalog+"."+log_version+"."+newusername+"."+log_time2
+    newdirname = newdirname.upper()
+    newdirname2 = os.path.join(new2012path,newdirname)
+    if not os.path.isdir(newdirname2):
+        os.mkdir(newdirname2)
+
+    analytic_result += "create directory "+ newdirname+"\n"
+
+    newjournal_name = "JOURNAL"
+    newjournal_name2 = os.path.join(newdirname2,newjournal_name)
+    f1 = open(newjournal_name2,"wb+")
+    read_length_total = 0
+    #print data
+    while True:
+        r = data.file.read(4096)
+        #print read_length_total,repr(r)
+        read_length = len(r)
+        read_length_total += read_length
+        f1.write(r)
+        if read_length == 0:
+            break
+        if read_length_total > 50000000:  # 40M is the max limition
+            break
+
+    f1.close()
+
+    analytic_result += "create JOURNAL, write bytes "+str(read_length_total)+"\n"
+
+    newreadme_name = "$README"
+    newreadme_name2 = os.path.join(newdirname2,newreadme_name)
+    f1 = open(newreadme_name2,"w+")
+    f1.write("username:     " + request.user.username + "\n")
+    f1.write("catalog:      " + case_catalog + "\n")
+    f1.write("case_version: " + log_version + "\n")
+    f1.write("run time:     " + log_time + "\n")
+    f1.write("comment:      " + log_comment + "\n")
+    f1.close()
+
+    analytic_result += "create $README\n"
+
+    
+    newfailures_name = "FAILURES"
+    newfailures_name2 = os.path.join(newdirname2,newfailures_name)
+    if case_catalog == "VSU5":
+        r = vsu_parse(newjournal_name2, newfailures_name2, case_catalog, log_version)
+    elif case_catalog == "VSX4":
+        r = vsu_parse(newjournal_name2, newfailures_name2, case_catalog, log_version)
+    elif case_catalog == "VSC5":
+        r = vsc_parse(newjournal_name2, newfailures_name2, case_catalog, log_version)
+    elif case_catalog == "VST5":
+        r = "uncompleted!"
+    else:
+        r = "unsupported!"
+    
+    analytic_result += r
+
+    return template("search/log_upload.htm",title="USS FVT LOG UPLOAD",analytic_result=analytic_result, logdir=newdirname, user=request.user)  
+
+
+@search_app.route("/log_view/<logdir>") 
+@login_required
+def log_view(logdir):   
+    newdirname2 = os.path.join(new2012path,logdir)
+    if not os.path.isdir(newdirname2):
+        return "Error! "+logdir+" does not exist!"
+    filelists = os.listdir(newdirname2)
+
+    readme_content = ""
+    newreadme_name = "$README"
+    newreadme_name2 = os.path.join(newdirname2,newreadme_name)
+    if os.path.isfile(newreadme_name2):
+        #print "read readme!"
+        f1 = open(newreadme_name2)
+        lines = f1.readlines()
+        f1.close()
+        read_max = min(10,len(lines))
+        readme_content = "".join(lines[:read_max]) #dislay the first 10 lines of $readme
+    #print newreadme_name2
+    #print "readme_content=",readme_content
+    return  template("search/log_view.htm",title="USS FVT LOG VIEW",logdir=logdir, filelists=filelists, readme_content=readme_content, user=request.user)  
+
+@search_app.route("/log_view_all") 
+@login_required
+def log_view_all():   
+    if not os.path.isdir(new2012path):
+        return "Error! "+os.path.basename(new2012path)+" directory does not exist!"
+    dirlists = os.listdir(new2012path)
+
+    return  template("search/log_view_all.htm",title="USS FVT LOG VIEW",dirlists=dirlists, user=request.user)  
+
+
+
+@search_app.route("/log_analytic/<logdir>") 
+@login_required
+def log_analytic(logdir):   
+    newdirname2 = os.path.join(new2012path,logdir)
+    if not os.path.isdir(newdirname2):
+        return "Error! "+logdir+" does not exist!"
+    newfailures_name = "FAILURES"
+    newfailures_name2 = os.path.join(newdirname2,newfailures_name)
+    if not os.path.isfile(newfailures_name2):
+        return "Error! "+newfailures_name+" does not exist!"
+
+
+    case_catalog = ""
+    for catalog in ["VSC5","VSU5","VSX4","VST5"]:
+        if logdir.find(catalog) > 0:
+            case_catalog = catalog
+            break
+    if case_catalog == "":
+        return "Error! could not find catalog in dir name!"
+    
+    pin_r = []
+    oldfailures_r = []
+    oldfailures_r2 = []
+    newfailures_r = []
+
+    pin_lines = []
+    case_lines = []
+    
+    # read cases which need to be analyzed
+    cases_w = []
+    f1 = open(newfailures_name2)
+    lines = f1.readlines()
+    f1.close()
+    for line in lines:
+        line = line.strip()
+        sps = line.split()  #case_name,case_no,case_status
+        cases_w.append([case_catalog,sps[0],sps[1],sps[2]]) #case_catalog,case_name,case_no,case_status
+        
+    print "len of cases is ",len(cases_w)
+    # read PIN index
+    fn0 = "B95PIN"
+    fn1 = os.path.join(AQpath,fn0)
+    if not os.path.isfile(fn1):
+        pin_r.append("PIN index doe not exist")
+    else:
+        f1 = open(fn1)
+        pin_lines = f1.readlines()
+        f1.close()
+
+    # if PIN index exists, search PIN index
+    if pin_lines:
+        for case_w in cases_w:
+            for line in pin_lines:
+                if line.find(case_w[1]+separator+case_w[2])>=0:
+                    rs = line.split(separator)
+                    catalog2 = rs[0]
+                    case = rs[1]
+                    case_no = rs[2]
+                    status = rs[3]
+                    pin = rs[4]
+                    dataset = rs[5]
+                    member = rs[6]         
+                    pin_r.append(case_w[1]+" "+case_w[2]+" "+case_w[3]+" --- " + catalog2+" "+case+" "+case_no+" "+status+" "+pin)
+                    if case_catalog != catalog2:
+                        pin_r.append("Warning! this case belongs to"+catalog2+", not "+catalog)  
+                    if case_w[3] != status and status != "VSU5":
+                        pin_r.append("Warning! different status")
+                    case_w.append("pin!")
+                    break
+
+    # read case Index
+    fn0 = "B95"+case_catalog
+    fn1 = os.path.join(AQpath,fn0)
+    if not os.path.isfile(fn1):
+        oldfailures.append("FAIL,"+fn1+" -- catalog file index does not exist")
+    else:
+        f1 = open(fn1)
+        case_lines = f1.readlines()
+        f1.close()
+        
+
+        
+    # if case Index exists, search case index
+    if case_lines:
+        for case_w in cases_w:
+            if len(case_w) == 5 and case_w[4] == "pin!": # we do not search PIN case
+                continue
+            for line in case_lines:
+                if line.find(case_w[1]+separator+case_w[2]) >= 0:
+                    rs = line.split(separator)
+                    case = rs[0]
+                    case_no = rs[1]
+                    line2 = rs[2]
+                    dataset = rs[3]
+                    member = rs[4]
+                    oldfailures_r.append(case_w[1]+" "+case_w[2]+" "+case_w[3]+" -- " + dataset+"("+member+")")
+                    oldulr = case_catalog+","+case_w[1]+","+case_w[2]
+                    oldfailures_r2.append(oldulr.replace("/","@"))
+                    case_w.append("old!")
+                    break
+
+    # check new failures, only new failures contain 4 elements, others contain 5 element
+    # (1) if it is a PIN              --  case_catalog, case_name, case_no, case_status, "pin!"
+    # (2) if it is a old failure      --  case_catalog, case_name, case_no, case_status, "old!"
+    # (3) if it is a new failure      --  case_catalog, case_name, case_no, case_status
+    for i,case_w in enumerate(cases_w):
+        if len(case_w) == 4:
+            newfailures_r.append(case_w[1]+" "+case_w[2]+" "+case_w[3])
+
+
+    #print "len of cases 2 is ",len(cases_w)
+    #print "new len =",len(newfailures_r)
+    #print "old len =",len(oldfailures_r)
+
+    return  template("search/log_analytic.htm",title="LOG VIEW",logdir=logdir, totaln=len(cases_w),pins=pin_r, oldfailures=oldfailures_r, 
+                     oldfailures2=oldfailures_r2, newfailures=newfailures_r, user=request.user)  
+
+
+
+@search_app.route("/log_case_search/<case_info>") 
+@login_required
+def log_case_search(case_info):
+    case_info = case_info.replace("@","/")
+    case_catalog,case_name,case_no = case_info.split(",")
+    
+    # search PIN
+    pins_r = []
+    code,r = PIN_search1(case_catalog,case_name,case_no)
+    if code != "OK":
+        pins_r.append("PIN search Fail! "+code+","+r)
+    else:
+        pins_r = r
+    
+    # search old case
+    cases_r = []
+    code,r = case_search1(case_catalog,case_name,case_no)
+    if code != "OK":
+        cases_r.append("case search Fail! "+code+","+r)
+    else:
+        cases_r = r
+
+        level_1 = os.path.join(AQpath,"dataset")
+
+
+    # search keyword
+    key = case_name+ " "+ case_no
+    keywords_r = []
+    for catalog1 in keyword_catalog_list:
+        level_2 = os.path.join(datasetpath,catalog1)
+        datasets = os.listdir(level_2)
+        result = []
+        for ds in datasets:
+            ds2 = os.path.join(level_2,ds)
+            if not os.path.isdir(ds2):
+                continue
+            members = os.listdir(ds2)
+            for member in members:
+                member2 = os.path.join(ds2,member)
+                if not os.path.isfile(member2):
+                    continue
+                for line_num,line in enumerate(open(member2,'rb')):
+                    line = line.decode("utf-8","ignore")
+                    if line.find(key) >= 0:
+                        keywords_r.append(catalog1+"/"+ds+"/"+member+", "+str(line_num+1)+", "+line)
+    return  template("search/log_case_search.htm",title="LOG case search", case_catalog=case_catalog, case_name=case_name, case_no=case_no,
+                     pins_r=pins_r, cases_r = cases_r, keywords_r=keywords_r, user=request.user)  
+    
+
+
+
+def vsu_parse(fn,fn2,case_catalog,log_version):
+    tempr = "create "+os.path.basename(fn2)+"\n"
+    f1 = open(fn)  #JOURNAL
+    lines = f1.readlines()
+    f1.close()
+    
+    tset = ""
+    tset_num = ""
+    tset_result = ""
+
+    f1 = open(fn2,"w+") #FAILURES
+    for line in lines:
+        line = line.strip()
+        if line.startswith("30||TEST_PACKAGES"):
+            tempr += "  "+line+"\n"
+        if line.find("/tetexec.cfg")>0:
+            tempr += "  "+line+"\n"
+        if line.startswith("10|"):
+            sps = line.split("|")
+            sps2 = sps[1].split()
+            tset = sps2[1]
+        if line.startswith("220|"):
+            sps = line.split("|")
+            tset_result = sps[2]
+            if tset_result not in VSU_ALLOW_LIST:
+                sps2 = sps[1].split()
+                tset_num = sps2[1]
+                temp = tset+" "+tset_num
+                temp2 = "%-56s %s\n" % (temp,tset_result)
+                f1.write(temp2)
+    f1.close()
+    return tempr
 
 
 
 
+def vsc_parse(fn,fn2, case_catalog, log_version):
+    tempr = "create "+os.path.basename(fn2)+"\n"
+    f1 = open(fn,"rb")
+    lines = f1.readlines()
+    f1.close()
+    
+    tset = ""
+    tset_num = ""
+    tset_result = ""
 
- #  return "unimplemented"                                                                                  
-_curpath = os.path.dirname(__file__)
-_uppath = os.path.dirname(_curpath)
-AQpath = os.path.join(_uppath,"AQUSS")
-#AQpath = r"E:\test\python\Bottle\AQUSS"
+    f1 = open(fn2,"w+")
+    for line in lines:
+        line = line.strip()
+        if line.find("/tetexec.cfg")>0:
+            tempr += "  "+line+"\n"
+        #print line
+        if line.startswith("10|"):
+            sps = line.split("|")
+            sps2 = sps[1].split()
+            tset = sps2[1]
+        if line.startswith("520|"):
+            if tset_num == "":
+                pos1 = line.find("#")
+                pos2 = line.find(" ",pos1)
+                if pos2 > pos1:
+                    tset_num = line[pos1:pos2]
+        if line.startswith("400|"):
+            if tset_num == "":
+                sps = line.split("|")
+                sps2 = sps[1].split()
+                tset_num = sps2[1]
+        if line.startswith("220|"):
+            sps = line.split("|")
+            tset_result = sps[2]
+            #print tset,tset_num,tset_result
+            if tset_result not in VSC_ALLOW_LIST:
+                #sps2 = sps[1].split()
+                #tset_num = sps2[1]
+                temp = tset+" "+tset_num
+                temp2 = "%-56s %s\n" % (temp,tset_result)
+                f1.write(temp2)
+            tset_num = ""
+    f1.close()
+    return tempr
+
 
 
 def keyword_search1(catalog1,key):

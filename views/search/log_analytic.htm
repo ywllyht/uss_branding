@@ -1,0 +1,33 @@
+<p>&nbsp;</p>
+<h2>&nbsp;&nbsp;&nbsp;&nbsp;{{logdir}}&nbsp;&nbsp;&nbsp;{{totaln}}</h2>
+<p><a href="../log_view/{{logdir}}">view directory!</a></p>
+
+<!-- new failures ! -->
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;new failures &nbsp;
+  % len_new = len(newfailures)
+  {{len_new}}
+</h3>
+%for i,newf in enumerate(newfailures):
+  <p>{{i+1}},{{newf}}</p>
+%end
+
+<!-- PIN -->
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;PIN &nbsp;
+  %len_pin = len(pins)
+  {{len_pin}}
+</h3>
+%for i,pin in enumerate(pins):
+  <p>{{i+1}},{{pin}}</p>
+%end
+
+
+<!-- old failures-->
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;old failures &nbsp;
+  %len_old = len(oldfailures)
+  {{len_old}}
+</h3>
+%for i,oldf in enumerate(oldfailures):
+  <p><a href="../log_case_search/{{oldfailures2[i]}}">{{i+1}},{{oldf}}</a></p>
+%end
+
+%rebase base.htm title=title,user=user

@@ -1,0 +1,25 @@
+<p>&nbsp;</p>
+<h2>&nbsp;&nbsp;&nbsp;&nbsp;{{case_catalog}}&nbsp;&nbsp;&nbsp;{{case_name}}&nbsp;&nbsp;&nbsp;{{case_no}}</h2>
+<p><a href="../log_view_all">view all directory!</a></p>
+
+<!-- PIN ! -->
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;PINs &nbsp;</h3>
+%for i,line in enumerate(pins_r):
+  <p>{{i+1}},{{line}}</p>
+%end
+
+<!-- case search ! -->
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;cases &nbsp;</h3>
+%for i,line in enumerate(cases_r):
+  <p>{{line}}</p>
+%end
+
+<!-- keywords search ! -->
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;keywords &nbsp;</h3>
+%for i,line in enumerate(keywords_r):
+  <p>{{i+1}},{{line}}</p>
+%end
+
+
+
+%rebase base.htm title=title,user=user
