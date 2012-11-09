@@ -290,7 +290,14 @@ def log_view(logdir):
     if not os.path.isdir(newdirname2):
         return "Error! "+logdir+" does not exist!"
     filelists = os.listdir(newdirname2)
-
+    filelist2 = []
+    f1 = lambda x:time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(x))
+    for file1 in filelists:
+        file2 = os.path.join(newdirname2,file1)
+        st = os.stat(file2)
+        mode,ino,dev,nlink,uid,gid,size,atime,mtime,ctime = st
+        filelist2.append((file1,mode,uid,size,f1(ctime),f1(mtime)))
+    
     readme_content = ""
     newreadme_name = "$README"
     newreadme_name2 = os.path.join(newdirname2,newreadme_name)
@@ -303,7 +310,7 @@ def log_view(logdir):
         readme_content = "".join(lines[:read_max]) #dislay the first 10 lines of $readme
     #print newreadme_name2
     #print "readme_content=",readme_content
-    return  template("search/log_view.htm",title="USS FVT LOG VIEW",logdir=logdir, filelists=filelists, readme_content=readme_content, user=request.user)  
+    return  template("search/log_view.htm",title="USS FVT LOG VIEW",logdir=logdir, filelist2=filelist2, readme_content=readme_content, user=request.user)  
 
 @search_app.route("/log_view_all") 
 @login_required
@@ -313,6 +320,54 @@ def log_view_all():
     dirlists = os.listdir(new2012path)
 
     return  template("search/log_view_all.htm",title="USS FVT LOG VIEW",dirlists=dirlists, user=request.user)  
+
+
+# view each file($README,FAILURES) under target directory
+@search_app.route("/log_view_file/<logdir>/<logfile>/") 
+@login_required
+def log_view_file(logdir,logfile):   
+    newdirname2 = os.path.join(new2012path,logdir)
+    if not os.path.isdir(newdirname2):
+        return "Error! "+logdir+" does not exist or it is not a directory!"
+    newfilename2 = os.path.join(newdirname2,logfile)
+    if not os.path.isfile(newfilename2):
+        return "Error! " + logdir + "("+logfile+") dos not exist or it is not a file!"
+    f1 = open(newfilename2)
+    content = f1.read()
+    f1.close()
+
+    return  template("search/log_view_file.htm",title="USS FVT LOG VIEW",logdir=logdir, logfile=logfile, content=content, user=request.user)  
+
+# view each file($README,FAILURES) under target directory
+@search_app.route("/log_view_file/<logdir>/<logfile>/",method="POST") 
+@login_required
+def log_view_file(logdir,logfile):   
+    newdirname2 = os.path.join(new2012path,logdir)
+    if not os.path.isdir(newdirname2):
+        return "Error! "+logdir+" does not exist or it is not a directory!"
+    newfilename2 = os.path.join(newdirname2,logfile)
+    if not os.path.isfile(newfilename2):
+        return "Error! " + logdir + "("+logfile+") dos not exist or it is not a file!"
+    content = request.forms.content
+    lines = content.splitlines()
+    result = []
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        if len(line) > 255:
+            line = line[:255]
+        result.append(line)
+
+    total_lenth = reduce(lambda x,y:x+y+1,map(len,result))
+    f1 = open(newfilename2,"w+")
+    f1.write("\n".join(result))
+    f1.close()
+             
+
+    msg = "modify successful! " + str(total_lenth) + " bytes written!"
+    return template("mydirect.htm",title="user list",msg=msg,next_url="../../../log_view/"+logdir,user=request.user)
+
 
 
 

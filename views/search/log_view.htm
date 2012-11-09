@@ -8,10 +8,41 @@
  </pre>
 %end
 <h3>&nbsp;&nbsp;&nbsp;&nbsp;filelist:</h3>
-%for file in filelists:
-   <p>{{file}}</p>
+<table>
+<tr>
+  <td>filename</td>
+  <td>mode</td>
+  <td>uid</td>
+  <td>size</td>
+  <td>create_time(GMT+0)</td>
+  <td>modify_time(GMT+0)</td>
+</tr>
+%for file in filelist2:
+<tr>
+  <td>   
+    <a href="../log_view_file/{{logdir}}/{{file[0]}}/">{{file[0]}}</a>
+  </td>
+  <td>
+    {{file[1]}}
+  </td>
+  <td>
+    {{file[2]}}
+  </td>
+  <td>
+    {{file[3]}}
+  </td>
+  <td>
+    {{file[4]}}
+  </td>
+  <td>
+    {{file[5]}}
+  </td>
+</tr>
+
 %end
+</table>
 <p>&nbsp;</p>
+<h3>&nbsp;</h3>
 <p><a href="../log_analytic/{{logdir}}">case analytic</a></p>
 
 %rebase base.htm title=title,user=user
