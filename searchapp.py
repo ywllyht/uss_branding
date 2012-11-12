@@ -296,7 +296,7 @@ def log_view(logdir):
         file2 = os.path.join(newdirname2,file1)
         st = os.stat(file2)
         mode,ino,dev,nlink,uid,gid,size,atime,mtime,ctime = st
-        filelist2.append((file1,mode,uid,size,f1(ctime),f1(mtime)))
+        filelist2.append((file1,oct(mode),uid,size,f1(ctime),f1(mtime)))
     
     readme_content = ""
     newreadme_name = "$README"
