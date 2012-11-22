@@ -1,100 +1,73 @@
-<!-- case search -->
-<form id="form1" name="form1" method="GET" action="case_search">
-<table align=center>
- <tr>
-   <td align=center>
-       <label>
-         case search:&nbsp;
-       <input type="text" name="searchtext" id="searchtext">
-       </label>
-    </td>
-    <td>
-       
-       <label>
-       <input type="submit" name="button" id="button" value="search">
-       </label> <p>
-    </td>
- </tr>
-</table>
+<div class="row">
+    <div class="span2"></div>
+    <div class="span10">
 
-<table align=center>
-    <tr>
-        <td align=center>
-            <input type=radio name="case_catalog" value="VSC5">
-        </td>
-        <td>
-           VSC5
-        </td>
-    </tr>
-    
-    <tr>
-        <td align=center>
-            <input type=radio name="case_catalog" value="VST5">
-        </td>
-        <td>
-            VST5
-        </td>        
-    </tr>
-    
-    <tr>
-        <td align=center>
-            <input type=radio name="case_catalog" value="VSU5">
-        </td>
-        <td>
-            VSU5
-        </td>
-    </tr>
-    
-    <tr>
-        <td align=center>
-            <input type=radio name="case_catalog" value="VSX4">
-        </td>
-        <td>
-            VSX4
-        </td>
-    </tr>
-</table>
+<!-- case search -->
+<form id="form1" class="form-horizontal"  name="form1" method="GET" action="case_search">
+
+<div class="control-group">
+  <label class="control-label" for="inputPassword">
+    <span class="label  label-info">case search:&nbsp;</span>
+  </label>
+  <div class="controls">
+    <input type="text" name="searchtext" id="searchtext">
+    <input type="submit" name="button" id="button" class="btn" value="search">
+  </div>
+</div>
+
+<div class="control-group">
+  <div class="controls">
+    <label class="radio">
+      <input type=radio name="case_catalog" value="VSC5"> VSC5
+    </label>
+    <label class="radio">
+      <input type=radio name="case_catalog" value="VST5"> VST5
+    </label>
+    <label class="radio">
+      <input type=radio name="case_catalog" value="VSU5"> VSU5
+    </label>
+    <label class="radio">
+      <input type=radio name="case_catalog" value="VSX4"> VSX4
+    </label>
+    <label class="radio">
+
+    </label>
+
+  </div>
+</div>
+
+
 </form>
 
 <!-- keyword search -->
 <hr>
 
-<form id="form1" name="form1" method="GET" action="keyword_search">
-<table align=center>
- <tr>
-   <td align=center>
-       <label>keyword search:&nbsp;
-       <input type="text" name="searchtext" id="searchtext">
-       </label>
-    </td>
-    <td>
-       
-       <label>
-       <input type="submit" name="button" id="button" value="search">
-       </label> <p>
-    </td>
- </tr>
-</table>
+<form id="form1"  class="form-horizontal"  name="form1" method="GET" action="keyword_search">
 
-<table align=center>
-    <tr> 
-        <td align=center>
-            <input type=checkbox name=INSTALL>
-        </td>
-        <td>
-           INSTALL
-        </td>
-    </tr>
-    
-    <tr>
-        <td align=center>
-             <input type=checkbox name=problem>
-        </td>
-        <td>
-            problem
-        </td>
-    </tr>
-</table>
+
+
+<div class="control-group">
+  <label class="control-label" for="inputPassword">
+    <span class="label  label-info">keyword search:</span>
+  </label>
+  <div class="controls">
+    <input type="text" name="searchtext" id="searchtext">
+    <input type="submit" name="button" id="button" value="search">
+  </div>
+</div>
+
+<div class="control-group">
+  <div class="controls">
+    <label class="checkbox">
+      <input type="checkbox" name="INSTALL"> INSTALL
+    </label>
+    <label class="checkbox">
+      <input type="checkbox" name="problem"> problem
+    </label>
+  </div>
+</div>
+
+
 </form>
 
 
@@ -103,92 +76,71 @@
 <br>
 <br>
 
-<form id="form1" name="form1" method="POST" action="log_upload"  enctype="multipart/form-data">
-<table align=center>
- <tr>
-   <td align=center>
-       <label>Log file:&nbsp;
-       <input type="file" name="data" />
-       </label>
-    </td>
-    <td>
-       <label>
-         &nbsp;
-       <input type="submit" name="button" id="button" value="upload">
-       </label> <p>
-    </td>
- </tr>
-</table>
+<form id="form1" name="form1"  class="form-horizontal"  method="POST" action="log_upload"  enctype="multipart/form-data">
+<div class="control-group">
+  <label class="control-label" for="inputPassword">
+    <span class="label  label-info">Log File:</span>
+  </label>
+  <div class="controls">
+    <input type="file" name="data" />
+    <input type="submit" name="button" id="button" value="upload">
+  </div>
+</div>
+<div class="control-group">
+  <div class="controls">
+    <label class="radio">
+      <input type=radio name="case_catalog" value="VSC5"> VSC5
+    </label>
+    <label class="radio">
+      <input type=radio name="case_catalog" value="VST5"> VST5
+    </label>
+    <label class="radio">
+      <input type=radio name="case_catalog" value="VSU5"> VSU5
+    </label>
+    <label class="radio">
+      <input type=radio name="case_catalog" value="VSX4"> VSX4
+    </label>
+    <label class="radio">
 
-<table align=center>
-    <tr>
-        <td align=center>
-            <input type=radio name="case_catalog" value="VSC5">
-        </td>
-        <td>
-           VSC5
-        </td>
-    </tr>
-    
-    <tr>
-        <td align=center>
-            <input type=radio name="case_catalog" value="VST5">
-        </td>
-        <td>
-            VST5
-        </td>        
-    </tr>
-    
-    <tr>
-        <td align=center>
-            <input type=radio name="case_catalog" value="VSU5">
-        </td>
-        <td>
-            VSU5
-        </td>
-    </tr>
-    
-    <tr>
-        <td align=center>
-            <input type=radio name="case_catalog" value="VSX4">
-        </td>
-        <td>
-            VSX4
-        </td>
-    </tr>
+    </label>
 
-    <tr>
-      <td>
-        version:
-      </td>
-      <td>
-        <input type="text" name="log_version" id="log_version" value="" size="10">
-      </td>
-    </tr>
+  </div>
+</div>
+
+<div class="control-group">
+  <label class="control-label" for="inputPassword">
+    version:
+  </label>
+  <div class="controls">
+    <input type="text" name="log_version" id="log_version" value="" size="10">
+  </div>
+</div>
 
 
-    <tr>
-      <td>
-        runtime:
-      </td>
-      <td>
-        <input type="text" name="log_time" id="log_time" value="{{log_time}}">
-      </td>
-    </tr>
+<div class="control-group">
+  <label class="control-label" for="inputPassword">
+    runtime:
+  </label>
+  <div class="controls">
+    <input type="text" name="log_time" id="log_time" value="{{log_time}}">
+  </div>
+</div>
+
+<div class="control-group">
+  <label class="control-label" for="inputPassword">
+   comment:
+  </label>
+  <div class="controls">
+    <input type="text" class="input-xxlarge"  name="log_comment" id="comment" value="test on J16,J17" size="30" maxlength="80">
+  </div>
+</div>
 
 
-    <tr>
-      <td>
-        comment:
-      </td>
-      <td>
-        <input type="text" name="log_comment" id="comment" value="test on J16,J17" size="30" maxlength="80">
-      </td>
-    </tr>
 
-</table>
 </form>
 <p><a href="log_view_all">view all directories!</a></p>
 
+</div>
+</div>
 
 %rebase base.htm title="USS search",user=user

@@ -1,10 +1,27 @@
-<p align="right"> 
-<a href="/">home</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ <div class="navbar navbar-inverse ">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/">home</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
 %if user.username:
-    Hi,{{user.username}}&nbsp;&nbsp;<a href="/users/logout/">logout</a>&nbsp;&nbsp;<a href="/users/changepw/">change_password</a>
+    <li>Hi,{{user.username}}&nbsp;&nbsp;</li>
+    <li><a href="/users/logout/">logout</a></li>
+    <li><a href="/users/changepw/">change_password</a></li>
 %else:
-    welcome, guest, please <a href="/users/login/">login</a>
+    welcome, guest, please <li><a href="/users/login/">login</a></li>
 %end
-</p>
-<hr>
+
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+
 <br>
