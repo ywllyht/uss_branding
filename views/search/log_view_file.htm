@@ -1,14 +1,30 @@
+
+<style>
+.input-xxxlarge {
+  width: 730px;
+}
+</style>
+
+<div class="container">
+  <div class="row">
+    <div class="span12">
+
 <p>&nbsp;</p>
 <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{logdir}}({{logfile}})</h2>
-<p><a href="../log_view/{{logdir}}">view {{logdir}} directorie</a>&nbsp;&nbsp;&nbsp;&nbsp;
+<p><a href="../../../log_view/{{logdir}}">view {{logdir}} directorie</a>&nbsp;&nbsp;&nbsp;&nbsp;
 the max length of each line is 255! do not exceed this limit!</p>
 <form action="." method="POST">
-<textarea name="content" rows=20 cols=100>
+<textarea class="input-xxxlarge" ame="content" rows=20 cols=100>
 {{content}}
 </textarea>
 <br>
 <br>
 <input type=submit value="modify"><input type=reset>
 </form>
+
+
+     </div>
+  </div>
+</div>
 
 %rebase base.htm title=title,user=user
