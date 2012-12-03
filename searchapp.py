@@ -391,13 +391,16 @@ def log_analytic(logdir):
     if case_catalog == "":
         return "Error! could not find catalog in dir name!"
     
-    pin_r = []
-    oldfailures_r = []
+    pin_r = []     # pin cases
+    known_r = []   # known_failure cases
+    oldfailures_r = []   # old cases
     oldfailures_r2 = []
-    newfailures_r = []
+    newfailures_r = []   # new cases
 
     pin_lines = []
+    known_lines = []
     case_lines = []
+    
     
     # read cases which need to be analyzed
     cases_w = []
@@ -441,22 +444,46 @@ def log_analytic(logdir):
                     case_w.append("pin!")
                     break
 
+    # read known_failures
+    fn0 = "BKNOWNFS"
+    fn1 = os.path.join(AQpath,fn0)
+    if not os.path.isfile(fn1):
+        known_r.append("FAIL,"+fn1+" -- known_failures index does not exist")
+    else:
+        f1 = open(fn1)
+        known_lines = f1.readlines()
+        f1.close()        
+    
+    #if know_failures index exists, search case index
+    if known_lines:
+        for case_w in cases_w:
+            if len(case_w) == 5 and case_w[4] == "pin!": # we do not search PIN case
+                continue
+            for line in known_lines:
+                if line.find(case_w[1]+separator+case_w[2]) >= 0:
+                    known_r.append(line)
+                    case_w.append("known!")
+                    break   
+   
+
+
     # read case Index
     fn0 = "B95"+case_catalog
     fn1 = os.path.join(AQpath,fn0)
     if not os.path.isfile(fn1):
-        oldfailures.append("FAIL,"+fn1+" -- catalog file index does not exist")
+        oldfailures_r2.append("FAIL,"+fn1+" -- catalog file index does not exist")
     else:
         f1 = open(fn1)
         case_lines = f1.readlines()
-        f1.close()
-        
+        f1.close()        
 
         
     # if case Index exists, search case index
     if case_lines:
         for case_w in cases_w:
             if len(case_w) == 5 and case_w[4] == "pin!": # we do not search PIN case
+                continue
+            if len(case_w) == 5 and case_w[4] == "known!": # we do not search known_failures case
                 continue
             for line in case_lines:
                 if line.find(case_w[1]+separator+case_w[2]) >= 0:
@@ -485,7 +512,7 @@ def log_analytic(logdir):
     #print "new len =",len(newfailures_r)
     #print "old len =",len(oldfailures_r)
 
-    return  template("search/log_analytic.htm",title="LOG VIEW",logdir=logdir, totaln=len(cases_w),pins=pin_r, oldfailures=oldfailures_r, 
+    return  template("search/log_analytic.htm",title="LOG VIEW",logdir=logdir, totaln=len(cases_w),pins=pin_r, knowns=known_r, oldfailures=oldfailures_r, 
                      oldfailures2=oldfailures_r2, newfailures=newfailures_r, user=request.user)  
 
 
