@@ -40,7 +40,11 @@
   {{len_old}}
 </h3>
 %for i,oldf in enumerate(oldfailures):
-  <p><a href="../log_case_search/{{oldfailures2[i]}}">{{i+1}},{{oldf}}</a></p>
+  %if oldf.find(" FIP ") > 0:
+    <p><a href="../log_case_search/{{oldfailures2[i]}}"><font color="green">{{i+1}},{{oldf}}</font></a></p>
+  %else:
+     <p><a href="../log_case_search/{{oldfailures2[i]}}">{{i+1}},{{oldf}}</a></p>
+  %end
 %end
 
     </div>
