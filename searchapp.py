@@ -460,7 +460,7 @@ def log_analytic(logdir):
             if len(case_w) == 5 and case_w[4] == "pin!": # we do not search PIN case
                 continue
             for line in known_lines:
-                if line.find(case_w[1]+separator+case_w[2]) >= 0:
+                if line.find(case_w[1]+" "+case_w[2]) >= 0:
                     known_r.append(line)
                     case_w.append("known!")
                     break   
