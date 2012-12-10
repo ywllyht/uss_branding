@@ -318,6 +318,7 @@ def log_view_all():
     if not os.path.isdir(new2012path):
         return "Error! "+os.path.basename(new2012path)+" directory does not exist!"
     dirlists = os.listdir(new2012path)
+    dirlists.sort()
 
     return  template("search/log_view_all.htm",title="USS FVT LOG VIEW",dirlists=dirlists, user=request.user)  
 
