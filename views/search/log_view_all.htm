@@ -6,7 +6,11 @@
 <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;view all log directory &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/   <a href=".">search </a></h2>
 <h3>&nbsp;&nbsp;&nbsp;&nbsp;dirlist:</h3>
 %for dir_w in dirlists:
-   <p><a href="log_view/{{dir_w}}">{{dir_w}}</a></p>
+   %if dir_w.find("_delete") > 0:
+        <p><a href="log_view/{{dir_w}}"><font color="gray">{{dir_w}}</font></a></p>
+   %else:
+        <p><a href="log_view/{{dir_w}}">{{dir_w}}</a></p>
+   %end
 %end
 <p>&nbsp;</p>
  

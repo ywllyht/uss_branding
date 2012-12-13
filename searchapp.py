@@ -312,6 +312,34 @@ def log_view(logdir):
     #print "readme_content=",readme_content
     return  template("search/log_view.htm",title="USS FVT LOG VIEW",logdir=logdir, filelist2=filelist2, readme_content=readme_content, user=request.user)  
 
+@search_app.route("/log_delete/<logdir>") 
+@login_required
+def log_delete(logdir):   
+    newdirname2 = os.path.join(new2012path,logdir)
+    if not os.path.isdir(newdirname2):
+        return "Error! "+logdir+" does not exist!"
+
+
+    newdirname_delete = logdir+"_delete"
+    newdirname_delete2 = os.path.join(new2012path,newdirname_delete)
+    if os.path.isdir(newdirname_delete):
+        return "Error! "+newdirname_delete+" already exists!"
+    
+    newreadme_name = "$README"
+    newreadme_name2 = os.path.join(newdirname2,newreadme_name)
+    if os.path.isfile(newreadme_name2):
+        #print "read readme!"
+        f1 = open(newreadme_name2,"a")
+        f1.write(request.user.username+" attemped to delete this directory at "+ time.ctime()+"\n")
+        f1.close()
+
+    os.rename(newdirname2,newdirname_delete2)
+    #print "readme_content=",readme_content
+    redirect("../log_view/"+newdirname_delete)
+    #return template("mydirect.htm",title="user list",msg=msg,next_url="../log_view/"+logdir,user=request.user)
+        
+
+
 @search_app.route("/log_view_all") 
 @login_required
 def log_view_all():   
@@ -494,7 +522,12 @@ def log_analytic(logdir):
                     line2 = rs[2]
                     dataset = rs[3]
                     member = rs[4]
-                    oldfailures_r.append(case_w[1]+" "+case_w[2]+" "+case_w[3]+" -- " + dataset+"("+member+")")
+
+                    part1 = case_w[1]+" "+case_w[2]+" "+case_w[3]
+                    part2 = dataset+"("+member+")"
+                    oldfailures_r.append((part1,part2))
+                    #oldfailures_r.append(case_w[1]+" "+case_w[2]+" "+case_w[3]+" -- " + dataset+"("+member+")")
+
                     oldulr = case_catalog+","+case_w[1]+","+case_w[2]
                     oldfailures_r2.append(oldulr.replace("/","@"))
                     case_w.append("old!")

@@ -1,10 +1,32 @@
+<script language="javascript">
+    function prom(href)
+    { 
+      if(confirm("Are you sure to delete?")==true)
+      {
+      location.href=href; 
+      }
+    }
+
+</script>
+
 <div class="container">
   <div class="row">
     <div class="span12">
 
 <p>&nbsp;</p>
 <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{logdir}}</h2>
-<p><a href="../log_view_all">view all directories</a></p>
+    </div>
+    <div class="span3">
+      <p><a href="../log_view_all">view all directories</a></p>
+    </div>
+
+    %if logdir.find("_delete")<=0:
+    <div class="span3 offset1">
+      <p><a onClick="prom('../log_delete/{{logdir}}')" href="#">delete this log directory</a></p>
+    </div>
+    %end
+
+    </div class="span12">
 %if readme_content:
  <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$README PREVIEW</h3>
  <pre>
