@@ -1,9 +1,26 @@
+
+
+<script type="text/javascript" language="javascript">
+$(document).ready(function() {
+  $("#twoweek_box").click(function(event){
+     //alert($(this).attr("checked"));
+     if($(this).attr("checked")=="checked"){
+        $("#twoweek_tr").attr("class","success");
+     }
+     else{
+        $("#twoweek_tr").attr("class","");
+     }
+  });
+});
+
+</script>
+
 <div class="container">
   <div class="row">
     <div class="span3">
 
 <form action='.?next={{nexturl}}' method='POST'>
-  <table>
+  <table class="table">
     <tr>
       <td>
         username
@@ -20,6 +37,9 @@
         <input type="password" name="password">
       </td>
     </tr>
+    <tr id="twoweek_tr" class="success">
+      <td colspan="2"><input id="twoweek_box"type=checkbox name="two_weeks">&nbsp;login two weeks</td>
+    </tr>
     <tr>
       <td>
         <input type="submit" value="submit">
@@ -27,9 +47,6 @@
       <td>
         <input type="reset" value="reset">
       </td>
-    </tr>
-    <tr>
-      <td colspan="2"><input type=checkbox name="two_weeks">login two weeks</td>
     </tr>
   </table>
 </form>

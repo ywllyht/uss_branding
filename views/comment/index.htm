@@ -1,8 +1,11 @@
+<div class="container">
+  <div class="row">
+    <div class="span12">
 <form action="." method="POST">
   max-characters in one line:
-  <input type="text" size="10" value="{{maxcharacter}}" name="maxcharacter">
+  <input type="text" value="{{maxcharacter}}" name="maxcharacter" style="width:50px">
   &nbsp;&nbsp;&nbsp;indent character:
-  <input type="text" size="10" value="{{indent}}" name="indent">
+  <input type="text" size="10" value="{{indent}}" name="indent" style="width:50px">
   &nbsp;&nbsp;&nbsp;style:
   <select name="style">
         <option 
@@ -16,7 +19,7 @@
                 %end
                 value="c">c
   </select><br>
-  <textarea name="comment" rows=20 cols=90>{{comment}}
+  <textarea name="comment" rows=20 cols=90 style="width:500px">{{comment}}
   </textarea>
   <input type="submit" name="translate" value="translate">
 </form>
@@ -24,4 +27,8 @@
 <pre>
 {{result}}
 </pre>
+
+    </div>
+  </div>
+</div>
 %rebase base.htm title=title,user=user
