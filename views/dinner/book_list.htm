@@ -1,29 +1,19 @@
 
-<script src="/static/js/lib/dojo/dojo.js"	data-dojo-config="isDebug: true, async: true"></script>
+<script>
 
-        <script>
-
-			require(["dojo/fx", "dojo/on", "dojo/dom", "dojo/domReady!"], function(fx, on, dom) {
-			        //var report_button = dom.byId("consume_report_button"),
-		         	wipeTarget2 = dom.byId("consume_report_div");
-                    var dd2 = document.getElementById("consume_report_button");
-
-				    on(dd2, "click", function(evt){
-
-                    //alert(dd2.value);
-
-                     if(dd2.value == "+"){
-                       dd2.value = "-";
-                  	   fx.wipeIn({ node: wipeTarget2 }).play();
-                     }else{
-                       dd2.value = "+";
-                       fx.wipeOut({ node: wipeTarget2 }).play();
-                     }
-
-				});
-
-			});
-
+   $(document).ready(function() {
+      
+      $("#consume_report_button").click(function(event){
+          $("#consume_report_div").toggle(500,function(){
+             if("+" == $("#consume_report_button").attr("value")){
+                $("#consume_report_button").attr("value","-");
+             }
+             else{
+                $("#consume_report_button").attr("value","+");
+             }
+          });
+      });
+   });
 </script>
 
 <script language="javascript">
