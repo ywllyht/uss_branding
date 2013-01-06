@@ -1,3 +1,22 @@
+<script language="javascript">
+$(document).ready(function(){
+   $("a").hover(function(){
+       $("#readmediv").show();
+       $("#readmepre").text("haha");
+   },
+   function(){
+       $("#readmediv").hide();
+       $("#readmepre").text("haha2");
+   }); 
+ 
+});
+
+</script>
+
+
+<div id="readmediv" align="center" style="display:none; background-color:rgb(240,240,240);  width:400px; position:absolute; right:150px; top:150px; z-index:3; " >
+  <pre id="readmepre"></pre>
+</div>
 
 <div class="container">
   <div class="row">
