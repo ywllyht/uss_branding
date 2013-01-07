@@ -351,6 +351,25 @@ def log_view_all():
     return  template("search/log_view_all.htm",title="USS FVT LOG VIEW",dirlists=dirlists, user=request.user)  
 
 
+# ajax interface for get #README content in log_view_all page
+@search_app.route("/log_view_file_ajax/<logdir>/<logfile>/") 
+@login_required
+def log_view_readme_ajax(logdir,logfile): 
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        newdirname2 = os.path.join(new2012path,logdir)
+        if not os.path.isdir(newdirname2):
+            return "Error! "+logdir+" does not exist or it is not a directory!"
+        newfilename2 = os.path.join(newdirname2,logfile)
+        if not os.path.isfile(newfilename2):
+            return "Error! " + logdir + "("+logfile+") dos not exist or it is not a file!"
+        f1 = open(newfilename2)
+        content = f1.read()
+        f1.close()
+        return content
+    else:
+        return 'This is a normal request'
+
+
 # view each file($README,FAILURES) under target directory
 @search_app.route("/log_view_file/<logdir>/<logfile>/") 
 @login_required

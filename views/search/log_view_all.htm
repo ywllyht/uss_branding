@@ -2,11 +2,13 @@
 $(document).ready(function(){
    $("a").hover(function(){
        $("#readmediv").show();
-       $("#readmepre").text("haha");
+       text1 = $(this).text();
+       //$("#readmepre").text(text1);
+       $("#readmepre").load("log_view_file_ajax/"+text1+"/$README/"); 
    },
    function(){
        $("#readmediv").hide();
-       $("#readmepre").text("haha2");
+       $("#readmepre").text("");
    }); 
  
 });
@@ -15,7 +17,7 @@ $(document).ready(function(){
 
 
 <div id="readmediv" align="center" style="display:none; background-color:rgb(240,240,240);  width:400px; position:absolute; right:150px; top:150px; z-index:3; " >
-  <pre id="readmepre"></pre>
+  <pre id="readmepre" style="text-align:left"></pre>
 </div>
 
 <div class="container">
