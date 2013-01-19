@@ -149,6 +149,10 @@ def common_check():
     return "<br>".join(result)
 
 
+@index_app.route('/ringmap')
+def ringmap():
+    return template("ringmap.htm",user=request.user)
+
 @index_app.route('/hello')
 def hello():
     print request.environ.keys()
