@@ -1,67 +1,209 @@
+<style>
+.focusroom {
+  font-size: 18px; 
+  color: rgba(82, 168, 236, 0.8);
+
+}
+
+</style>
+
+<script type="text/javascript" language="javascript">
+
+var searchroom = function (inputobj){
+
+       roomname = $(inputobj).attr("value");
+   
+       meetingrooms = $(".meetingroom");
+       existflag = false;
+       for(i=0; i<meetingrooms.length; i++)
+       {
+   
+          if(meetingrooms[i].textContent == roomname)
+          {
+             existflag = true;
+             targetid = meetingrooms[i].id;
+             //alert("find!" + targetid);
+             meetingrooms[i].scrollIntoView();
+             
+             classname2 = meetingrooms[i].className;
+             if(classname2.indexOf("focusroom") < 0 ) 
+             {
+                 meetingrooms[i].className = classname2 + " focusroom";
+             }
+             break;
+          }
+       }
+       if(existflag == false)
+       {
+             alert("cound not found " + roomname);
+       }
+
+}
+
+$(document).ready(function() {
+
+  $("#roomname").bind('keydown', function (e) {
+
+    var key = e.which;
+    if (key == 13) {
+
+        searchroom( $(this) );
+   
+    }
+  });//.focus();
+
+  $("#roomsubmit").click(function(){
+    
+       searchroom( $("#roomname") );
+
+  });
+
+ 
+
+});
+
+</script>
+
 <div class="container">
 <div class="row">
   <div class="span12">
     <div id="map3f">
       <div id="searchdiv"> 
-        3nd Floor of Ring Building
-        <input id="roomname" type="text"/>
-        <input type="submit" value="search"/>
+        Meeting rooms of Ring Building
+        <input id="roomname" type="text" value=""/>
+        <input id="roomsubmit" type="button" value="search"/>
       </div>
       <hr>
-      <img src="/static/pics/ring_3f.jpg">
-      <div id="m1" style="position: relative; left: 45px; top: -1186px; z-index=5000">53101</div>
-      <div id="m2" style="position: relative; left: 45px; top: -1181px; z-index=5000">53102</div>
-      <div id="m3" style="position: relative; left: 45px; top: -1176px; z-index=5000">53103</div>
-      <div id="m4" style="position: relative; left: 45px; top: -1171px; z-index=5000">53104</div>
-      <div id="m5" style="position: relative; left: 45px; top: -1166px; z-index=5000">53105</div>
-      <div id="m6" style="position: relative; left: 45px; top: -1161px; z-index=5000">53106</div>
+      <img src="/static/pics/maps/ring_3f.jpg">
+      <div class="meetingroom" id="m301" style="position: relative; left: 45px; top: -1186px; z-index=5000">53101</div>
+      <div class="meetingroom" id="m302" style="position: relative; left: 45px; top: -1181px; z-index=5000">53102</div>
+      <div class="meetingroom" id="m303" style="position: relative; left: 45px; top: -1176px; z-index=5000">53103</div>
+      <div class="meetingroom" id="m304" style="position: relative; left: 45px; top: -1171px; z-index=5000">53104</div>
+      <div class="meetingroom" id="m305" style="position: relative; left: 45px; top: -1166px; z-index=5000">53105</div>
+      <div class="meetingroom" id="m306" style="position: relative; left: 45px; top: -1161px; z-index=5000">53106</div>
 
-      <div id="m7" style="position: relative; left: 45px; top: -983px; z-index=5000">53107</div>
-      <div id="m8" style="position: relative; left: 45px; top: -979px; z-index=5000">53108</div>
-      <div id="m9" style="position: relative; left: 45px; top: -975px; z-index=5000">53109</div>
-      <div id="m10" style="position: relative; left: 45px; top: -971px; z-index=5000">53110</div>
-      <div id="m11" style="position: relative; left: 45px; top: -967px; z-index=5000">53111</div>
-      <div id="m12" style="position: relative; left: 45px; top: -961px; z-index=5000">53112</div>
-      <div id="m13" style="position: relative; left: 45px; top: -957px; z-index=5000">53113</div>
-      <div id="m14" style="position: relative; left: 45px; top: -953px; z-index=5000">53114</div>
-      <div id="m15" style="position: relative; left: 45px; top: -949px; z-index=5000">53115</div>
-      <div id="m16" style="position: relative; left: 45px; top: -945px; z-index=5000">53116</div>
-      <div id="m17" style="position: relative; left: 45px; top: -940px; z-index=5000">53117</div>
+      <div class="meetingroom" id="m307" style="position: relative; left: 45px; top: -983px; z-index=5000">53107</div>
+      <div class="meetingroom" id="m308" style="position: relative; left: 45px; top: -979px; z-index=5000">53108</div>
+      <div class="meetingroom" id="m309" style="position: relative; left: 45px; top: -975px; z-index=5000">53109</div>
+      <div class="meetingroom" id="m310" style="position: relative; left: 45px; top: -971px; z-index=5000">53110</div>
+      <div class="meetingroom" id="m311" style="position: relative; left: 45px; top: -967px; z-index=5000">53111</div>
+      <div class="meetingroom" id="m312" style="position: relative; left: 45px; top: -961px; z-index=5000">53112</div>
+      <div class="meetingroom" id="m313" style="position: relative; left: 45px; top: -957px; z-index=5000">53113</div>
+      <div class="meetingroom" id="m314" style="position: relative; left: 45px; top: -953px; z-index=5000">53114</div>
+      <div class="meetingroom" id="m315" style="position: relative; left: 45px; top: -949px; z-index=5000">53115</div>
+      <div class="meetingroom" id="m316" style="position: relative; left: 45px; top: -945px; z-index=5000">53116</div>
+      <div class="meetingroom" id="m317" style="position: relative; left: 45px; top: -938px; z-index=5000">53117</div>
+      <div class="meetingroom" id="m318" style="position: relative; left: 45px; top: -933px; z-index=5000">53118</div>
 
-      <div id="m18" style="position: relative; left: 45px; top: -825px; z-index=5000">53118</div>
-      <div id="m19" style="position: relative; left: 45px; top: -821px; z-index=5000">53118</div>
-      <div id="m20" style="position: relative; left: 45px; top: -817px; z-index=5000">53118</div>
-      <div id="m21" style="position: relative; left: 45px; top: -813px; z-index=5000">53118</div>
-      <div id="m22" style="position: relative; left: 45px; top: -807px; z-index=5000">53118</div>
-      <div id="m23" style="position: relative; left: 45px; top: -803px; z-index=5000">53118</div>
-      <div id="m24" style="position: relative; left: 45px; top: -799px; z-index=5000">53118</div>
-      <div id="m25" style="position: relative; left: 45px; top: -793px; z-index=5000">53118</div>
-      <div id="m26" style="position: relative; left: 45px; top: -789px; z-index=5000">53118</div>
-      <div id="m27" style="position: relative; left: 45px; top: -785px; z-index=5000">53118</div>
-      <div id="m28" style="position: relative; left: 45px; top: -781px; z-index=5000">53118</div>
-      <div id="m29" style="position: relative; left: 45px; top: -775px; z-index=5000">53118</div>
-      <div id="m30" style="position: relative; left: 45px; top: -771px; z-index=5000">53118</div>
+      <div class="meetingroom" id="t3"  style="position: relative; left: 45px; top: -803px; z-index=5000">Trainging room 3</div>
+      <div class="meetingroom" id="t4"  style="position: relative; left: 45px; top: -783px; z-index=5000">Trainging room 4</div>
 
-      <div id="m31" style="position: relative; left: 940px; top: -1444px; z-index=5000">unkown</div>
-      <div id="m32" style="position: relative; left: 940px; top: -1439px; z-index=5000">unkown</div>
-      <div id="m33" style="position: relative; left: 940px; top: -1434px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m319" style="position: relative; left: 45px; top: -677px; z-index=5000">53119</div>
+      <div class="meetingroom" id="m320" style="position: relative; left: 45px; top: -673px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m321" style="position: relative; left: 45px; top: -667px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m322" style="position: relative; left: 45px; top: -662px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m323" style="position: relative; left: 45px; top: -658px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m324" style="position: relative; left: 45px; top: -654px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m325" style="position: relative; left: 45px; top: -650px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m326" style="position: relative; left: 45px; top: -646px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m327" style="position: relative; left: 45px; top: -642px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m328" style="position: relative; left: 45px; top: -638px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m329" style="position: relative; left: 45px; top: -633px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m330" style="position: relative; left: 45px; top: -628px; z-index=5000">53118</div>
 
-      <div id="m34" style="position: relative; left: 940px; top: -1364px; z-index=5000">unkown</div>
-      <div id="m35" style="position: relative; left: 940px; top: -1360px; z-index=5000">unkown</div>
-      <div id="m36" style="position: relative; left: 940px; top: -1356px; z-index=5000">unkown</div>
-      <div id="m37" style="position: relative; left: 940px; top: -1350px; z-index=5000">unkown</div>
-      <div id="m38" style="position: relative; left: 940px; top: -1346px; z-index=5000">unkown</div>
-      <div id="m39" style="position: relative; left: 940px; top: -1342px; z-index=5000">unkown</div>
-      <div id="m40" style="position: relative; left: 940px; top: -1338px; z-index=5000">unkown</div>
-      <div id="m41" style="position: relative; left: 940px; top: -1333px; z-index=5000">unkown</div>
-      <div id="m42" style="position: relative; left: 940px; top: -1329px; z-index=5000">unkown</div>
-      <div id="m43" style="position: relative; left: 940px; top: -1325px; z-index=5000">unkown</div>
-      <div id="m44" style="position: relative; left: 940px; top: -1320px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m331" style="position: relative; left: 940px; top: -1454px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m332" style="position: relative; left: 940px; top: -1449px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m333" style="position: relative; left: 940px; top: -1444px; z-index=5000">unkown</div>
 
-      <div id="m45" style="position: relative; left: 940px; top: -1252px; z-index=5000">unkown</div>
-      <div id="m46" style="position: relative; left: 940px; top: -1248px; z-index=5000">unkown</div>
-      <div id="m47" style="position: relative; left: 940px; top: -1243px; z-index=5000">unkown</div>
-      <div id="m48" style="position: relative; left: 940px; top: -1238px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m334" style="position: relative; left: 940px; top: -1374px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m335" style="position: relative; left: 940px; top: -1370px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m336" style="position: relative; left: 940px; top: -1366px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m337" style="position: relative; left: 940px; top: -1360px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m338" style="position: relative; left: 940px; top: -1356px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m339" style="position: relative; left: 940px; top: -1342px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m340" style="position: relative; left: 940px; top: -1338px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m341" style="position: relative; left: 940px; top: -1333px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m342" style="position: relative; left: 940px; top: -1329px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m343" style="position: relative; left: 940px; top: -1325px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m344" style="position: relative; left: 940px; top: -1320px; z-index=5000">unkown</div>
+
+      <div class="meetingroom" id="m345" style="position: relative; left: 940px; top: -1252px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m346" style="position: relative; left: 940px; top: -1248px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m347" style="position: relative; left: 940px; top: -1243px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m348" style="position: relative; left: 940px; top: -1238px; z-index=5000">unkown</div>
+
+
+      <hr>
+      <img src="/static/pics/maps/ring_2f.jpg">
+      <div class="meetingroom" id="m201" style="position: relative; left: 45px; top: -1186px; z-index=5000">53101</div>
+      <div class="meetingroom" id="m202" style="position: relative; left: 45px; top: -1181px; z-index=5000">53102</div>
+      <div class="meetingroom" id="m203" style="position: relative; left: 45px; top: -1176px; z-index=5000">53103</div>
+      <div class="meetingroom" id="m204" style="position: relative; left: 45px; top: -1171px; z-index=5000">53104</div>
+      <div class="meetingroom" id="m205" style="position: relative; left: 45px; top: -1166px; z-index=5000">53105</div>
+      <div class="meetingroom" id="m206" style="position: relative; left: 45px; top: -1161px; z-index=5000">53106</div>
+
+      <div class="meetingroom" id="m207" style="position: relative; left: 45px; top: -983px; z-index=5000">53107</div>
+      <div class="meetingroom" id="m208" style="position: relative; left: 45px; top: -979px; z-index=5000">53108</div>
+      <div class="meetingroom" id="m209" style="position: relative; left: 45px; top: -975px; z-index=5000">53109</div>
+      <div class="meetingroom" id="m210" style="position: relative; left: 45px; top: -971px; z-index=5000">53110</div>
+      <div class="meetingroom" id="m211" style="position: relative; left: 45px; top: -967px; z-index=5000">53111</div>
+      <div class="meetingroom" id="m212" style="position: relative; left: 45px; top: -961px; z-index=5000">53112</div>
+      <div class="meetingroom" id="m213" style="position: relative; left: 45px; top: -957px; z-index=5000">53113</div>
+      <div class="meetingroom" id="m214" style="position: relative; left: 45px; top: -953px; z-index=5000">53114</div>
+      <div class="meetingroom" id="m215" style="position: relative; left: 45px; top: -949px; z-index=5000">53115</div>
+      <div class="meetingroom" id="m216" style="position: relative; left: 45px; top: -945px; z-index=5000">53116</div>
+      <div class="meetingroom" id="m217" style="position: relative; left: 45px; top: -940px; z-index=5000">53117</div>
+
+      <div class="meetingroom" id="m218" style="position: relative; left: 45px; top: -825px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m219" style="position: relative; left: 45px; top: -821px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m220" style="position: relative; left: 45px; top: -817px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m221" style="position: relative; left: 45px; top: -813px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m222" style="position: relative; left: 45px; top: -807px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m223" style="position: relative; left: 45px; top: -803px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m224" style="position: relative; left: 45px; top: -799px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m225" style="position: relative; left: 45px; top: -793px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m226" style="position: relative; left: 45px; top: -789px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m227" style="position: relative; left: 45px; top: -785px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m228" style="position: relative; left: 45px; top: -781px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m229" style="position: relative; left: 45px; top: -775px; z-index=5000">53118</div>
+      <div class="meetingroom" id="m230" style="position: relative; left: 45px; top: -771px; z-index=5000">53118</div>
+
+      <div class="meetingroom" id="m231" style="position: relative; left: 940px; top: -1444px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m232" style="position: relative; left: 940px; top: -1439px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m233" style="position: relative; left: 940px; top: -1434px; z-index=5000">unkown</div>
+
+      <div class="meetingroom" id="m234" style="position: relative; left: 940px; top: -1364px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m235" style="position: relative; left: 940px; top: -1360px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m236" style="position: relative; left: 940px; top: -1356px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m237" style="position: relative; left: 940px; top: -1350px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m238" style="position: relative; left: 940px; top: -1346px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m239" style="position: relative; left: 940px; top: -1342px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m240" style="position: relative; left: 940px; top: -1338px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m241" style="position: relative; left: 940px; top: -1333px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m242" style="position: relative; left: 940px; top: -1329px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m243" style="position: relative; left: 940px; top: -1325px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m244" style="position: relative; left: 940px; top: -1320px; z-index=5000">unkown</div>
+
+      <div class="meetingroom" id="m245" style="position: relative; left: 940px; top: -1252px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m246" style="position: relative; left: 940px; top: -1248px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m247" style="position: relative; left: 940px; top: -1243px; z-index=5000">unkown</div>
+      <div class="meetingroom" id="m248" style="position: relative; left: 940px; top: -1238px; z-index=5000">unkown</div>
+
+
+      <hr>
+      <img src="/static/pics/maps/ring_1f.jpg">
+      <div class="meetingroom" id="m101" style="position: relative; left: 45px; top: -1186px; z-index=5000">53101</div>
+      <div class="meetingroom" id="m102" style="position: relative; left: 45px; top: -1181px; z-index=5000">53102</div>
+      <div class="meetingroom" id="m103" style="position: relative; left: 45px; top: -1176px; z-index=5000">53103</div>
+      <div class="meetingroom" id="m104" style="position: relative; left: 45px; top: -1171px; z-index=5000">53104</div>
+      <div class="meetingroom" id="m105" style="position: relative; left: 45px; top: -1166px; z-index=5000">53105</div>
+      <div class="meetingroom" id="m106" style="position: relative; left: 45px; top: -1161px; z-index=5000">53106</div>
+
+      <div class="meetingroom" id="m107" style="position: relative; left: 45px; top: -983px; z-index=5000">53107</div>
+      <div class="meetingroom" id="m108" style="position: relative; left: 45px; top: -979px; z-index=5000">53108</div>
+      <div class="meetingroom" id="m109" style="position: relative; left: 45px; top: -975px; z-index=5000">53109</div>
+      <div class="meetingroom" id="m110" style="position: relative; left: 45px; top: -971px; z-index=5000">53110</div>
+      <div class="meetingroom" id="m111" style="position: relative; left: 45px; top: -967px; z-index=5000">53111</div>
 
 
     </div>
