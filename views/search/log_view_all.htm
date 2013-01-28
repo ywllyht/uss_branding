@@ -32,8 +32,8 @@ $(document).ready(function(){
     <div class="span12">
 <p>&nbsp;</p>
 <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;view all log directory &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/   <a href=".">search </a></h2>
-<h3>&nbsp;&nbsp;&nbsp;&nbsp;dirlist:</h3>
-%for dir_w in dirlists:
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;VSC5:</h3>
+%for dir_w in vsc5list:
    %if dir_w.find("_delete") > 0:
         <p><a href="log_view/{{dir_w}}"><font color="gray">{{dir_w}}</font></a></p>
    %else:
@@ -41,7 +41,57 @@ $(document).ready(function(){
    %end
 %end
 <p>&nbsp;</p>
- 
+<hr>
+
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;VSU5:</h3>
+%for dir_w in vsu5list:
+   %if dir_w.find("_delete") > 0:
+        <p><a href="log_view/{{dir_w}}"><font color="gray">{{dir_w}}</font></a></p>
+   %else:
+        <p><a href="log_view/{{dir_w}}">{{dir_w}}</a></p>
+   %end
+%end
+<p>&nbsp;</p>
+<hr>
+
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;VSX4:</h3>
+%for dir_w in vsx4list:
+   %if dir_w.find("_delete") > 0:
+        <p><a href="log_view/{{dir_w}}"><font color="gray">{{dir_w}}</font></a></p>
+   %else:
+        <p><a href="log_view/{{dir_w}}">{{dir_w}}</a></p>
+   %end
+%end
+<p>&nbsp;</p>
+<hr>
+
+
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;VST5:</h3>
+%for dir_w in vst5list:
+   %if dir_w.find("_delete") > 0:
+        <p><a href="log_view/{{dir_w}}"><font color="gray">{{dir_w}}</font></a></p>
+   %else:
+        <p><a href="log_view/{{dir_w}}">{{dir_w}}</a></p>
+   %end
+%end
+<p>&nbsp;</p>
+<hr>
+
+%if illegallist:
+
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;Illegal:</h3>
+%for dir_w in illegallist:
+   %if dir_w.find("_delete") > 0:
+        <p><a href="log_view/{{dir_w}}"><font color="gray">{{dir_w}}</font></a></p>
+   %else:
+        <p><a href="log_view/{{dir_w}}">{{dir_w}}</a></p>
+   %end
+%end
+<p>&nbsp;</p>
+<hr>
+
+%end
+
     </div>
   </div>
 </div>

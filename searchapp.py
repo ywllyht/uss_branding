@@ -340,15 +340,55 @@ def log_delete(logdir):
         
 
 
+def log_view_all_sort(dirlists):
+    dirlists2 = []
+    # the name of dire is "POSIX.CMPL.VST5.V531.LLJLI.D121101.T080942"
+    # we want to change the sort order for view by "POSIX.CMPL.VST5.V531.D121101.T080942.LLJLI"
+    # so we add the following logic
+    for dire in dirlists:
+        dires = dire.split(".")
+        dires[4],dires[5],dires[6] = dires[5],dires[6],dires[4]
+        dire2 = ".".join(dires)
+        dirlists2.append((dire2,dire))
+    dirlists2.sort()
+    dirlists = [x[1] for x in dirlists2]
+    return dirlists
+
+
 @search_app.route("/log_view_all") 
 @login_required
 def log_view_all():   
     if not os.path.isdir(new2012path):
         return "Error! "+os.path.basename(new2012path)+" directory does not exist!"
     dirlists = os.listdir(new2012path)
-    dirlists.sort()
+    vsc5s = []
+    vsu5s = []
+    vsx4s = []
+    vst5s = []
+    illegals = []
+    for dire in dirlists:
+        dires = dire.split(".")
+        print dires
+        if dires[2].find("VSC5") >= 0:
+            vsc5s.append(dire)
+        elif dires[2].find("VSU5") >= 0:
+            vsu5s.append(dire)
+        elif dires[2].find("VSX4") >= 0:
+            vsx4s.append(dire)
+        elif dires[2].find("VST5") >= 0:
+            vst5s.append(dire)
+        else:
+            illegals.append(dire)
 
-    return  template("search/log_view_all.htm",title="USS FVT LOG VIEW",dirlists=dirlists, user=request.user)  
+    vsc5s2 = log_view_all_sort(vsc5s)
+    vsu5s2 = log_view_all_sort(vsu5s)
+    vsx4s2 = log_view_all_sort(vsx4s)
+    vst5s2 = log_view_all_sort(vst5s)
+    
+
+
+    return  template("search/log_view_all.htm",title="USS FVT LOG VIEW",illegallist=illegals,
+                     vsc5list=vsc5s2,vsu5list=vsu5s2,vsx4list=vsx4s2,vst5list=vst5s2,user=request.user)  
 
 
 # ajax interface for get #README content in log_view_all page
