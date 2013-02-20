@@ -25,8 +25,8 @@ Intern2013_app = Bottle()
 def index():                                                                                               
     #log_time = time.strftime("%Y-%m-%d %H:%M:%S",time.gmtime()) 
     resumelist = os.listdir(resumepath)
-    resumelist2 = map(lambda x:x.decode("gbk"), resumelist)
-    return template("Intern2013/index.htm",title="SVT3 Intern 2013 ",user=request.user,resumes=resumelist2)
+    #resumelist2 = map(lambda x:x.decode("gbk"), resumelist)
+    return template("Intern2013/index.htm",title="SVT3 Intern 2013 ",user=request.user,resumes=resumelist)
 
 # ajax interface for get #README content in log_view_all page
 @Intern2013_app.route("/index_ajax/<resume_name>/") 
