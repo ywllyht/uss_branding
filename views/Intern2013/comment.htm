@@ -1,0 +1,21 @@
+
+<div class="container">
+<div class="row">
+  <div class="span12">
+
+    <p><a href="../../">back</a></p>
+    <pre>
+      {{comment2}}
+    </pre>
+    <hr>
+    <p> score(1-5), 5 is the best</p>
+    <form action="." method="post">
+      <textarea name="comment" rows=13 cols=90 style="width:800px">{{template2}}
+      </textarea>
+      <br>
+      <input type="submit" name="append" value="append">
+    </form>
+  </div>
+</div>
+</div>
+%rebase base.htm title="welcome to USS FVT's site",user=user

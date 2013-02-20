@@ -1,0 +1,90 @@
+<script type="text/javascript" src="/static/js/lib/jquery/jquery-ui.min.js"></script>
+<link  rel="stylesheet" href="/static/css/jquery-ui.css" />      
+<script>
+$(function() {
+$( "#accordion" ).accordion();
+});
+</script>
+
+<script language="javascript">
+$(document).ready(function(){
+   $(".call_my_ajax").hover(function(){
+       $("#readmediv").show();
+       text1 = $(this).text();
+       //$("#readmepre").text(text1);
+       //console.log($(this).scrollTop());
+       //console.log($(window).top());
+       a_position = $(this).position();
+       //console.log(x.top);
+
+       $("#readmediv").css("top",(a_position.top+100)+"px");
+       $("#readmepre").load("/Intern2013/index_ajax/"+text1+"/"); 
+       
+   },
+   function(){
+       $("#readmediv").hide();
+       $("#readmepre").text("");
+   }); 
+ 
+});
+
+</script>
+
+
+<div id="readmediv" align="center" style="display:none; background-color:rgb(240,240,240);  width:800px; position:absolute; right:100px; z-index:3; " >
+  <pre id="readmepre" style="text-align:left"></pre>
+</div>
+
+<div class="container">
+<div class="row">
+  <div class="span12">
+
+    <table class="table">
+      <tr>
+        <td>id</td>
+        <td>resume</td>
+        <td>download_resume</td>
+        <td>comment</td>
+      </tr>
+      %for ii,resume in enumerate(resumes): 
+      <tr>
+         <td>{{ii}}</td>
+         <td class="call_my_ajax">{{resume}}</td>
+         <td><a href="download/{{resume}}/">download</a></td>
+         <td><a href="comment/{{resume}}/">comment</a></td>
+      </tr>
+      %end
+    </table>
+    
+   <!--
+
+    <div id="accordion">
+      <h3>SVT3 2013 Intern candidates</h3>
+        <div>
+        </div>
+
+      %%%%for ii,resume in enumerate(resumes): 
+      <h3>{{ii}}&nbsp;&nbsp;{{resume}}</h3>
+      <div>
+        <p><a href="download/{{resume}}/">&gt;&gt;download_resume&lt;&lt;</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="comment/{{resume}}/">&gt;&gt;comment&lt;&lt;</a></p>
+        <hr>
+        <p>
+          amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
+          odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+        </p>
+      </div>
+      %%%%%end
+    </div>
+
+    -->
+    %for ii in range(20):
+      <p>&nbsp;</p>
+    %end
+
+  </div>
+</div>
+</div>
+
+
+
+%rebase base.htm title="welcome to USS FVT's site",user=user
