@@ -84,7 +84,9 @@ def comment(resume_name):
   | interview record           |
   ------------------------------
   Score:        
-  datetime:    
+  interview datetime:    
+  graduate time:
+  available time for Intern: 
 
   description:   
 
