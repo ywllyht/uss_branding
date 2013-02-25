@@ -1,7 +1,20 @@
+<script language="javascript">
+    function prom(href)
+    { 
+      if(confirm("Are you sure to delete?")==true)
+      {
+      location.href=href; 
+      }
+    }
 
+</script>
 
+<div class="container">
+<div class="row">
+  <div class="span12">
+  
 <p><a href="../add/">new_user</a></p>
-<table border="1">
+<table class="table">
   <tr>
     <td>id</td>
     <td>username</td>
@@ -19,10 +32,15 @@
       <td>{{user2[3]}}</td>
       <td>{{user2[4]}}</td>
       <td>{{user2[5]}}</td>
-      <td><a href="../delete/{{user2[0]}}">delete</a> &nbsp;
+      <td>
+         <a onClick="prom('../delete/{{user2[0]}}')" href="#">delete</a> 
         <a href="../modify/{{user2[0]}}/">modify</a>
       </td>
   </tr>
 %end
 </table>
+
+  </div>
+</div>
+</div>
 %rebase base.htm title=title,user=user

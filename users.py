@@ -216,6 +216,7 @@ def user_changepw_post():
 
 
 @users_app.route("/modify/<userid:int>/")                    #Modify a user
+@login_required
 def user_modify(userid):
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
@@ -226,6 +227,7 @@ def user_modify(userid):
     
 
 @users_app.route("/modify/<userid:int>/",method="POST")      #modify a user --'POST'
+@login_required
 def user_modify_post(userid):
     username = request.forms.get('username')
     password = request.forms.get('password')
@@ -250,6 +252,7 @@ def user_modify_post(userid):
 
 
 @users_app.route("/delete/<userid:int>")                   #delete a user
+@login_required
 def user_delete(userid):
     #if MessageBox(None, 'Do you confirm to delete this user?', 'Delete the user', 1)==1:
     if 1==1:

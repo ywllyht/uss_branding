@@ -1,4 +1,28 @@
 
+<script language="javascript">
+    function prom(href)
+    { 
+      if(confirm("Are you sure to delete?")==true)
+      {
+      location.href=href; 
+      }
+    }
+
+  $(document).ready(function() {
+
+   $("td.mystatus").each(function(){
+	    //alert("haha");
+        //console.log($(this));
+        //console.log($(this).text());
+        if($(this).text() == "close")
+           $(this).parent().addClass("info");
+	   })
+
+   });
+
+</script>
+
+
 <div style="position: absolute; left: 50px;　top: 100px;">
   <table>
     <tr>
@@ -60,10 +84,10 @@
         <td>{{defect[5]}}</td>
         <td>{{defect[6]}}</td>
         <td>{{defect[7]}}</td>
-        <td>{{defect[8]}}</td>
+        <td class="mystatus">{{defect[8]}}</td>
         <td>{{defect[9]}}</td>
         <td>
-          <a href="delete/{{defect[0]}}/">D</a>
+          <a onClick="prom('delete/{{defect[0]}}/')" href="#">D</a> 
         </td>
       </tr>
       %end
