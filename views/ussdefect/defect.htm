@@ -1,0 +1,75 @@
+
+<div style="position: absolute; left: 50px;　top: 100px;">
+  <table>
+    <tr>
+      <td>total</td>
+      <td>{{d_total}}</td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>{{d_open}}</td>
+    </tr>
+    <tr>
+      <td>close</td>
+      <td>{{d_close}}</td>
+    </tr>
+    <tr>
+      <td>verify</td>
+      <td>{{d_verify}}</td>
+    </tr>
+    <tr>
+      <td>returned&nbsp;</td>
+      <td>{{d_returned}}</td>
+    </tr>
+    <tr>
+      <td>cancel</td>
+      <td>{{d_cancel}}</td>
+    </tr>
+    <tr>
+      <td>other</td>
+      <td>{{d_other}}</td>
+  </table>
+</div>
+
+<div class="container">
+<div class="row">
+  <div class="span12">
+    <p>
+       <a href="../">back</a>&nbsp;&nbsp;&nbsp;
+       <a href="new/">new_defect</a>&nbsp;&nbsp;&nbsp;
+    </p>
+    <table class="table">
+      <tr>
+        <td>id</td>
+        <td>component</td>
+        <td>number</td>
+        <td>lineitem</td>
+        <td>open_date</td>
+        <td>close_date</td>
+        <td>poster</td>
+        <td>status</td>
+        <td>comments</td>
+        <td>&nbsp;</td>
+      </tr>
+      %for defect in defects:
+      <tr>
+        <td><a href="modify/{{defect[0]}}/">{{defect[0]}}</a></td>
+        <td>{{defect[1]}}</td>
+        <td>{{defect[2]}}</td>
+        <td>{{defect[4]}}</td>
+        <td>{{defect[5]}}</td>
+        <td>{{defect[6]}}</td>
+        <td>{{defect[7]}}</td>
+        <td>{{defect[8]}}</td>
+        <td>{{defect[9]}}</td>
+        <td>
+          <a href="delete/{{defect[0]}}/">D</a>
+        </td>
+      </tr>
+      %end
+    </table>
+
+  </div>
+</div>
+</div>
+%rebase base.htm title="USSFVT defect stat...",user=user
