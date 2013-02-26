@@ -1,0 +1,131 @@
+<script type="text/javascript" src="/static/js/lib/jquery/jquery-ui.min.js"></script>
+<link  rel="stylesheet" href="/static/css/jquery-ui.css" />      
+<script>
+   $(function() {
+     $( "#datepicker1" ).datepicker({dateFormat: "yy-mm-dd"});
+     $( "#datepicker2" ).datepicker({dateFormat: "yy-mm-dd"});
+     
+     $("#component > option").each(function(){
+	     value1 = $(this).attr("value");
+	     //alert(value1);
+	     //alert(value1 == "{{component}}");
+	     if (value1 == "{{component}}" )
+	     {
+             $(this).attr("selected","true");
+             
+	     }
+	    
+     });
+     
+     $("#status > option").each(function(){
+	     value1 = $(this).attr("value");
+	     //alert(value1);
+	     //alert(value1 == "{{status}}");
+	     if (value1 == "{{status}}" )
+	     {
+             $(this).attr("selected","true");
+             
+	     }
+	    
+     });     
+   });
+</script>
+
+<div class="container">
+<div class="row">
+  <div class="span12">
+
+    <form action="." method="post">
+      
+
+      <table class="table">
+      <tr>
+        <td>id:</td>
+        <td>
+          <input type="text" name="did" value="{{did}}" disabled="true"/>
+        </td>
+      </tr>      
+      <tr>
+        <td>component</td>
+        <td>
+          <select id="component" name="component" size=1>
+            <option value="LE">LE</option>
+            <option value="USS">USS</option>
+            <option value="SHELL">SHELL</option>
+            <option value="ZFS">ZFS</option>
+            <option value="NFS">NFS</option>
+            <option value="HFS">HFS</option>
+          </select>
+
+        </td>
+      </tr>
+      <tr>
+        <td>defect number:</td>
+        <td>
+          <input type="text" name="number" value="{{number}}"/>
+        </td>
+      </tr>
+      <tr>
+        <td>title:</td>
+        <td>
+          <input type="text" name="title" value="{{title}}" style="width:400px"/>
+        </td>
+      </tr>
+      <tr>
+        <td>Lineitem:</td>
+        <td>
+          <input type="text" name="Lineitem" value="{{Lineitem}}"/> only input number,such as 133, 3204
+        </td>
+      </tr>
+      <tr>
+        <td>open date:</td>
+        <td>
+          <input id="datepicker1" type="text" name="open_date" value="{{open_date}}"/>
+        </td>
+      </tr>
+      <tr>
+        <td>close date:</td>
+        <td>
+          <input id="datepicker2" type="text" name="close_date" value="{{close_date}}"/>
+        </td>
+      </tr>
+      <tr>
+        <td>poster:</td>
+        <td>
+          <input type="text" name="poster" value="{{poster}}"/>
+        </td>
+      </tr>
+      <tr>
+        <td>status:</td>
+        <td>
+          <select id="status" name="status" size=1>
+            <option value="open" selecetd>open</option>
+            <option value="close">close</option>
+            <option value="verify">verify</option>
+            <option value="returned">returned</option>
+            <option value="cancel">cancel</option>
+            <option value="other">other</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>comment(defect family):</td>
+        <td>
+          <input type="text" name="comment" value="{{comment}}" style="width:600px"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="submit" value="modify">
+        </td>
+        <td>&nbsp;</td>
+      </tr>
+
+      </table>
+
+    </form>
+
+  </div>
+</div>
+</div>
+%rebase base.htm title="USSFVT defect modify",user=user

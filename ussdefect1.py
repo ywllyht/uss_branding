@@ -5,9 +5,11 @@ import sqlite3 as sqlite
 import os                                                                                                
 import sys
 import time
+import datetime
 from users import login_required
 from urllib import urlencode, unquote
 import re
+from pprint import pprint
 
 date_p = re.compile(r"(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})")
 # create table if not exists ussdefects(
@@ -88,6 +90,17 @@ def defect_new_post():
     poster = request.forms.get('poster',"")
     status = request.forms.get('status',"")
     comment = request.forms.get('comment',"")
+    
+    component = component.replace("'","''")
+    number = number.replace("'","''")
+    title = title.replace("'","''")
+    Lineitem = Lineitem.replace("'","''")
+    open_date = open_date.replace("'","''")
+    close_date = close_date.replace("'","''")
+    poster = poster.replace("'","''")
+    status = status.replace("'","''")
+    comment = comment.replace("'","''")   
+    
     if component == "":
         return template("myerror.htm", user=request.user, msg="Error,component is null!")
     if number == "":
@@ -162,6 +175,17 @@ def defect_modify_post(did):
     poster = request.forms.get('poster',"")
     status = request.forms.get('status',"")
     comment = request.forms.get('comment',"")
+
+    component = component.replace("'","''")
+    number = number.replace("'","''")
+    title = title.replace("'","''")
+    Lineitem = Lineitem.replace("'","''")
+    open_date = open_date.replace("'","''")
+    close_date = close_date.replace("'","''")
+    poster = poster.replace("'","''")
+    status = status.replace("'","''")
+    comment = comment.replace("'","''")  
+    
     if component == "":
         return template("myerror.htm", user=request.user, msg="Error,component is null!")
     if number == "":
@@ -208,6 +232,54 @@ def user_delete(did):
     cx.commit()
     redirect("/USSdefect/defect/")
 
+def create_month_range(start_year, start_month, end_year, end_month):
+    if start_year*12+start_month > end_year*12+end_month:
+        raise Exception("invalid parameter")
+    year = start_year
+    month = start_month
+    while year*12+month <= end_year*12+end_month:
+        yield datetime.date(year,month,1)
+        if month < 12:
+            month += 1
+        else:
+            month = 1
+            year += 1
+
+@USSdefect_app.route("/defect/draw/")                   #delete a user
+@login_required
+def defect_draw():
+    START_YEAR = 2011
+    START_MONTH = 9
+    CURRENT_YEAR = datetime.date.today().year
+    CURRENT_MONTH = datetime.date.today().month
+  
+    
+
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    #cu.execute('select * from ussdefects')
+    cu.execute('select max(open_date),min(open_date) from ussdefects')
+    rs = cu.fetchall()
+    
+    max_date = rs[0][0]
+    min_date = rs[0][1]
+
+    m = date_p.match(min_date)
+    if m:
+        min_date_year = int(m.group("year"))
+        min_date_month = int(m.group("month"))
+    else:
+        return template("myerror.htm", user=request.user, msg="Error, min(open_date) is invalid -- " + min_date)
+
+    from_date_year = min(min_date_year, START_YEAR)
+    from_date_month = min(min_date_month, START_MONTH)
+    
+    months = []
+    month_generator = create_month_range(from_date_year, from_date_month, CURRENT_YEAR, CURRENT_MONTH)
+    for mm in month_generator:
+        months.append(mm)
+    pprint(months)
+    return "OK"
    
 if __name__=="__main__":
     pass
