@@ -33,6 +33,8 @@ def index():
     resumelist = os.listdir(resumepath)
     if sys.platform == "win32":
         resumelist = map(lambda x:x.decode("gbk"), resumelist)
+    resumelist.sort()
+    
     scores = []
     for resume_name in resumelist:
         #resume_name2 = resume_name.decode("utf-8")
