@@ -1,0 +1,101 @@
+<script type="text/javascript" src="/static/js/lib/jquery/jquery-ui.min.js"></script>
+<link  rel="stylesheet" href="/static/css/jquery-ui.css" />      
+<script>
+   $(function() {
+     $( "#datepicker1" ).datepicker({dateFormat: "yy-mm-dd"});
+     $( "#datepicker2" ).datepicker({dateFormat: "yy-mm-dd"});
+   });
+</script>
+
+<div class="container">
+<div class="row">
+  <div class="span12">
+
+    <form action="." method="post">
+      
+
+      <table class="table">
+      <tr>
+        <td>component</td>
+        <td>
+          <select name="component" size=1>
+            <option value="LE">LE</option>
+            <option value="USS" selected>USS</option>
+            <option value="SHELL">SHELL</option>
+            <option value="ZFS">ZFS</option>
+            <option value="NFS">NFS</option>
+            <option value="HFS">HFS</option>
+          </select>
+
+        </td>
+      </tr>
+      <tr>
+        <td>defect number:</td>
+        <td>
+          <input type="text" name="number" value=""/>
+        </td>
+      </tr>
+      <tr>
+        <td>title:</td>
+        <td>
+          <input type="text" name="title" value="" style="width:400px"/>
+        </td>
+      </tr>
+      <tr>
+        <td>Lineitem:</td>
+        <td>
+          <input type="text" name="Lineitem" value=""/> only input number,such as 133, 3204
+        </td>
+      </tr>
+      <tr>
+        <td>open date:</td>
+        <td>
+          <input id="datepicker1" type="text" name="open_date" value=""/>
+        </td>
+      </tr>
+      <tr>
+        <td>close date:</td>
+        <td>
+          <input id="datepicker2" type="text" name="close_date" value=""/>
+        </td>
+      </tr>
+      <tr>
+        <td>poster:</td>
+        <td>
+          <input type="text" name="poster" value="{{user.username}}"/>
+        </td>
+      </tr>
+      <tr>
+        <td>status:</td>
+        <td>
+          <select name="status" size=1>
+            <option value="open" selecetd>open</option>
+            <option value="close">close</option>
+            <option value="verify">verify</option>
+            <option value="returned">returned</option>
+            <option value="cancel">cancel</option>
+            <option value="other">other</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>comment(defect family):</td>
+        <td>
+          <input type="text" name="comment" value="" style="width:600px"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="submit" value="add">
+        </td>
+        <td>&nbsp;</td>
+      </tr>
+
+      </table>
+
+    </form>
+
+  </div>
+</div>
+</div>
+%rebase base.htm title="USSFVT defect new",user=user

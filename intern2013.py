@@ -6,6 +6,7 @@
 from bottle import route, run, Bottle, template, request, abort, redirect, static_file
 import sqlite3 as sqlite                                                                                    
 import os                                                                                                
+import sys
 import time
 from users import login_required
 from urllib import urlencode, unquote
@@ -15,8 +16,11 @@ from urllib import urlencode, unquote
 _curpath = os.path.dirname(__file__)
 _uppath = os.path.dirname(_curpath)
 commentpath = os.path.join(_uppath,"SVT3_Intern_2013_comment")
-resumepath = r'/home/lljli/ftp/temp/SVT3_Intern_2013'
-#resumepath = os.path.join(_uppath,"SVT3_Intern_2013_resume")
+if sys.platform == "win32":  # winXP, developer environment
+    resumepath = os.path.join(_uppath,"SVT3_Intern_2013_resume")
+else:                        # linux server, running environment
+    resumepath = r'/home/lljli/ftp/temp/SVT3_Intern_2013'
+
 
 Intern2013_app = Bottle()
 
