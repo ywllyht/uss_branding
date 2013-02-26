@@ -10,7 +10,9 @@ import sys
 import time
 from users import login_required
 from urllib import urlencode, unquote
+import re
 
+score_p = re.compile(r"^\s+score:\s*(?P<s>\d+[.]?\d?)\s*$")
 
 
 _curpath = os.path.dirname(__file__)
@@ -29,8 +31,34 @@ Intern2013_app = Bottle()
 def index():                                                                                               
     #log_time = time.strftime("%Y-%m-%d %H:%M:%S",time.gmtime()) 
     resumelist = os.listdir(resumepath)
-    #resumelist2 = map(lambda x:x.decode("gbk"), resumelist)
-    return template("Intern2013/index.htm",title="SVT3 Intern 2013 ",user=request.user,resumes=resumelist)
+    if sys.platform == "win32":
+        resumelist = map(lambda x:x.decode("gbk"), resumelist)
+    scores = []
+    for resume_name in resumelist:
+        #resume_name2 = resume_name.decode("utf-8")
+        slice1 = resume_name.split(".",1)
+        if len(slice1) != 2:
+            return "name error, split fails! ",resume_name2
+        resume_comment_name3 = slice1[0]+".txt"
+        resume_comment_name4 = os.path.join(commentpath,resume_comment_name3)       
+        if not os.path.isfile(resume_comment_name4):
+            scores.append("")
+        else:
+            f1 = open(resume_comment_name4,"r")
+            lines = f1.readlines()
+            f1.close() 
+            findflag = False
+            for line in lines:
+                line = line.lower()
+                m = score_p.match(line)
+                if m:
+                    findflag = True
+                    scores.append(m.group("s"))
+                    break
+            if findflag == False:
+                scores.append("")
+                    
+    return template("Intern2013/index.htm",title="SVT3 Intern 2013 ",user=request.user,resumes=resumelist, scores=scores)
 
 # ajax interface for get #README content in log_view_all page
 @Intern2013_app.route("/index_ajax/<resume_name>/") 
