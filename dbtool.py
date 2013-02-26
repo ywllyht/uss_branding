@@ -1,0 +1,38 @@
+# coding:utf-8
+
+import sqlite3 as sqlite                                                                                    
+import re
+
+
+def create_ussdefects():
+    command = """
+create table if not exists ussdefects(
+        id integer primary key,
+        component varchar(10),
+        number varchar(10),
+        title varchar(30),
+        Lineitem varchar(10),
+        open_date varchar(20),
+        close_date varchar(20),
+        poster varchar(20),
+        status varchar(10),
+        comment varchar(30)
+);    
+
+"""
+    command1 = """
+    insert into ussdefects values(NULL,"LE","111","ff zz","3204","2012-01-01","2012-02-01","lljli","close","only for test");
+"""
+
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    cu.execute(command)
+    cu.execute(command1)
+    cx.commit()
+    cu.close()
+    print "create end!"
+
+   
+if __name__=="__main__":
+    create_ussdefects()
+
