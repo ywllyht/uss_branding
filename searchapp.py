@@ -3,7 +3,7 @@
 # filename: searchapp.py
 # ywllyht@yahoo.com.cn
 
-from bottle import route, run, Bottle, template, request, abort, redirect                                   
+from bottle import route, run, Bottle, template, request, abort, redirect, static_file                                   
 import sqlite3 as sqlite                                                                                    
 import os                                                                                                
 import time
@@ -368,7 +368,7 @@ def log_view_all():
     illegals = []
     for dire in dirlists:
         dires = dire.split(".")
-        print dires
+        #print dires
         if dires[2].find("VSC5") >= 0:
             vsc5s.append(dire)
         elif dires[2].find("VSU5") >= 0:
@@ -422,6 +422,8 @@ def log_view_file(logdir,logfile):
         return "Error! " + logdir + "("+logfile+") dos not exist or it is not a file!"
     f1 = open(newfilename2)
     content = f1.read()
+    if logfile == "JOURNAL":
+        return static_file(logfile,root=newdirname2,mimetype='text/plain',download=logfile)
     f1.close()
 
     return  template("search/log_view_file.htm",title="USS FVT LOG VIEW",logdir=logdir, logfile=logfile, content=content, user=request.user)  
@@ -500,7 +502,7 @@ def log_analytic(logdir):
         sps = line.split()  #case_name,case_no,case_status
         cases_w.append([case_catalog,sps[0],sps[1],sps[2]]) #case_catalog,case_name,case_no,case_status
         
-    print "len of cases is ",len(cases_w)
+    #print "len of cases is ",len(cases_w)
     # read PIN index
     fn0 = "B95PIN"
     fn1 = os.path.join(AQpath,fn0)
