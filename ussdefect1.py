@@ -39,6 +39,11 @@ _staticpath = os.path.join(_curpath,"static")
 _picpath = os.path.join(_staticpath,"pics")
 _defectpicpath = os.path.join(_picpath,"ussdefects")
 
+make_defect_py = os.path.join(_curpath,"ussdefectpic1.py")
+defect_fun_fn1 = "ussdefect1"
+defect_csv_fn1 = os.path.join(_defectpicpath,"ussdefect1.csv")
+defect_eps_fn1 = os.path.join(_defectpicpath,"ussdefect1.eps")
+defect_png_fn1 = os.path.join(_defectpicpath,"ussdefect1.png")
 
 
 defect_status = ["open", "verify", "close", "returned", "cancel",]
@@ -260,13 +265,34 @@ def create_month_range(start_year, start_month, end_year, end_month):
 @login_required
 def defect_draw():
     result = []
+    result.append( create_defect_csv1() )
+    result.append( create_pic(make_defect_py, defect_fun_fn1, defect_csv_fn1, defect_eps_fn1, defect_png_fn1) )
+    return "<pre>\n"+"\n".join(result) +"</pre>\n"
+
+def create_pic(targetpy, targetfun, targetcsv, targeteps, targetpng):
+    result = []
+    if sys.platform == "win32":
+        command1 = targetpy + " " + targetfun + " " + targetcsv + " > " +targeteps
+        command2 = "gswin64c -dBATCH -dNOPAUSE -dEPSCrop -sDEVICE=png16m -r300 -sOutputFile="+targetpng+" "+targeteps
+    else:
+        command1 = "python " + targetpy + " " + targetfun + " " + targetcsv + " > " +targeteps
+        command2 = ""
+    print command1
+    time.sleep(1)
+    t_f = os.popen(command1)
+    result.append( t_f.read() )
+    t_f = os.popen(command2)
+    result.append( t_f.read() )
+    return "\n".join(result)
+
+def create_defect_csv1():    
+    result = []
+    result.append("<b>create_defect_csv1()</b>")
     
     START_YEAR = 2011
     START_MONTH = 9
     CURRENT_YEAR = datetime.date.today().year
     CURRENT_MONTH = datetime.date.today().month
-  
-    
 
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
@@ -332,12 +358,12 @@ def defect_draw():
     x_months2.sort()
 
     # output data to csv file
-    fn1 = os.path.join(_defectpicpath,"ussdefect1.csv")
-    f1 = open(fn1,"w+")
+    #fn1 = os.path.join(_defectpicpath,"ussdefect1.csv")
+    f1 = open(defect_csv_fn1,"w+")
     for x in x_months2:
         f1.write(",".join(x)+"\n")    
     f1.close()
-    result.append("&nbsp;&nbsp; generate "+fn1+" successfully!")
+    result.append("&nbsp;&nbsp; generate "+defect_csv_fn1+" successfully!")
     
     
     # begin draw picture
