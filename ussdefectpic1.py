@@ -115,7 +115,7 @@ def ussdefect3(fn1):
     plot = pie_plot.T(data=data, 
                     arc_offsets=[ 10 for x in range(len(data))],
                     shadow = (2, -2, fill_style.gray50),
-                    label_offset = 25,
+                    label_offset = 15,
                     arrow_style = arrow.a3)
     ar.add_plot(plot)
     ar.draw()
