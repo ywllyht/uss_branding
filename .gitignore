@@ -4,7 +4,7 @@
 branding.db
 static/share/*
 static/pics/maps/*
-static/pics/ussdefects/*
+static/ussdefects/*
 orderdinner.txt
 orderdinner_bak.txt
 

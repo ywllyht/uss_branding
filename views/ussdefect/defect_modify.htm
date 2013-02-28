@@ -27,7 +27,19 @@
              
 	     }
 	    
-     });     
+     });
+         
+     $("#poster > option").each(function(){
+	     value1 = $(this).attr("value");
+	     //alert(value1);
+	     //alert(value1 == "{{status}}");
+	     if (value1 == "{{poster}}" )
+	     {
+             $(this).attr("selected","true");
+             
+	     }
+	    
+     });   
    });
 </script>
 
@@ -55,6 +67,7 @@
             <option value="ZFS">ZFS</option>
             <option value="NFS">NFS</option>
             <option value="HFS">HFS</option>
+            <option value="HFS">OPENGP</option>
           </select>
 
         </td>
@@ -92,7 +105,13 @@
       <tr>
         <td>poster:</td>
         <td>
-          <input type="text" name="poster" value="{{poster}}"/>
+          <select name="poster" size=1>
+            <option value="lljli">lljli</option>
+            <option value="yoga">yoga</option>
+            <option value="rucy">rucy</option>
+            <option value="bob">bob</option>
+            <option value="daisy">daisy</option>
+          </select>   
         </td>
       </tr>
       <tr>

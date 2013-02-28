@@ -36,14 +36,25 @@ date_p = re.compile(r"(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})")
 _localDir=os.path.dirname(__file__)
 _curpath=os.path.normpath(os.path.join(os.getcwd(),_localDir))
 _staticpath = os.path.join(_curpath,"static")
-_picpath = os.path.join(_staticpath,"pics")
-_defectpicpath = os.path.join(_picpath,"ussdefects")
+#_picpath = os.path.join(_staticpath,"pics")
+_defectpicpath = os.path.join(_staticpath,"ussdefects")
 
 make_defect_py = os.path.join(_curpath,"ussdefectpic1.py")
+
 defect_fun_fn1 = "ussdefect1"
 defect_csv_fn1 = os.path.join(_defectpicpath,"ussdefect1.csv")
 defect_eps_fn1 = os.path.join(_defectpicpath,"ussdefect1.eps")
 defect_png_fn1 = os.path.join(_defectpicpath,"ussdefect1.png")
+
+defect_fun_fn2 = "ussdefect2"
+defect_csv_fn2 = os.path.join(_defectpicpath,"ussdefect2.csv")
+defect_eps_fn2 = os.path.join(_defectpicpath,"ussdefect2.eps")
+defect_png_fn2 = os.path.join(_defectpicpath,"ussdefect2.png")
+
+defect_fun_fn3 = "ussdefect3"
+defect_csv_fn3 = os.path.join(_defectpicpath,"ussdefect3.csv")
+defect_eps_fn3 = os.path.join(_defectpicpath,"ussdefect3.eps")
+defect_png_fn3 = os.path.join(_defectpicpath,"ussdefect3.png")
 
 
 defect_status = ["open", "verify", "close", "returned", "cancel",]
@@ -51,7 +62,6 @@ defect_status = ["open", "verify", "close", "returned", "cancel",]
 USSdefect_app = Bottle()
 
 @USSdefect_app.route("/") 
-@login_required
 def index():
     return template("ussdefect/index.htm",user=request.user)
 
@@ -265,8 +275,11 @@ def create_month_range(start_year, start_month, end_year, end_month):
 @login_required
 def defect_draw():
     result = []
-    result.append( create_defect_csv1() )
+    # create pic1,pic2,pic3
+    result.append( create_defect_csv123() )
     result.append( create_pic(make_defect_py, defect_fun_fn1, defect_csv_fn1, defect_eps_fn1, defect_png_fn1) )
+    result.append( create_pic(make_defect_py, defect_fun_fn2, defect_csv_fn2, defect_eps_fn2, defect_png_fn2) )
+    result.append( create_pic(make_defect_py, defect_fun_fn3, defect_csv_fn3, defect_eps_fn3, defect_png_fn3) )
     return "<pre>\n"+"\n".join(result) +"</pre>\n"
 
 def create_pic(targetpy, targetfun, targetcsv, targeteps, targetpng):
@@ -276,19 +289,26 @@ def create_pic(targetpy, targetfun, targetcsv, targeteps, targetpng):
         command2 = "gswin64c -dBATCH -dNOPAUSE -dEPSCrop -sDEVICE=png16m -r300 -sOutputFile="+targetpng+" "+targeteps
     else:
         command1 = "python " + targetpy + " " + targetfun + " " + targetcsv + " > " +targeteps
-        command2 = ""
-    print command1
-    time.sleep(1)
+        command2 = "gs -dBATCH -dNOPAUSE -dEPSCrop -sDEVICE=png16m -r300 -sOutputFile="+targetpng+" "+targeteps
+    #print command1
+    #time.sleep(1)
     t_f = os.popen(command1)
     result.append( t_f.read() )
     t_f = os.popen(command2)
     result.append( t_f.read() )
     return "\n".join(result)
 
-def create_defect_csv1():    
+def create_defect_csv123():   
+    ''' create csv for 
+         (1) increase number of open_defect and close_defect pic per month 
+         (2) total number of open_defect and close_defect pic per month 
+         (3) defect number of each member
+    ''' 
     result = []
     result.append("<b>create_defect_csv1()</b>")
-    
+    Lineitem_filter = ["3204","133","133.1","1981"]
+
+    # we only use the data between (START_YEAR,START_MONTH) and (CURRENT_YEAR, CURRENT_MONTH)
     START_YEAR = 2011
     START_MONTH = 9
     CURRENT_YEAR = datetime.date.today().year
@@ -320,11 +340,13 @@ def create_defect_csv1():
         x_months[mm] = [0,0]   # first is number of open_defect,  second is number of close_defect
     
 
-  
     cu.execute('select * from ussdefects')
     rs = cu.fetchall()  
     for r in rs:
         # calculate number of open defect for each month
+        if r[4] not in Lineitem_filter:
+            continue
+            
         open_date = r[5]
         m = date_p.match(open_date)
         if m:
@@ -349,33 +371,72 @@ def create_defect_csv1():
             if close_date != "":
                 return template("myerror.htm", user=request.user, msg="Error, close_date is invalid, did-- " + str(r[0]))        
     
-    pprint(x_months)
+    #pprint(x_months)
     result.append("&nbsp;&nbsp; read defects data successfully!")
+
+    ###############################
+    # output data to csv file1    #
+    ###############################
     
     x_months2 = []
     for key,value in x_months.items():
-        x_months2.append(["%d-%d" % key,str(value[0]),str(value[1])])
+        x_months2.append(["%d-%02d" % key,str(value[0]),str(value[1])])
     x_months2.sort()
 
-    # output data to csv file
-    #fn1 = os.path.join(_defectpicpath,"ussdefect1.csv")
     f1 = open(defect_csv_fn1,"w+")
     for x in x_months2:
         f1.write(",".join(x)+"\n")    
     f1.close()
     result.append("&nbsp;&nbsp; generate "+defect_csv_fn1+" successfully!")
-    
-    
-    # begin draw picture
-    #theme.get_options()
 
-    #ar = area.T(x_coord = category_coord.T(x_months2, 0), y_range = (0, None),
-    #        x_axis = axis.X(label="Month"),
-    #        y_axis = axis.Y(label="Value"))
-    #ar.add_plot(bar_plot.T(data = x_months2, label = "Something"))
-    #ar.draw()
+
+    ###############################
+    # output data to csv file2    #
+    ###############################
+
+    # x_months3 = [ ["%d-%02d" % x,0,0] for x in x_months.keys() ]
+    # for m2 in x_months2:
+    #     for m3 in x_months3:
+    #         if m2[0] >= m3[0]:
+    #             m3[1] += int(m2[1])
+    #             m3[2] += int(m2[2])
+    x_months3 = [ [x[0],int(x[1]),int(x[2])] for x in x_months2]
+    lens3 = len(x_months3)
+    if lens3 == 0:
+        return template("myerror.htm", user=request.user, msg="Error, x_months3 is emptry ")
+    for m3 in range(1,lens3):
+        x_months3[m3][1] += x_months3[m3-1][1]
+        x_months3[m3][2] += x_months3[m3-1][2]
     
+    f1 = open(defect_csv_fn2,"w+")
+    for x in x_months3:
+        f1.write(x[0]+","+ str(x[1]) +"," +str(x[2]) + "\n")    
+    f1.close()
+    result.append("&nbsp;&nbsp; generate "+defect_csv_fn2+" successfully!")
+
+
+    ###############################
+    # output data to csv file3    #
+    ###############################
+    member_defects = {}
+    for r in rs:
+        # calculate number of open defect for each month
+        if r[4] not in Lineitem_filter:
+            continue        
+        open_number = member_defects.get(r[7],0)
+        open_number += 1
+        member_defects[r[7]] = open_number
+        
+    f1 = open(defect_csv_fn3,"w+")
+    for key,value in member_defects.items():
+        f1.write(key+","+ str(value) + "\n")    
+    f1.close()
+    result.append("&nbsp;&nbsp; generate "+defect_csv_fn3+" successfully!")   
+
     return "<br>".join(result)
+
+
+
    
 if __name__=="__main__":
     pass
