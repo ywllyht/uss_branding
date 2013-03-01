@@ -1,0 +1,68 @@
+
+<script language="javascript">
+    function prom(href)
+    { 
+      if(confirm("Are you sure to delete?")==true)
+      {
+      location.href=href; 
+      }
+    }
+
+  $(document).ready(function() {
+
+   $("td.mystatus").each(function(){
+	    //alert("haha");
+        //console.log($(this));
+        //console.log($(this).text());
+        //if($(this).text() == "close")
+        //   $(this).parent().addClass("info");
+	   })
+
+   });
+
+</script>
+
+
+<div class="container">
+<div class="row">
+
+    <p>
+       <a href="../">back</a>&nbsp;&nbsp;&nbsp;
+       <a href="new/">new_project</a>&nbsp;&nbsp;&nbsp;
+    </p>
+
+<table class="table">
+      <tr>
+        <td>id</td>
+        <td>name</td>
+        <td>total_num</td>
+        <td>current_attemp</td>
+        <td>current_succ</td>
+        <td>draw_flag</td>
+        <td>start_date</td>
+        <td>end_date</td>
+        <td>comments</td>
+        <td>&nbsp;</td>
+      </tr>
+      %for project in projects:
+      <tr>
+        <td><a href="modify/{{project[0]}}/">{{project[0]}}</a></td>
+        <td>{{project[1]}}</td>
+        <td>{{project[2]}}</td>
+        <td>{{project[3]}}</td>
+        <td>{{project[4]}}</td>
+        <td>{{project[5]}}</td>
+        <td>{{project[6]}}</td>
+        <td>{{project[7]}}</td>
+        <td>{{project[8]}}</td>
+        <td>
+          <a onClick="prom('projects/{{project[0]}}/')" href="#">D</a> 
+        </td>
+      </tr>
+      %end
+    </table>
+
+
+</div>
+</div>
+%rebase base.htm title="USSFVT project stat...",user=user

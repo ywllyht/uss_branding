@@ -1,0 +1,95 @@
+<script type="text/javascript" src="/static/js/lib/jquery/jquery-ui.min.js"></script>
+<link  rel="stylesheet" href="/static/css/jquery-ui.css" />      
+<script>
+   $(function() {
+     $( "#datepicker1" ).datepicker({dateFormat: "yy-mm-dd"});
+     $( "#datepicker2" ).datepicker({dateFormat: "yy-mm-dd"});
+   });
+
+   $("#poster > option").each(function(){
+	     value1 = $(this).attr("value");
+	     if (value1 == "{{user.username}}" )
+	     {
+             $(this).attr("selected","true");
+             
+	     }
+	    
+     }); 
+</script>
+
+<div class="container">
+<div class="row">
+  <div class="span12">
+
+    <form action="." method="post">
+      
+
+      <table class="table">
+      <tr>
+        <td>name</td>
+        <td>
+        
+			<input type="text" name="name" value=""/>
+
+        </td>
+      </tr>
+      <tr>
+        <td>total_num:</td>
+        <td>
+          <input type="text" name="total_num" value=""/>
+        </td>
+      </tr>
+      <tr>
+        <td>current_attemp:</td>
+        <td>
+          <input type="text" name="current_attemp" value="" style="width:100px"/>
+        </td>
+      </tr>
+      <tr>
+        <td>current_succ:</td>
+        <td>
+          <input type="text" name="current_succ" value=""/> 
+        </td>
+      </tr>
+      <tr>
+        <td>draw_flag:</td>
+        <td>
+          <select name="draw_flag" size=1>
+            <option value="1">1</option>
+            <option value="0">0</option>
+          </select>          
+        </td>
+      </tr>
+      <tr>
+        <td>start_date:</td>
+        <td>
+          <input id="datepicker1" type="text" name="start_date" value=""/>
+        </td>
+      </tr>
+      <tr>
+        <td>end_date:</td>
+        <td>
+          <input id="datepicker2" type="text" name="end_date" value=""/>
+        </td>
+      </tr>
+      <tr>
+        <td>comment:</td>
+        <td>
+          <input type="text" name="comment" value="" style="width:600px"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="submit" value="add">
+        </td>
+        <td>&nbsp;</td>
+      </tr>
+
+      </table>
+
+    </form>
+
+  </div>
+</div>
+</div>
+%rebase base.htm title="USSFVT projects new",user=user

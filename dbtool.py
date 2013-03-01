@@ -38,8 +38,10 @@ def create_ussprojects():
     command = """
 create table if not exists ussprojects(
         id integer primary key,
-        Lineitem varchar(20),
+        name varchar(20),
         total_num integer,
+        current_attemp integer,
+        current_succ integer,
         draw_flag Integer,
         start_date varchar(20),
         end_date varchar(20),
@@ -48,7 +50,7 @@ create table if not exists ussprojects(
 
 """
     command1 = """
-    insert into ussprojects values(NULL,"Line133",683,1,"2012-01-01","2012-12-01","only for test");
+    insert into ussprojects values(NULL,"Line133",683,0,0,1,"2012-01-01","2012-12-01","only for test");
 """
 
     cx = sqlite.connect('branding.db')
@@ -63,7 +65,8 @@ def create_ussproject():
     command = """
 create table if not exists ussproject(
         id integer primary key,
-        week_date varchar(20),
+        projectid integer,
+        datepoint varchar(20),
         plan_attemp integer,
         plan_succ  integer,
         actual_attemp integer,
@@ -73,7 +76,7 @@ create table if not exists ussproject(
 
 """
     command1 = """
-    insert into ussprojects values(NULL,"Line133",683,1,"2012-01-01","2012-12-01","only for test");
+    insert into ussproject values(NULL,1,"2012-01-01",10,10,0,0,"only for test");
 """
 
     cx = sqlite.connect('branding.db')
@@ -87,5 +90,7 @@ create table if not exists ussproject(
 
    
 if __name__=="__main__":
-    create_ussdefects()
-
+    #create_ussdefects()
+    #create_ussprojects()
+    create_ussproject()
+    

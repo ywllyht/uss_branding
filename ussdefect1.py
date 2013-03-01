@@ -13,25 +13,6 @@ from pprint import pprint
 from pychart import *
 
 date_p = re.compile(r"(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})")
-# create table if not exists ussdefects(
-#         id integer primary key,
-#         component varchar(10),
-#         number varchar(10),
-#         title varchar(30),
-#         Lineitem varchar(10),
-#         open_date varchar(20),
-#         close_date varchar(20),
-#         poster varchar(20),
-#         status varchar(10),
-#         comment varchar(30)
-# );    
-
-# insert into ussdefects values(NULL,"LE","111","ff zz","3204","2012-01-01","2012-02-01","lljli","close","only for test");
-# insert into ussdefects values(NULL,"LE","ME222","ttt zz","3204","2012-01-03","2012-02-01","lljli","close","only for test");
-# insert into ussdefects values(NULL,"LE","ME223","ttt zz","3204","2012-01-04","2012-02-01","lljli","close","only for test");
-# insert into ussdefects values(NULL,"USS","MQ","ttt zz","3204","2012-01-05","2012-02-11","lljli","close","only for test");
-# insert into ussdefects values(NULL,"SHELL","z1501","ttt zz","133","2012-02-01","2012-02-11","lljli","close","only for test");
-# insert into ussdefects values(NULL,"SHELL","z1502","ttt zz","133.1","2012-02-01","2012-02-11","lljli","close","only for test fdasfsae \n ffff");
 
 _localDir=os.path.dirname(__file__)
 _curpath=os.path.normpath(os.path.join(os.getcwd(),_localDir))
@@ -436,8 +417,71 @@ def create_defect_csv123():
     return "<br>".join(result)
 
 
+@USSdefect_app.route("/projects/") 
+@login_required
+def projects():
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    cu.execute('select * from ussprojects')
+    rs = cu.fetchall()
 
-   
+    return template("ussdefect/projects.htm",user=request.user, projects=rs,)
+
+@USSdefect_app.route("/projects/new/") 
+@login_required
+def projects_new():
+    return template("ussdefect/projects_new.htm", user=request.user)
+
+@USSdefect_app.route("/projects/new/",method="POST") 
+@login_required
+def projects_new_post():
+    name = request.forms.get('name',"")
+    total_num = request.forms.get('total_num',"")
+    current_attemp = request.forms.get('current_attemp',"")
+    current_succ = request.forms.get('current_succ',"")
+    draw_flag = request.forms.get('draw_flag',"")
+    start_date = request.forms.get('start_date',"")
+    end_date = request.forms.get('end_date',"")
+    comment = request.forms.get('comment',"")
+    
+    name = name.replace("'","''")
+    total_num = total_num.replace("'","''")
+    current_attemp = current_attemp.replace("'","''")
+    current_succ = current_succ.replace("'","''")
+    draw_flag = draw_flag.replace("'","''")
+    start_date = start_date.replace("'","''")
+    end_date = end_date.replace("'","''")
+    comment = comment.replace("'","''")   
+    
+    if name == "":
+        return template("myerror.htm", user=request.user, msg="Error,name is null!")
+    if total_num == "":
+        return template("myerror.htm", user=request.user, msg="Error, total_num is null!")
+    if current_attemp == "":
+        return template("myerror.htm", user=request.user, msg="Error,current_attemp is null!")
+    if current_succ == "":
+        return template("myerror.htm", user=request.user, msg="Error,current_succ is null!")
+    if draw_flag == "":
+        return template("myerror.htm", user=request.user, msg="Error,draw_flag is null!")
+    m = date_p.match(start_date)
+    if not m:
+        return template("myerror.htm", user=request.user, msg="Error, start_date is invalid -- " + open_date)
+    m = date_p.match(end_date)
+    if end_date and not m:
+        return template("myerror.htm", user=request.user, msg="Error, end_date is invalid -- " + close_date)
+    if end_date < start_date:
+        return template("myerror.htm", user=request.user, msg="Error, end_date < start_date -- " + close_date)
+
+        
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    command = "insert into ussprojects values(NULL,'%s','%s','%s','%s','%s','%s','%s','%s');" % (name, total_num, current_attemp, current_succ, draw_flag, start_date, end_date, comment)
+    cu.execute(command)
+    cx.commit()
+    cu.close()
+    redirect("/USSdefect/projects/")
+
+
 if __name__=="__main__":
     pass
 
