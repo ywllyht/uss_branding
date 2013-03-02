@@ -9,6 +9,7 @@ import datetime
 from users import login_required
 from urllib import urlencode, unquote
 import re
+import random
 from pprint import pprint
 from pychart import *
 
@@ -143,7 +144,7 @@ def defect_new_post():
 
 @USSdefect_app.route("/defect/modify/<did>/") 
 @login_required
-def defect_new(did):
+def defect_modify(did):
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
     command = "select * from ussdefects where id=%s" %did
@@ -229,7 +230,7 @@ def defect_modify_post(did):
 
 @USSdefect_app.route("/defect/delete/<did:int>/")                   #delete a user
 @login_required
-def user_delete(did):
+def defect_delete(did):
     #if MessageBox(None, 'Do you confirm to delete this user?', 'Delete the user', 1)==1:
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
@@ -416,7 +417,12 @@ def create_defect_csv123():
 
     return "<br>".join(result)
 
-
+################################################################################
+#                                                                              #
+#       projects part                                                          #
+#                                                                              #
+#                                                                              #
+################################################################################
 @USSdefect_app.route("/projects/") 
 @login_required
 def projects():
@@ -468,9 +474,9 @@ def projects_new_post():
         return template("myerror.htm", user=request.user, msg="Error, start_date is invalid -- " + open_date)
     m = date_p.match(end_date)
     if end_date and not m:
-        return template("myerror.htm", user=request.user, msg="Error, end_date is invalid -- " + close_date)
+        return template("myerror.htm", user=request.user, msg="Error, end_date is invalid -- " + end_date)
     if end_date < start_date:
-        return template("myerror.htm", user=request.user, msg="Error, end_date < start_date -- " + close_date)
+        return template("myerror.htm", user=request.user, msg="Error, end_date < start_date -- " + end_date+" , "+start_date)
 
         
     cx = sqlite.connect('branding.db')
@@ -482,6 +488,404 @@ def projects_new_post():
     redirect("/USSdefect/projects/")
 
 
+@USSdefect_app.route("/projects/modify/<did>/") 
+@login_required
+def projects_modify(did):
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    command = "select * from ussprojects where id=%s" %did
+    cu.execute(command)
+    rs = cu.fetchone()
+    if rs == None:
+        return template("myerror.htm", user=request.user, msg="Error,invalid projects id -- "+did)
+    cu.close()
+    
+    did = rs[0]
+    name = rs[1]
+    total_num = rs[2]
+    current_attemp = rs[3]
+    current_succ = rs[4]
+    draw_flag = rs[5]
+    start_date = rs[6]
+    end_date = rs[7]
+    comment = rs[8]
+    
+
+    return template("ussdefect/projects_modify.htm", user=request.user, did=did, name=name, total_num=total_num, current_attemp=current_attemp, current_succ=current_succ, 
+                    draw_flag=draw_flag, start_date=start_date, end_date=end_date,comment=comment)
+
+
+@USSdefect_app.route("/projects/modify/<did>/",method="POST") 
+@login_required
+def projects_modify_post(did):
+    name = request.forms.get('name',"")
+    total_num = request.forms.get('total_num',"")
+    current_attemp = request.forms.get('current_attemp',"")
+    current_succ = request.forms.get('current_succ',"")
+    draw_flag = request.forms.get('draw_flag',"")
+    start_date = request.forms.get('start_date',"")
+    end_date = request.forms.get('end_date',"")
+    comment = request.forms.get('comment',"")
+    
+    name = name.replace("'","''")
+    total_num = total_num.replace("'","''")
+    current_attemp = current_attemp.replace("'","''")
+    current_succ = current_succ.replace("'","''")
+    draw_flag = draw_flag.replace("'","''")
+    start_date = start_date.replace("'","''")
+    end_date = end_date.replace("'","''")
+    comment = comment.replace("'","''")   
+    
+    if name == "":
+        return template("myerror.htm", user=request.user, msg="Error,name is null!")
+    if total_num == "":
+        return template("myerror.htm", user=request.user, msg="Error, total_num is null!")
+    if current_attemp == "":
+        return template("myerror.htm", user=request.user, msg="Error,current_attemp is null!")
+    if current_succ == "":
+        return template("myerror.htm", user=request.user, msg="Error,current_succ is null!")
+    if draw_flag == "":
+        return template("myerror.htm", user=request.user, msg="Error,draw_flag is null!")
+    m = date_p.match(start_date)
+    if not m:
+        return template("myerror.htm", user=request.user, msg="Error, start_date is invalid -- " + open_date)
+    m = date_p.match(end_date)
+    if end_date and not m:
+        return template("myerror.htm", user=request.user, msg="Error, end_date is invalid -- " + end_date)
+    if end_date < start_date:
+        return template("myerror.htm", user=request.user, msg="Error, end_date < start_date -- " + end_date+" , "+start_date)
+
+        
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    command = "update ussprojects set name='%s',total_num='%s',current_attemp='%s',current_succ='%s',draw_flag='%s',start_date='%s',end_date='%s',comment='%s' where  id='%s';" % (name, total_num, current_attemp, current_succ, draw_flag, start_date, end_date, comment, did)
+    cu.execute(command)
+    cx.commit()
+    cu.close()
+    redirect("/USSdefect/projects/")
+    
+@USSdefect_app.route("/projects/delete/<did:int>/")                   #delete a user
+@login_required
+def projects_delete(did):
+    #if MessageBox(None, 'Do you confirm to delete this user?', 'Delete the user', 1)==1:
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    command = "delete from ussprojects where id= '%s' " % did
+    cu.execute(command)
+
+    command = "delete from ussproject where projectid= '%s' " % did
+    cu.execute(command)
+    
+    cx.commit()
+    #print "redirect hahaha"
+    redirect("/USSdefect/projects/")
+
+@USSdefect_app.route("/projects/project/list/<did>/") 
+@login_required
+def projects_project_list(did):
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+
+    cu.execute('select * from ussprojects where id='+did)
+    rs = cu.fetchall()
+    if len(rs) != 1:
+        return template("myerror.htm", user=request.user, msg="Error, id is not existed in ussprojects -- " + did)
+    r = rs[0]
+    name = r[1]
+    totalnum = r[2]
+        
+    cu.execute('select * from ussproject where projectid='+did)
+    rs = cu.fetchall()
+
+    rs2 = [ [x,float(x[5])/totalnum*100, float(x[6])/totalnum*100] for x in rs]
+    
+
+    return template("ussdefect/projects_project_list.htm",user=request.user, records=rs2, project=r)
+
+
+
+@USSdefect_app.route("/projects/project/new/<did>/") 
+@login_required
+def projects_project_new(did):
+    return template("ussdefect/projects_project_new.htm", user=request.user, did=did)
+
+@USSdefect_app.route("/projects/project/new/<did>/",method="POST") 
+@login_required
+def projects_project_new_post(did):
+    datepoint = request.forms.get('datepoint',"")
+    plan_attemp = request.forms.get('plan_attemp',"")
+    plan_succ = request.forms.get('plan_succ',"")
+    actual_attemp = request.forms.get('actual_attemp',"")
+    actual_succ = request.forms.get('actual_succ',"")
+    comment = request.forms.get('comment',"")
+    
+    datepoint = datepoint.replace("'","''")
+    plan_attemp = plan_attemp.replace("'","''")
+    plan_succ = plan_succ.replace("'","''")
+    actual_attemp = actual_attemp.replace("'","''")
+    actual_succ = actual_succ.replace("'","''")
+    comment = comment.replace("'","''")   
+    
+    if datepoint == "":
+        return template("myerror.htm", user=request.user, msg="Error,datepoint is null!")
+    if plan_attemp == "":
+        plan_attemp = "0"
+        #return template("myerror.htm", user=request.user, msg="Error, plan_attemp is null!")
+    if plan_succ == "":
+        plan_succ = "0"
+        #return template("myerror.htm", user=request.user, msg="Error,plan_succ is null!")
+    if actual_attemp == "":
+        actual_attemp = "0"
+        #return template("myerror.htm", user=request.user, msg="Error,actual_attemp is null!")
+    if actual_succ == "":
+        actual_succ = "0"
+        #return template("myerror.htm", user=request.user, msg="Error,actual_succ is null!")
+
+        
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    command = "insert into ussproject values(NULL,'%s','%s','%s','%s','%s','%s','%s');" % (did, datepoint, plan_attemp, plan_succ, actual_attemp, actual_succ, comment)
+    cu.execute(command)
+    cx.commit()
+    cu.close()
+    redirect("/USSdefect/projects/project/list/"+did+"/")
+    
+
+@USSdefect_app.route("/projects/project/modify/<ddid>/") 
+@login_required
+def projects_project_modify(ddid):
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    command = "select * from ussproject where id=%s" %ddid
+    cu.execute(command)
+    rs = cu.fetchone()
+    if rs == None:
+        return template("myerror.htm", user=request.user, msg="Error,invalid project id -- "+ddid)
+    cu.close()
+    
+    ddid = rs[0]
+    projectid = rs[1]
+    datepoint = rs[2]
+    plan_attemp = rs[3]
+    plan_succ = rs[4]
+    actual_attemp = rs[5]
+    actual_succ = rs[6]
+    comment = rs[7]
+
+    
+
+    return template("ussdefect/projects_project_modify.htm", user=request.user, ddid=ddid, projectid=projectid, datepoint=datepoint, plan_attemp=plan_attemp, plan_succ=plan_succ, 
+                    actual_attemp=actual_attemp, actual_succ=actual_succ, comment=comment)
+
+
+@USSdefect_app.route("/projects/project/modify/<ddid>/",method="POST") 
+@login_required
+def projects_project_modify_post(ddid):
+    projectid = request.forms.get('projectid',"")
+    datepoint = request.forms.get('datepoint',"")
+    plan_attemp = request.forms.get('plan_attemp',"")
+    plan_succ = request.forms.get('plan_succ',"")
+    actual_attemp = request.forms.get('actual_attemp',"")
+    actual_succ = request.forms.get('actual_succ',"")
+    comment = request.forms.get('comment',"")
+
+    current_flag = request.forms.get('current_flag',"")
+
+    projectid = projectid.replace("'","''")
+    datepoint = datepoint.replace("'","''")
+    plan_attemp = plan_attemp.replace("'","''")
+    plan_succ = plan_succ.replace("'","''")
+    actual_attemp = actual_attemp.replace("'","''")
+    actual_succ = actual_succ.replace("'","''")
+    comment = comment.replace("'","''")   
+    current_flag = current_flag.replace("'","''")
+
+    if projectid == "":
+        return template("myerror.htm", user=request.user, msg="Error,projectid is null!")
+    if datepoint == "":
+        return template("myerror.htm", user=request.user, msg="Error,datepoint is null!")
+    if plan_attemp == "":
+        plan_attemp = "0"
+    if not plan_attemp.isdigit():
+        return template("myerror.htm", user=request.user, msg="Error, plan_attemp is not number!")
+        
+    if plan_succ == "":
+        plan_succ = "0"
+    if not plan_succ.isdigit():
+        return template("myerror.htm", user=request.user, msg="Error,plan_succ is not number!")
+        
+    if actual_attemp == "":
+        actual_attemp = "0"
+    if not actual_attemp.isdigit():
+        return template("myerror.htm", user=request.user, msg="Error,actual_attemp is not number!")
+        
+    if actual_succ == "":
+        actual_succ = "0"
+    if not actual_succ.isdigit():
+        return template("myerror.htm", user=request.user, msg="Error,actual_succ is not number!")
+    
+
+   
+        
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    command = "update ussproject set datepoint='%s',plan_attemp='%s',plan_succ='%s',actual_attemp='%s',actual_succ='%s',comment='%s' where  id='%s';" % (datepoint, 
+              plan_attemp, plan_succ, actual_attemp, actual_succ, comment, ddid)
+    cu.execute(command)
+
+    if current_flag == "on":
+        command = "update ussprojects set current_attemp='%s',current_succ='%s' where  id='%s';" % (actual_attemp, actual_succ, projectid)
+    cu.execute(command)
+    
+    cx.commit()
+    cu.close()
+    redirect("/USSdefect/projects/project/list/"+projectid+"/")
+    
+
+@USSdefect_app.route("/projects/project/delete/<ddid>/<projectid>/")                   #delete a user
+@login_required
+def projects_project_delete(ddid,projectid):
+    #if MessageBox(None, 'Do you confirm to delete this user?', 'Delete the user', 1)==1:
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    command = "delete from ussproject where id= '%s' " % ddid
+    cu.execute(command)
+    
+    cx.commit()
+    #print "redirect hahaha"
+    redirect("/USSdefect/projects/project/list/"+projectid+"/")
+
+
+@USSdefect_app.route("/projects/project/generate/<did>/") 
+@login_required
+def projects_project_generate(did):
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    command = "select * from ussprojects where id=%s" %did
+    cu.execute(command)
+    rs = cu.fetchone()
+    if rs == None:
+        return template("myerror.htm", user=request.user, msg="Error,invalid projects id -- "+did)
+
+    start_date = rs[6]
+    end_date = rs[7]
+
+    m = date_p.match(start_date)
+    if not m:
+         return template("myerror.htm", user=request.user, msg="Error, start_date is invalid -- " + start_date)
+    #print map(lambda x:int(x),m.groups())
+    #start_day = datetime.date(*map(lambda x:int(x),m.groups()))
+    start_day = datetime.date(int(m.group("year")),int(m.group("month")),int(m.group("day")))
+    
+    m = date_p.match(end_date)
+    if not m:
+         return template("myerror.htm", user=request.user, msg="Error, end_date is invalid -- " + end_date)
+    end_day = datetime.date(int(m.group("year")),int(m.group("month")),int(m.group("day")))
+    print start_day, end_day
+
+    weeks = []
+    months = []
+    day1 = start_day
+    while day1 <= end_day:
+        weeks.append("%d-%02d-%02d" % (day1.year, day1.month, day1.day) )
+        day1 = day1 + datetime.timedelta(7)
+        
+    day1 = start_day
+    while day1 <= end_day:
+        months.append(day1)
+        day1 = day1 + datetime.timedelta(30)
+    #print weeks, months
+    return template("ussdefect/projects_project_generate.htm", user=request.user, did=did, project=rs, weeks=weeks, months=months)
+
+@USSdefect_app.route("/projects/project/generate/<did>/", method="post") 
+@login_required
+def projects_project_generate_post(did):
+
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    command = "select * from ussprojects where id=%s" %did
+    cu.execute(command)
+    rs = cu.fetchone()
+    if rs == None:
+        return template("myerror.htm", user=request.user, msg="Error,invalid projects id -- "+did)
+
+    name = rs[1]
+    total_num = rs[2]
+    current_attemp = rs[3]
+    current_succ = rs[4]
+    draw_flag = rs[5]
+    start_date = rs[6]
+    end_date = rs[7]
+    comment = rs[8]
+
+    m = date_p.match(start_date)
+    if not m:
+         return template("myerror.htm", user=request.user, msg="Error, start_date is invalid -- " + start_date)
+    start_day = datetime.date(int(m.group("year")),int(m.group("month")),int(m.group("day")))
+    
+    m = date_p.match(end_date)
+    if not m:
+         return template("myerror.htm", user=request.user, msg="Error, end_date is invalid -- " + end_date)
+    end_day = datetime.date(int(m.group("year")),int(m.group("month")),int(m.group("day")))
+    #print start_day, end_day
+    
+    
+    gflag = request.forms.get('gflag',"")
+    datepoints = []
+    day1 = start_day
+    if gflag == "weekly":
+        while day1 <= end_day:
+            datepoints.append("%d-%02d-%02d" % (day1.year, day1.month, day1.day) )
+            day1 = day1 + datetime.timedelta(7)
+    elif gflag == "monthly":
+        while day1 <= end_day:
+            datepoints.append("%d-%02d-%02d" % (day1.year, day1.month, day1.day) )
+            day1 = day1 + datetime.timedelta(30)
+    else:
+        return template("myerror.htm", user=request.user, msg="Error, gflag is invalid -- " + gflag)
+
+    lens = len(datepoints)
+    if lens < 3:
+        plan_attemps = random.sample(range(total_num),lens)
+        plan_succs = random.sample(range(total_num),lens)
+        actual_attemps = random.sample(range(total_num),lens)
+        actual_succs = random.sample(range(total_num),lens)
+    else:
+        plan_attemps = random.sample(range(total_num),lens-2)
+        plan_succs = random.sample(range(total_num),lens-2)
+        actual_attemps = random.sample(range(total_num),lens-2)
+        actual_succs = random.sample(range(total_num),lens-2)      
+        plan_attemps.append(total_num)
+        plan_attemps.append(total_num)
+        plan_succs.append(total_num)
+        plan_succs.append(total_num)
+        actual_attemps.append(total_num)  
+        actual_attemps.append(total_num)
+        actual_succs.append(total_num)
+        actual_succs.append(total_num)
+
+    plan_attemps.sort()
+    plan_succs.sort()
+    actual_attemps.sort()
+    actual_succs.sort()
+    
+    #print "plan_attemps=", plan_attemps
+
+    command = "delete from ussproject where projectid=%s" % did
+    #print "command1=",command
+    cu.execute(command)
+    
+    for dd in range(lens):
+        command = "insert into ussproject values(NULL,'%s','%s','%s','%s','%s','%s','%s');" % (did, datepoints[dd], plan_attemps[dd], plan_succs[dd], actual_attemps[dd], actual_succs[dd], "")
+        #print "command2=",command
+        cu.execute(command)
+        
+    cx.commit()
+
+    
+    redirect("/USSdefect/projects/project/list/"+did+"/")
+
+    
 if __name__=="__main__":
     pass
 

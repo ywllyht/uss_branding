@@ -1,0 +1,90 @@
+<script type="text/javascript" src="/static/js/lib/jquery/jquery-ui.min.js"></script>
+<link  rel="stylesheet" href="/static/css/jquery-ui.css" />      
+<script>
+
+</script>
+
+<div style="position: absolute; left: 50px; top: 100px;">
+  <table>
+    <tr>
+      <td>name</td>
+      <td>{{project[0]}}</td>
+    </tr>
+    <tr>
+      <td>projectid</td>
+      <td>{{project[1]}}</td>
+    </tr>
+    <tr>
+      <td>total_num</td>
+      <td>{{project[2]}}</td>
+    </tr>
+    <tr>
+      <td>current_attemp</td>
+      <td>{{project[3]}}</td>
+    </tr>
+    <tr>
+      <td>current_succ</td>
+      <td>{{project[4]}}</td>
+    </tr>
+    <tr>
+      <td>draw_flag</td>
+      <td>{{project[5]}}</td>
+    </tr>
+    <tr>
+      <td>start_date</td>
+      <td>{{project[6]}}</td>
+    </tr>
+    <tr>
+      <td>end_date</td>
+      <td>{{project[7]}}</td>
+  </table>
+</div>
+
+<div class="container">
+<div class="row">
+  <div class="span12">
+    <p> <a href="../../list/{{project[0]}}/">back</a>&nbsp;&nbsp;&nbsp;</p>
+    <form action="." method="post">
+      
+      <table class="table">
+      <tr>
+        <td>
+          <input type="radio" name="gflag" value="weekly" checked >weekly&nbsp;&nbsp;
+          <input type="radio" name="gflag" value="monthly">monthly<p>
+        </td>
+        <td>
+           <input type="submit" value="generate">
+        </td>       
+      </tr>
+
+
+      </table>
+
+    </form>
+    <table class="table">
+    <tr class="info">
+        <td>weekly preview</td>
+        <td>monthly preview</td>
+    </tr>
+    <tr>
+        <td>
+           <ul>
+               %for week in weeks:
+                    <li>{{week}}</li>
+               %end
+           </ul>
+        </td>
+        <td>
+           <ul>
+               %for month in months:
+                    <li>{{month}}</li>
+               %end
+           </ul>
+        </td>
+    </tr>
+    </table>
+
+  </div>
+</div>
+</div>
+%rebase base.htm title="USSFVT projects new",user=user

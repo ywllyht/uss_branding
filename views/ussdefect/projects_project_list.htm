@@ -1,0 +1,116 @@
+
+<script language="javascript">
+    function prom(href)
+    { 
+      if(confirm("Are you sure to delete?")==true)
+      {
+      location.href=href; 
+      }
+    }
+
+    function prom2(href)
+    { 
+      if(confirm("It will delete all existed records, are you sure to generate new records?")==true)
+      {
+      location.href=href; 
+      }
+    }
+
+  $(document).ready(function() {
+
+   $("td.mystatus").each(function(){
+	    //alert("haha");
+        //console.log($(this));
+        //console.log($(this).text());
+        //if($(this).text() == "close")
+        //   $(this).parent().addClass("info");
+	   })
+
+   });
+
+</script>
+
+
+<div style="position: absolute; left: 50px; top: 100px;">
+  <table>
+    <tr>
+      <td>name</td>
+      <td>{{project[0]}}</td>
+    </tr>
+    <tr>
+      <td>projectid</td>
+      <td>{{project[1]}}</td>
+    </tr>
+    <tr>
+      <td>total_num</td>
+      <td>{{project[2]}}</td>
+    </tr>
+    <tr>
+      <td>current_attemp</td>
+      <td>{{project[3]}}</td>
+    </tr>
+    <tr>
+      <td>current_succ</td>
+      <td>{{project[4]}}</td>
+    </tr>
+    <tr>
+      <td>draw_flag</td>
+      <td>{{project[5]}}</td>
+    </tr>
+    <tr>
+      <td>start_date</td>
+      <td>{{project[6]}}</td>
+    </tr>
+    <tr>
+      <td>end_date</td>
+      <td>{{project[7]}}</td>
+  </table>
+</div>
+
+<div class="container">
+<div class="row">
+
+    <p>
+       <a href="../../../">back</a>&nbsp;&nbsp;&nbsp;<a href="../../new/{{project[0]}}/">new_record</a>&nbsp;&nbsp;&nbsp;<a  onClick="prom2('../../generate/{{project[0]}}/')">generate_records</a>&nbsp;&nbsp;&nbsp;<br>
+       &nbsp;&nbsp;&nbsp;&lt;{{project[0]}}&gt;&nbsp;{{project[1]}}&nbsp;total_num:{{project[2]}}&nbsp;current_attemp:{{project[3]}}&nbsp;
+                                current_succ:{{project[4]}}&nbsp;draw_flag:{{project[5]}}&nbsp;start_date{{project[6]}}&nbsp;end_date:{{project[7]}}
+    </p>
+
+<table class="table">
+      <tr class="info">
+        <td>id</td>
+        <td>projectid</td>
+        <td>datepoint</td>
+        <td>plan_attemp</td>
+        <td>plan_succ</td>
+        <td>actual_attemp</td>
+        <td>actual_succ</td>
+        <td>perc_attemp</td>
+        <td>perc_succ</td>
+        <td>comments</td>
+        <td>&nbsp;</td>
+      </tr>
+      %for record,perc_attemp, perc_succ in records:
+      <tr>
+        <td><a href="../../modify/{{record[0]}}/">{{record[0]}}</a>&nbsp;
+        </td>
+        <td>{{record[1]}}</td>
+        <td>{{record[2]}}</td>
+        <td>{{record[3]}}</td>
+        <td>{{record[4]}}</td>
+        <td>{{record[5]}}</td>
+        <td>{{record[6]}}</td>
+        <td>{{perc_attemp}}</td>
+        <td>{{perc_succ}}</td>
+        <td>{{record[7]}}</td>
+        <td>
+          <a onClick="prom('../../delete/{{record[0]}}/{{project[0]}}/')" href="#">D</a> 
+        </td>
+      </tr>
+      %end
+    </table>
+
+
+</div>
+</div>
+%rebase base.htm title="USSFVT project list",user=user

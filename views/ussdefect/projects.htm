@@ -32,7 +32,7 @@
     </p>
 
 <table class="table">
-      <tr>
+      <tr class="success">
         <td>id</td>
         <td>name</td>
         <td>total_num</td>
@@ -47,7 +47,7 @@
       %for project in projects:
       <tr>
         <td><a href="modify/{{project[0]}}/">{{project[0]}}</a></td>
-        <td>{{project[1]}}</td>
+        <td><a href="project/list/{{project[0]}}/">{{project[1]}}</a></td>
         <td>{{project[2]}}</td>
         <td>{{project[3]}}</td>
         <td>{{project[4]}}</td>
@@ -56,7 +56,7 @@
         <td>{{project[7]}}</td>
         <td>{{project[8]}}</td>
         <td>
-          <a onClick="prom('projects/{{project[0]}}/')" href="#">D</a> 
+          <a onClick="prom('delete/{{project[0]}}/')" href="#">D</a> 
         </td>
       </tr>
       %end
@@ -65,4 +65,4 @@
 
 </div>
 </div>
-%rebase base.htm title="USSFVT project stat...",user=user
+%rebase base.htm title="USSFVT projects list",user=user

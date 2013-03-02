@@ -1,0 +1,71 @@
+<script type="text/javascript" src="/static/js/lib/jquery/jquery-ui.min.js"></script>
+<link  rel="stylesheet" href="/static/css/jquery-ui.css" />      
+<script>
+
+</script>
+
+<div class="container">
+<div class="row">
+  <div class="span12">
+
+    <form action="." method="post">
+      
+
+      <table class="table">
+      <tr>
+        <td>projectid</td>
+        <td>
+			<input type="text" name="projectid" value="{{did}}"  disabled="true"/>
+        </td>
+      </tr>
+      <tr>
+        <td>datepoint:</td>
+        <td>
+          <input type="text" name="datepoint" value=""/> such as 2013-02-02
+        </td>
+      </tr>
+      <tr>
+        <td>plan_attemp:</td> 
+        <td>
+          <input type="text" name="plan_attemp" value=""/>
+        </td>
+      </tr>
+      <tr>
+        <td>plan_succ:</td>
+        <td>
+          <input type="text" name="plan_succ" value=""/> 
+        </td>
+      </tr>
+      <tr>
+        <td>actual_attemp:</td>
+        <td>
+          <input type="text" name="actual_attemp" value=""/>
+        </td>
+      </tr>
+      <tr>
+        <td>actual_succ:</td>
+        <td>
+          <input type="text" name="actual_succ" value=""/>
+        </td>
+      </tr>
+      <tr>
+        <td>comment:</td>
+        <td>
+          <input type="text" name="comment" value="" style="width:600px"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="submit" value="add">
+        </td>
+        <td>&nbsp;</td>
+      </tr>
+
+      </table>
+
+    </form>
+
+  </div>
+</div>
+</div>
+%rebase base.htm title="USSFVT projects new",user=user

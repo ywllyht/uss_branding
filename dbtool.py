@@ -91,6 +91,6 @@ create table if not exists ussproject(
    
 if __name__=="__main__":
     #create_ussdefects()
-    #create_ussprojects()
+    create_ussprojects()
     create_ussproject()
     
