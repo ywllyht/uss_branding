@@ -46,7 +46,7 @@ project_png_fn0 = os.path.join(_defectpicpath,"ussproject0.png")
 
 project_fun_did = "ussprojectdid"
 
-
+ussfvt_users = ["lljli","yoga","rucy","wenzhong"]
 
 
 USSdefect_app = Bottle()
@@ -91,6 +91,8 @@ def defect():
 @USSdefect_app.route("/defect/new/") 
 @login_required
 def defect_new():
+    if request.user.username not in ussfvt_users:
+        return template("myerror.htm", user=request.user, msg="Error,Only uss fvt members can visit here!")
     return template("ussdefect/defect_new.htm", user=request.user)
 
 @USSdefect_app.route("/defect/new/",method="POST") 
@@ -153,6 +155,8 @@ def defect_new_post():
 @USSdefect_app.route("/defect/modify/<did>/") 
 @login_required
 def defect_modify(did):
+    if request.user.username not in ussfvt_users:
+        return template("myerror.htm", user=request.user, msg="Error,Only uss fvt members can visit here!")
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
     command = "select * from ussdefects where id=%s" %did
@@ -239,6 +243,8 @@ def defect_modify_post(did):
 @USSdefect_app.route("/defect/delete/<did:int>/")                   #delete a user
 @login_required
 def defect_delete(did):
+    if request.user.username not in ussfvt_users:
+        return template("myerror.htm", user=request.user, msg="Error,Only uss fvt members can visit here!")
     #if MessageBox(None, 'Do you confirm to delete this user?', 'Delete the user', 1)==1:
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
@@ -264,6 +270,9 @@ def create_month_range(start_year, start_month, end_year, end_month):
 @USSdefect_app.route("/defect/draw/")                   #delete a user
 @login_required
 def defect_draw():
+    if request.user.username not in ussfvt_users:
+        return template("myerror.htm", user=request.user, msg="Error,Only uss fvt members can visit here!")
+        
     result = []
     # create pic1,pic2,pic3
     result.append( create_defect_csv123() )
@@ -447,6 +456,8 @@ def projects():
 @USSdefect_app.route("/projects/new/") 
 @login_required
 def projects_new():
+    if request.user.username not in ussfvt_users:
+        return template("myerror.htm", user=request.user, msg="Error,Only uss fvt members can visit here!")
     return template("ussdefect/projects_new.htm", user=request.user)
 
 @USSdefect_app.route("/projects/new/",method="POST") 
@@ -502,6 +513,9 @@ def projects_new_post():
 @USSdefect_app.route("/projects/modify/<did>/") 
 @login_required
 def projects_modify(did):
+    if request.user.username not in ussfvt_users:
+        return template("myerror.htm", user=request.user, msg="Error,Only uss fvt members can visit here!")
+        
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
     command = "select * from ussprojects where id=%s" %did
@@ -578,6 +592,9 @@ def projects_modify_post(did):
 @USSdefect_app.route("/projects/delete/<did:int>/")                   #delete a user
 @login_required
 def projects_delete(did):
+    if request.user.username not in ussfvt_users:
+        return template("myerror.htm", user=request.user, msg="Error,Only uss fvt members can visit here!")
+        
     #if MessageBox(None, 'Do you confirm to delete this user?', 'Delete the user', 1)==1:
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
@@ -618,6 +635,9 @@ def projects_project_list(did):
 @USSdefect_app.route("/projects/project/new/<did>/") 
 @login_required
 def projects_project_new(did):
+    if request.user.username not in ussfvt_users:
+        return template("myerror.htm", user=request.user, msg="Error,Only uss fvt members can visit here!")
+        
     return template("ussdefect/projects_project_new.htm", user=request.user, did=did)
 
 @USSdefect_app.route("/projects/project/new/<did>/",method="POST") 
@@ -665,6 +685,9 @@ def projects_project_new_post(did):
 @USSdefect_app.route("/projects/project/modify/<ddid>/") 
 @login_required
 def projects_project_modify(ddid):
+    if request.user.username not in ussfvt_users:
+        return template("myerror.htm", user=request.user, msg="Error,Only uss fvt members can visit here!")
+        
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
     command = "select * from ussproject where id=%s" %ddid
@@ -773,6 +796,9 @@ def projects_project_modify_post(ddid):
 @USSdefect_app.route("/projects/project/delete/<ddid>/<projectid>/")                   #delete a user
 @login_required
 def projects_project_delete(ddid,projectid):
+    if request.user.username not in ussfvt_users:
+        return template("myerror.htm", user=request.user, msg="Error,Only uss fvt members can visit here!")
+        
     #if MessageBox(None, 'Do you confirm to delete this user?', 'Delete the user', 1)==1:
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
@@ -787,6 +813,9 @@ def projects_project_delete(ddid,projectid):
 @USSdefect_app.route("/projects/project/generate/<did>/") 
 @login_required
 def projects_project_generate(did):
+    if request.user.username not in ussfvt_users:
+        return template("myerror.htm", user=request.user, msg="Error,Only uss fvt members can visit here!")
+        
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
     command = "select * from ussprojects where id=%s" %did
@@ -1036,6 +1065,9 @@ def create_project_csv_did(did,name,total_num):
 @USSdefect_app.route("/projects/draw/")                  
 @login_required
 def projects_draw():
+    if request.user.username not in ussfvt_users:
+        return template("myerror.htm", user=request.user, msg="Error,Only uss fvt members can visit here!")
+        
     result = []
     # create percent progress pic for all projects
     result.append( create_project_csv0() )
