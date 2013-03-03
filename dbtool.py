@@ -40,7 +40,7 @@ create table if not exists ussprojects(
         id integer primary key,
         name varchar(20),
         total_num integer,
-        current_attemp integer,
+        current_attempt integer,
         current_succ integer,
         draw_flag Integer,
         start_date varchar(20),
@@ -67,9 +67,9 @@ create table if not exists ussproject(
         id integer primary key,
         projectid integer,
         datepoint varchar(20),
-        plan_attemp integer,
+        plan_attempt integer,
         plan_succ  integer,
-        actual_attemp integer,
+        actual_attempt integer,
         actual_succ integer,
         comment varchar(60)       
 );    

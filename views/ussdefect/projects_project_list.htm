@@ -46,7 +46,7 @@
       <td>{{project[2]}}</td>
     </tr>
     <tr>
-      <td>current_attemp</td>
+      <td>current_attempt</td>
       <td>{{project[3]}}</td>
     </tr>
     <tr>
@@ -72,7 +72,7 @@
 
     <p>
        <a href="../../../">back</a>&nbsp;&nbsp;&nbsp;<a href="../../new/{{project[0]}}/">new_record</a>&nbsp;&nbsp;&nbsp;<a  onClick="prom2('../../generate/{{project[0]}}/')">generate_records</a>&nbsp;&nbsp;&nbsp;<br>
-       &nbsp;&nbsp;&nbsp;&lt;{{project[0]}}&gt;&nbsp;{{project[1]}}&nbsp;total_num:{{project[2]}}&nbsp;current_attemp:{{project[3]}}&nbsp;
+       &nbsp;&nbsp;&nbsp;&lt;{{project[0]}}&gt;&nbsp;{{project[1]}}&nbsp;total_num:{{project[2]}}&nbsp;current_attempt:{{project[3]}}&nbsp;
                                 current_succ:{{project[4]}}&nbsp;draw_flag:{{project[5]}}&nbsp;start_date{{project[6]}}&nbsp;end_date:{{project[7]}}
     </p>
 
@@ -81,16 +81,16 @@
         <td>id</td>
         <td>projectid</td>
         <td>datepoint</td>
-        <td>plan_attemp</td>
+        <td>plan_attempt</td>
         <td>plan_succ</td>
-        <td>actual_attemp</td>
+        <td>actual_attempt</td>
         <td>actual_succ</td>
-        <td>perc_attemp</td>
+        <td>perc_attempt</td>
         <td>perc_succ</td>
         <td>comments</td>
         <td>&nbsp;</td>
       </tr>
-      %for record,perc_attemp, perc_succ in records:
+      %for record,perc_attempt, perc_succ in records:
       <tr>
         <td><a href="../../modify/{{record[0]}}/">{{record[0]}}</a>&nbsp;
         </td>
@@ -100,7 +100,7 @@
         <td>{{record[4]}}</td>
         <td>{{record[5]}}</td>
         <td>{{record[6]}}</td>
-        <td>{{perc_attemp}}</td>
+        <td>{{perc_attempt}}</td>
         <td>{{perc_succ}}</td>
         <td>{{record[7]}}</td>
         <td>

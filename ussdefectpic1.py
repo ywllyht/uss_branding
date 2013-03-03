@@ -15,6 +15,9 @@ else:
 def format_date1(ordinal):
     return "/08/a60{}" + ordinal
 
+def format_date2(ordinal):
+    return "/08/a60{}" + ordinal[2:]
+
 def ussdefect1(fn1):
     #fn1 = "ussdefect1.csv"
     format1 = "%s,%d,%d"
@@ -125,6 +128,89 @@ def ussdefect3(fn1):
     #tb = text_box.T(loc=(100,100), text="Without frame")
     #tb.draw()
 
+def ussproject0(fn1):
+    # f1 = open(fn1)    
+    # lines = f1.readlines()
+    # f1.close()
+
+    # data = []
+    # for line in lines:
+    #     data2 = []
+    #     slice1 = line.split(",")
+    #     data2.append(slice1[0])
+    #     for ss in slice1[1:]:
+    #         data2.append(float(ss))
+    #     data.append(data2)
+    format1 = "%s,%f,%f,%f"
+    data = chart_data.read_csv(fn1,format1)    
+        
+    ar = area.T(y_coord = category_coord.T(data, 0),
+            x_grid_style=line_style.gray50_dash1,
+            x_grid_interval=10, x_range = (0,105),
+            x_axis=axis.X(label="percent(%)"),
+            y_axis=axis.Y(label="projects"),
+            #bg_style = fill_style.gray90,
+            border_line_style = line_style.default,
+            size = (300,200),
+            #legend = legend.T(loc=(80,10))
+            )
+
+    # Below call sets the default attributes for all bar plots.
+    chart_object.set_defaults(bar_plot.T, direction="horizontal", data=data)
+    
+    plot1 = bar_plot.T(label="succ", hcol=1, fill_style=fill_style.green)
+    plot2 = bar_plot.T(label="attempt",  hcol=2,  stack_on = plot1, fill_style=fill_style.blue)
+    plot3 = bar_plot.T(label="unatt", hcol=3,  stack_on = plot2, fill_style=fill_style.gray90 )
+    ar.add_plot(plot1, plot2, plot3)
+    ar.draw()
+    can = canvas.default_canvas()
+    can.show(200, -30, "/10/C" + font.quotemeta(  time.strftime("%Y-%m-%d %H:%M:%S",time.localtime()) ))
+
+
+def ussprojectdid(fn1):
+    format1 = "%s,%d,%d,%d,%d"
+    data = chart_data.read_csv(fn1,format1)   
+    
+    name = data[-1][0]
+    if len(name) > 10:
+        name = name[:10]
+    total_num = data[-1][1]
+    data = data[:-1]
+    
+    
+    # Draw the 1st graph. The Y upper bound is calculated automatically.
+    xaxis=axis.X(label="date",format=format_date2)
+    yaxis=axis.Y(label="num") #, tic_interval=10)
+    
+    
+    ar = area.T(loc=(0, 0),
+                x_coord = category_coord.T(data, 0),
+                x_axis=xaxis,
+                y_axis=yaxis,
+                size=(300,200),
+                legend=legend.T(loc=(10,150))
+                )
+    
+    #tick1 = tick_mark.Star()
+    #tick1.fill_style = fill_style.black
+    #tick1.line_style = line_style.black
+    
+    ar.add_plot(bar_plot.T(label="actual_att", data=data, hcol=1, cluster=(0, 2), fill_style=fill_style.green),
+                bar_plot.T(label="actual_succ",   data=data, hcol=2, cluster=(1, 2), fill_style=fill_style.blue)
+                )
+    
+    ar.add_plot(line_plot.T(label="plan_att",  data=data, ycol=3, tick_mark=tick_mark.star5, line_style=line_style.green), #data_label_format="/8{}%d",
+                line_plot.T(label="plan_succ",    data=data, ycol=4, tick_mark=tick_mark.Circle(), line_style=line_style.blue)
+                )
+    
+                
+    ar.draw()
+    
+    can = canvas.default_canvas()
+    can.show(200, -55, "/10/C" + font.quotemeta(  time.strftime("%Y-%m-%d %H:%M:%S",time.localtime()) ))
+    
+    number_msg = "name: %s, total: %d" % (name, total_num)
+    can.show(120,180,"/10{}" + font.quotemeta( number_msg ) )
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:

@@ -12,6 +12,7 @@ import re
 import random
 from pprint import pprint
 from pychart import *
+import subprocess
 
 date_p = re.compile(r"(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})")
 
@@ -38,8 +39,15 @@ defect_csv_fn3 = os.path.join(_defectpicpath,"ussdefect3.csv")
 defect_eps_fn3 = os.path.join(_defectpicpath,"ussdefect3.eps")
 defect_png_fn3 = os.path.join(_defectpicpath,"ussdefect3.png")
 
+project_fun_fn0 = "ussproject0"
+project_csv_fn0 = os.path.join(_defectpicpath,"ussproject0.csv")
+project_eps_fn0 = os.path.join(_defectpicpath,"ussproject0.eps")
+project_png_fn0 = os.path.join(_defectpicpath,"ussproject0.png")
 
-defect_status = ["open", "verify", "close", "returned", "cancel",]
+project_fun_did = "ussprojectdid"
+
+
+
 
 USSdefect_app = Bottle()
 
@@ -272,10 +280,13 @@ def create_pic(targetpy, targetfun, targetcsv, targeteps, targetpng):
     else:
         command1 = "python " + targetpy + " " + targetfun + " " + targetcsv + " > " +targeteps
         command2 = "gs -dBATCH -dNOPAUSE -dEPSCrop -sDEVICE=png16m -r300 -sOutputFile="+targetpng+" "+targeteps
-    #print command1
+    result.append(command1)
     #time.sleep(1)
-    t_f = os.popen(command1)
-    result.append( t_f.read() )
+    #t_f = os.popen(command1)
+    p =  subprocess.Popen(command1,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE,)
+    #p.stdout, p.stderr
+    result.append( p.stdout.read() )
+    result.append( p.stderr.read() )
     t_f = os.popen(command2)
     result.append( t_f.read() )
     return "\n".join(result)
@@ -443,8 +454,8 @@ def projects_new():
 def projects_new_post():
     name = request.forms.get('name',"")
     total_num = request.forms.get('total_num',"")
-    current_attemp = request.forms.get('current_attemp',"")
-    current_succ = request.forms.get('current_succ',"")
+    current_attempt = request.forms.get('current_attempt',"0")
+    current_succ = request.forms.get('current_succ',"0")
     draw_flag = request.forms.get('draw_flag',"")
     start_date = request.forms.get('start_date',"")
     end_date = request.forms.get('end_date',"")
@@ -452,7 +463,7 @@ def projects_new_post():
     
     name = name.replace("'","''")
     total_num = total_num.replace("'","''")
-    current_attemp = current_attemp.replace("'","''")
+    current_attempt = current_attempt.replace("'","''")
     current_succ = current_succ.replace("'","''")
     draw_flag = draw_flag.replace("'","''")
     start_date = start_date.replace("'","''")
@@ -463,8 +474,8 @@ def projects_new_post():
         return template("myerror.htm", user=request.user, msg="Error,name is null!")
     if total_num == "":
         return template("myerror.htm", user=request.user, msg="Error, total_num is null!")
-    if current_attemp == "":
-        return template("myerror.htm", user=request.user, msg="Error,current_attemp is null!")
+    if current_attempt == "":
+        return template("myerror.htm", user=request.user, msg="Error,current_attempt is null!")
     if current_succ == "":
         return template("myerror.htm", user=request.user, msg="Error,current_succ is null!")
     if draw_flag == "":
@@ -481,7 +492,7 @@ def projects_new_post():
         
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
-    command = "insert into ussprojects values(NULL,'%s','%s','%s','%s','%s','%s','%s','%s');" % (name, total_num, current_attemp, current_succ, draw_flag, start_date, end_date, comment)
+    command = "insert into ussprojects values(NULL,'%s','%s','%s','%s','%s','%s','%s','%s');" % (name, total_num, current_attempt, current_succ, draw_flag, start_date, end_date, comment)
     cu.execute(command)
     cx.commit()
     cu.close()
@@ -503,7 +514,7 @@ def projects_modify(did):
     did = rs[0]
     name = rs[1]
     total_num = rs[2]
-    current_attemp = rs[3]
+    current_attempt = rs[3]
     current_succ = rs[4]
     draw_flag = rs[5]
     start_date = rs[6]
@@ -511,7 +522,7 @@ def projects_modify(did):
     comment = rs[8]
     
 
-    return template("ussdefect/projects_modify.htm", user=request.user, did=did, name=name, total_num=total_num, current_attemp=current_attemp, current_succ=current_succ, 
+    return template("ussdefect/projects_modify.htm", user=request.user, did=did, name=name, total_num=total_num, current_attempt=current_attempt, current_succ=current_succ, 
                     draw_flag=draw_flag, start_date=start_date, end_date=end_date,comment=comment)
 
 
@@ -520,7 +531,7 @@ def projects_modify(did):
 def projects_modify_post(did):
     name = request.forms.get('name',"")
     total_num = request.forms.get('total_num',"")
-    current_attemp = request.forms.get('current_attemp',"")
+    current_attempt = request.forms.get('current_attempt',"")
     current_succ = request.forms.get('current_succ',"")
     draw_flag = request.forms.get('draw_flag',"")
     start_date = request.forms.get('start_date',"")
@@ -529,7 +540,7 @@ def projects_modify_post(did):
     
     name = name.replace("'","''")
     total_num = total_num.replace("'","''")
-    current_attemp = current_attemp.replace("'","''")
+    current_attempt = current_attempt.replace("'","''")
     current_succ = current_succ.replace("'","''")
     draw_flag = draw_flag.replace("'","''")
     start_date = start_date.replace("'","''")
@@ -540,8 +551,8 @@ def projects_modify_post(did):
         return template("myerror.htm", user=request.user, msg="Error,name is null!")
     if total_num == "":
         return template("myerror.htm", user=request.user, msg="Error, total_num is null!")
-    if current_attemp == "":
-        return template("myerror.htm", user=request.user, msg="Error,current_attemp is null!")
+    if current_attempt == "":
+        return template("myerror.htm", user=request.user, msg="Error,current_attempt is null!")
     if current_succ == "":
         return template("myerror.htm", user=request.user, msg="Error,current_succ is null!")
     if draw_flag == "":
@@ -558,7 +569,7 @@ def projects_modify_post(did):
         
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
-    command = "update ussprojects set name='%s',total_num='%s',current_attemp='%s',current_succ='%s',draw_flag='%s',start_date='%s',end_date='%s',comment='%s' where  id='%s';" % (name, total_num, current_attemp, current_succ, draw_flag, start_date, end_date, comment, did)
+    command = "update ussprojects set name='%s',total_num='%s',current_attempt='%s',current_succ='%s',draw_flag='%s',start_date='%s',end_date='%s',comment='%s' where  id='%s';" % (name, total_num, current_attempt, current_succ, draw_flag, start_date, end_date, comment, did)
     cu.execute(command)
     cx.commit()
     cu.close()
@@ -613,30 +624,30 @@ def projects_project_new(did):
 @login_required
 def projects_project_new_post(did):
     datepoint = request.forms.get('datepoint',"")
-    plan_attemp = request.forms.get('plan_attemp',"")
+    plan_attempt = request.forms.get('plan_attempt',"")
     plan_succ = request.forms.get('plan_succ',"")
-    actual_attemp = request.forms.get('actual_attemp',"")
+    actual_attempt = request.forms.get('actual_attempt',"")
     actual_succ = request.forms.get('actual_succ',"")
     comment = request.forms.get('comment',"")
     
     datepoint = datepoint.replace("'","''")
-    plan_attemp = plan_attemp.replace("'","''")
+    plan_attempt = plan_attempt.replace("'","''")
     plan_succ = plan_succ.replace("'","''")
-    actual_attemp = actual_attemp.replace("'","''")
+    actual_attempt = actual_attempt.replace("'","''")
     actual_succ = actual_succ.replace("'","''")
     comment = comment.replace("'","''")   
     
     if datepoint == "":
         return template("myerror.htm", user=request.user, msg="Error,datepoint is null!")
-    if plan_attemp == "":
-        plan_attemp = "0"
-        #return template("myerror.htm", user=request.user, msg="Error, plan_attemp is null!")
+    if plan_attempt == "":
+        plan_attempt = "0"
+        #return template("myerror.htm", user=request.user, msg="Error, plan_attempt is null!")
     if plan_succ == "":
         plan_succ = "0"
         #return template("myerror.htm", user=request.user, msg="Error,plan_succ is null!")
-    if actual_attemp == "":
-        actual_attemp = "0"
-        #return template("myerror.htm", user=request.user, msg="Error,actual_attemp is null!")
+    if actual_attempt == "":
+        actual_attempt = "0"
+        #return template("myerror.htm", user=request.user, msg="Error,actual_attempt is null!")
     if actual_succ == "":
         actual_succ = "0"
         #return template("myerror.htm", user=request.user, msg="Error,actual_succ is null!")
@@ -644,7 +655,7 @@ def projects_project_new_post(did):
         
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
-    command = "insert into ussproject values(NULL,'%s','%s','%s','%s','%s','%s','%s');" % (did, datepoint, plan_attemp, plan_succ, actual_attemp, actual_succ, comment)
+    command = "insert into ussproject values(NULL,'%s','%s','%s','%s','%s','%s','%s');" % (did, datepoint, plan_attempt, plan_succ, actual_attempt, actual_succ, comment)
     cu.execute(command)
     cx.commit()
     cu.close()
@@ -666,16 +677,16 @@ def projects_project_modify(ddid):
     ddid = rs[0]
     projectid = rs[1]
     datepoint = rs[2]
-    plan_attemp = rs[3]
+    plan_attempt = rs[3]
     plan_succ = rs[4]
-    actual_attemp = rs[5]
+    actual_attempt = rs[5]
     actual_succ = rs[6]
     comment = rs[7]
 
     
 
-    return template("ussdefect/projects_project_modify.htm", user=request.user, ddid=ddid, projectid=projectid, datepoint=datepoint, plan_attemp=plan_attemp, plan_succ=plan_succ, 
-                    actual_attemp=actual_attemp, actual_succ=actual_succ, comment=comment)
+    return template("ussdefect/projects_project_modify.htm", user=request.user, ddid=ddid, projectid=projectid, datepoint=datepoint, plan_attempt=plan_attempt, plan_succ=plan_succ, 
+                    actual_attempt=actual_attempt, actual_succ=actual_succ, comment=comment)
 
 
 @USSdefect_app.route("/projects/project/modify/<ddid>/",method="POST") 
@@ -683,9 +694,9 @@ def projects_project_modify(ddid):
 def projects_project_modify_post(ddid):
     projectid = request.forms.get('projectid',"")
     datepoint = request.forms.get('datepoint',"")
-    plan_attemp = request.forms.get('plan_attemp',"")
+    plan_attempt = request.forms.get('plan_attempt',"")
     plan_succ = request.forms.get('plan_succ',"")
-    actual_attemp = request.forms.get('actual_attemp',"")
+    actual_attempt = request.forms.get('actual_attempt',"")
     actual_succ = request.forms.get('actual_succ',"")
     comment = request.forms.get('comment',"")
 
@@ -693,48 +704,65 @@ def projects_project_modify_post(ddid):
 
     projectid = projectid.replace("'","''")
     datepoint = datepoint.replace("'","''")
-    plan_attemp = plan_attemp.replace("'","''")
+    plan_attempt = plan_attempt.replace("'","''")
     plan_succ = plan_succ.replace("'","''")
-    actual_attemp = actual_attemp.replace("'","''")
+    actual_attempt = actual_attempt.replace("'","''")
     actual_succ = actual_succ.replace("'","''")
     comment = comment.replace("'","''")   
     current_flag = current_flag.replace("'","''")
+
 
     if projectid == "":
         return template("myerror.htm", user=request.user, msg="Error,projectid is null!")
     if datepoint == "":
         return template("myerror.htm", user=request.user, msg="Error,datepoint is null!")
-    if plan_attemp == "":
-        plan_attemp = "0"
-    if not plan_attemp.isdigit():
-        return template("myerror.htm", user=request.user, msg="Error, plan_attemp is not number!")
+    if plan_attempt == "":
+        plan_attempt = "0"
+    if not plan_attempt.isdigit():
+        return template("myerror.htm", user=request.user, msg="Error, plan_attempt is not number!")
         
     if plan_succ == "":
         plan_succ = "0"
     if not plan_succ.isdigit():
         return template("myerror.htm", user=request.user, msg="Error,plan_succ is not number!")
         
-    if actual_attemp == "":
-        actual_attemp = "0"
-    if not actual_attemp.isdigit():
-        return template("myerror.htm", user=request.user, msg="Error,actual_attemp is not number!")
+    if actual_attempt == "":
+        actual_attempt = "0"
+    if not actual_attempt.isdigit():
+        return template("myerror.htm", user=request.user, msg="Error,actual_attempt is not number!")
         
     if actual_succ == "":
         actual_succ = "0"
     if not actual_succ.isdigit():
         return template("myerror.htm", user=request.user, msg="Error,actual_succ is not number!")
+
+    if int(actual_attempt) < int(actual_succ):
+        return template("myerror.htm", user=request.user, msg="Error,actual_attempt(" +actual_attempt +") < actual_succ(" + actual_succ +")")
+
+
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    command = "select * from ussprojects where id=%s" % projectid
+    cu.execute(command)
+    rs = cu.fetchone()
+    if rs == None:
+        return template("myerror.htm", user=request.user, msg="Error,invalid projects id -- "+projectid)
+    cu.close()
     
 
-   
+    total_num = rs[2]
+    if int(actual_attempt) > total_num:
+        return template("myerror.htm", user=request.user, msg="Error, actual_attempt(" +actual_attempt +") > total_num(" + str(total_num) +")")
+
         
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
-    command = "update ussproject set datepoint='%s',plan_attemp='%s',plan_succ='%s',actual_attemp='%s',actual_succ='%s',comment='%s' where  id='%s';" % (datepoint, 
-              plan_attemp, plan_succ, actual_attemp, actual_succ, comment, ddid)
+    command = "update ussproject set datepoint='%s',plan_attempt='%s',plan_succ='%s',actual_attempt='%s',actual_succ='%s',comment='%s' where  id='%s';" % (datepoint, 
+              plan_attempt, plan_succ, actual_attempt, actual_succ, comment, ddid)
     cu.execute(command)
 
     if current_flag == "on":
-        command = "update ussprojects set current_attemp='%s',current_succ='%s' where  id='%s';" % (actual_attemp, actual_succ, projectid)
+        command = "update ussprojects set current_attempt='%s',current_succ='%s' where  id='%s';" % (actual_attempt, actual_succ, projectid)
     cu.execute(command)
     
     cx.commit()
@@ -811,7 +839,7 @@ def projects_project_generate_post(did):
 
     name = rs[1]
     total_num = rs[2]
-    current_attemp = rs[3]
+    current_attempt = rs[3]
     current_succ = rs[4]
     draw_flag = rs[5]
     start_date = rs[6]
@@ -830,7 +858,7 @@ def projects_project_generate_post(did):
     #print start_day, end_day
     
     
-    gflag = request.forms.get('gflag',"")
+    gflag = request.forms.get('gflag',"weekly")
     datepoints = []
     day1 = start_day
     if gflag == "weekly":
@@ -844,39 +872,80 @@ def projects_project_generate_post(did):
     else:
         return template("myerror.htm", user=request.user, msg="Error, gflag is invalid -- " + gflag)
 
+    ###############################################################
+    #  generate data with different algorithem                    #
+    #   (1) gtype == "empty"                                      #
+    #     only generate datepoints                                #
+    #   (2) gtype == "algorithm1"                                 # 
+    #     generate datepoints, plan_attempts, plan_succs           #
+    #   (3) gtype == "algorithm2"                                 # 
+    #     generate datepoints, plan_attempts, plan_succs,          #
+    #             actual_attempts, actual_succs                    #
+    ###############################################################
     lens = len(datepoints)
-    if lens < 3:
-        plan_attemps = random.sample(range(total_num),lens)
-        plan_succs = random.sample(range(total_num),lens)
-        actual_attemps = random.sample(range(total_num),lens)
-        actual_succs = random.sample(range(total_num),lens)
-    else:
-        plan_attemps = random.sample(range(total_num),lens-2)
-        plan_succs = random.sample(range(total_num),lens-2)
-        actual_attemps = random.sample(range(total_num),lens-2)
-        actual_succs = random.sample(range(total_num),lens-2)      
-        plan_attemps.append(total_num)
-        plan_attemps.append(total_num)
-        plan_succs.append(total_num)
-        plan_succs.append(total_num)
-        actual_attemps.append(total_num)  
-        actual_attemps.append(total_num)
-        actual_succs.append(total_num)
-        actual_succs.append(total_num)
+    gtype = request.forms.get('gtype',"empty")
+    if gtype == "empty":
+        plan_attempts = [ 0 for x in xrange(lens)]
+        plan_succs = [ 0 for x in xrange(lens)]
+        actual_attempts = [ 0 for x in xrange(lens)]
+        actual_succs = [ 0 for x in xrange(lens)]
+    elif gtype == "algorithm1":
+        if lens < 3:
+            plan_attempts = random.sample(range(total_num),lens)
+            plan_succs = random.sample(range(total_num),lens)
+        else:
+            plan_attempts = random.sample(range(total_num),lens-2)
+            plan_succs = random.sample(range(total_num),lens-2)
+     
+            plan_attempts.append(total_num)
+            plan_attempts.append(total_num)
+            plan_succs.append(total_num)
+            plan_succs.append(total_num)    
+        actual_attempts = [ 0 for x in xrange(lens)]
+        actual_succs = [ 0 for x in xrange(lens)]
+    elif gtype == "algorithm2":
+        if lens < 3:
+            plan_attempts = random.sample(range(total_num),lens)
+            plan_succs = random.sample(range(total_num),lens)
+            actual_attempts = random.sample(range(total_num),lens)
+            actual_succs = random.sample(range(total_num),lens)
+        else:
+            plan_attempts = random.sample(range(total_num),lens-2)
+            plan_succs = random.sample(range(total_num),lens-2)
+            actual_attempts = random.sample(range(total_num),lens-2)
+            actual_succs = random.sample(range(total_num),lens-2)      
+            plan_attempts.append(total_num)
+            plan_attempts.append(total_num)
+            plan_succs.append(total_num)
+            plan_succs.append(total_num)
+            actual_attempts.append(total_num)  
+            actual_attempts.append(total_num)
+            actual_succs.append(total_num)
+            actual_succs.append(total_num)
 
-    plan_attemps.sort()
+    plan_attempts.sort()
     plan_succs.sort()
-    actual_attemps.sort()
+    actual_attempts.sort()
     actual_succs.sort()
+    # make sure attempt >= succ
+    for ii in range(lens):
+        if plan_attempts[ii] < plan_succs[ii]:
+            plan_attempts[ii], plan_succs[ii] =  plan_succs[ii], plan_attempts[ii]
+        if actual_attempts[ii] < actual_succs[ii]:
+            actual_attempts[ii], actual_succs[ii] = actual_succs[ii], actual_attempts[ii]
     
-    #print "plan_attemps=", plan_attemps
+    #print "plan_attempts=", plan_attempts
 
     command = "delete from ussproject where projectid=%s" % did
     #print "command1=",command
     cu.execute(command)
+
+    command = "update ussprojects set current_attempt='%s',current_succ='%s' where  id='%s';" % ("0", "0", did)
+    cu.execute(command)
+
     
     for dd in range(lens):
-        command = "insert into ussproject values(NULL,'%s','%s','%s','%s','%s','%s','%s');" % (did, datepoints[dd], plan_attemps[dd], plan_succs[dd], actual_attemps[dd], actual_succs[dd], "")
+        command = "insert into ussproject values(NULL,'%s','%s','%s','%s','%s','%s','%s');" % (did, datepoints[dd], plan_attempts[dd], plan_succs[dd], actual_attempts[dd], actual_succs[dd], "")
         #print "command2=",command
         cu.execute(command)
         
@@ -885,7 +954,110 @@ def projects_project_generate_post(did):
     
     redirect("/USSdefect/projects/project/list/"+did+"/")
 
+
+def create_project_csv0():   
+    result = []
     
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    command = "select * from ussprojects where draw_flag=1"
+    cu.execute(command)
+    rs = cu.fetchall()
+
+    data = []
+    for r in rs:
+        name = r[1]
+        name = name.replace(",","")
+        total_num = r[2]
+        current_attempt = r[3]
+        current_succ = r[4]
+        
+        step1 = float(current_succ)/total_num*100
+        step2 = float(current_attempt - current_succ)/total_num*100
+        step3 = float(total_num - current_attempt)/total_num*100
+
+        perc1 = "%2.2f" % step1
+        perc2 = "%2.2f" % step2
+        perc3 = "%2.2f" % step3
+
+        data.append((name,perc1,perc2,perc3))
+
+    f1 = open(project_csv_fn0,"w+")
+    for dd in data:
+        f1.write(",".join(dd)+"\n")
+    f1.close()
+    
+    result.append("generate "+project_fun_fn0+" successfully!")
+    return "<br>".join(result)
+
+def create_project_csv_did(did,name,total_num):   
+    result = []
+    
+
+    
+    name = name.replace(",","")
+    total_num = str(total_num)
+
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    cu.execute('select * from ussproject where projectid='+str(did))
+    rs = cu.fetchall()
+
+    fn1 = os.path.join(_defectpicpath,project_fun_did+str(did) +".csv")
+    
+    f1 = open(fn1,"w+")
+    for dd in rs:
+        datepoint = dd[2]
+        datepoint = datepoint.replace(",","")
+        plan_attempt = str(dd[3])
+        plan_succ = str(dd[4])
+        actual_attempt = str(dd[5])
+        actual_succ = str(dd[6])
+        f1.write(datepoint+","+plan_attempt+","+plan_succ+","+actual_attempt+","+actual_succ+"\n")
+    f1.write(name+","+total_num+",0,0,0\n")
+    f1.close()
+    
+    result.append("generate "+project_fun_did+str(did)+" successfully!")
+    return "<br>".join(result)
+
+# def create_project_csv_did2():   
+#     result = []
+#     
+#     cx = sqlite.connect('branding.db')
+#     cu = cx.cursor()
+#     command = "select * from ussprojects where draw_flag=1"
+#     cu.execute(command)
+#     rs = cu.fetchall()
+#     for r in rs:
+#         result.append( create_project_csv_did(r[0], r[1], r[2]) )
+#     return "<br>".join(result)
+
+
+@USSdefect_app.route("/projects/draw/")                  
+@login_required
+def projects_draw():
+    result = []
+    # create percent progress pic for all projects
+    result.append( create_project_csv0() )
+    result.append( create_pic(make_defect_py, project_fun_fn0, project_csv_fn0, project_eps_fn0, project_png_fn0) )
+
+    # create report pic for each progject
+    cx = sqlite.connect('branding.db')
+    cu = cx.cursor()
+    command = "select * from ussprojects where draw_flag=1"
+    cu.execute(command)
+    rs = cu.fetchall()
+    for r in rs:
+        result.append( create_project_csv_did(r[0], r[1], r[2]) )
+        project_fun_did_csv = os.path.join(_defectpicpath, project_fun_did+str(r[0])+".csv" )
+        project_fun_did_eps = os.path.join(_defectpicpath, project_fun_did+str(r[0])+".eps" )
+        project_fun_did_png = os.path.join(_defectpicpath, project_fun_did+str(r[0])+".png" )
+        result.append( create_pic(make_defect_py, project_fun_did, project_fun_did_csv, project_fun_did_eps, project_fun_did_png) )
+        
+    return "<pre>\n"+"\n".join(result) +"</pre>\n"
+
+
+
 if __name__=="__main__":
     pass
 
