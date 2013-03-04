@@ -230,6 +230,9 @@ def defect_modify_post(did):
     except ValueError,e:
         return template("myerror.htm", user=request.user, msg="Error, Lineitem format is invalid -- "+ Lineitem)
 
+    if status in ["close","cancel"] and close_date=="":
+        return template("myerror.htm", user=request.user, msg="Error, you must input close_date for a close or cancel defect")
+        
         
     cx = sqlite.connect('branding.db')
     cu = cx.cursor()
