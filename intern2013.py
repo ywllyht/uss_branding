@@ -151,7 +151,49 @@ def comment_post(resume_name):
     return template("mydirect.htm",title="OK", msg="Add comment successful", next_url=".", user=request.user)
 
 
+@Intern2013_app.route("/modify/<resume_name>/") 
+@login_required
+def modify(resume_name):
+    #resume_name2 = unquote(resume_name)
+    #print repr(resume_name)
+    #print repr(resume_name2)
+    resume_name2 = resume_name.decode("utf-8")
+    slice1 = resume_name2.split(".",1)
+    if len(slice1) != 2:
+        return "name error, split fails! ",resume_name2
+    resume_comment_name3 = slice1[0]+".txt"
+    resume_comment_name4 = os.path.join(commentpath,resume_comment_name3)
+    if not os.path.isfile(resume_comment_name4):
+        f1 = open(resume_comment_name4,"w+")
+        f1.close()
+        comment2 = ""
+    else:
+        f1 = open(resume_comment_name4,"r")
+        comment2 = f1.read()
+        f1.close()
 
+
+    return template("Intern2013/modify.htm",title="SVT3 Intern 2013 ",user=request.user,resume_name=resume_name,comment2=comment2)
+
+@Intern2013_app.route("/modify/<resume_name>/",method="post") 
+@login_required
+def modify_post(resume_name):
+    #resume_name2 = unquote(resume_name)
+    #print repr(resume_name)
+    #print repr(resume_name2)
+    resume_name2 = resume_name.decode("utf-8")
+    slice1 = resume_name2.split(".",1)
+    if len(slice1) != 2:
+        return "name error, split fails! ",resume_name2
+    resume_comment_name3 = slice1[0]+".txt"
+    resume_comment_name4 = os.path.join(commentpath,resume_comment_name3)
+
+    comment = request.forms.get('comment')
+    f1 = open(resume_comment_name4,"w+")
+    f1.write(comment)
+    f1.close()
+
+    return template("mydirect.htm",title="OK", msg="modify comment successful", next_url="/Intern2013/comment/"+resume_name+"/", user=request.user)
 
 if __name__ == '__main__':                                                                                  
     run(search_app,host="0.0.0.0",reloader=True)             
