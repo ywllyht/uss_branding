@@ -46,8 +46,8 @@ def ussdefect1(fn1):
     # plots side by side.  The plot labeled "foo" will the leftmost (i.e.,
     # 0th out of 3).  Attribute hcol tells the column from which to
     # retrive sample values from.  It defaults to one.
-    ar.add_plot(bar_plot.T(label="open", hcol=1, cluster=(0,2),fill_style=colors[0]))
-    ar.add_plot(bar_plot.T(label="close", hcol=2, cluster=(1,2),fill_style=colors[1]))
+    ar.add_plot(bar_plot.T(label="open", hcol=1, cluster=(0,2),fill_style=colors[0], data_label_format="/8{}%d"))
+    ar.add_plot(bar_plot.T(label="close", hcol=2, cluster=(1,2),fill_style=colors[1], data_label_format="/8{}%d"))
     
     ar.draw()
 
