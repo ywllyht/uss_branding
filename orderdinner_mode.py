@@ -635,6 +635,8 @@ class History(object):
         for line in block[1:-1]:
             if line[0] == "T":
                 slice1 = line.split(" ",5)
+                if len(slice1) == 5:
+                    slice1.append("None")
                 item = HistoryItem()
                 item.id = slice1[0]
                 item.operator = slice1[1]
