@@ -14,6 +14,7 @@ from mycomment import comment_app
 from intern2013 import Intern2013_app
 from ussdefect1 import USSdefect_app
 import os
+import sys
 import datetime
 import time
 import urllib
@@ -26,9 +27,18 @@ _localDir=os.path.dirname(__file__)
 _curpath=os.path.normpath(os.path.join(os.getcwd(),_localDir))
 _staticpath = os.path.join(_curpath,"static")
 _beakerpath = os.path.join(os.path.dirname(_curpath),"beaker")
+_uppath = os.path.dirname(_curpath)
+AQpath = os.path.join(_uppath,"AQUSS")
+if sys.platform == "win32":  # winXP, developer environment
+    _ftppath = os.path.join(AQpath,"ftp")
+else:                        # linux server, running environment
+    _ftppath = "/home/lljli/ftp"
+
+
 
 produce_environment_flag_file = os.path.join(os.path.dirname(_curpath),"produce_flag.txt")
 produce_environment_flag = os.path.isfile(produce_environment_flag_file)
+
  
 if not os.path.isdir(_beakerpath):
     os.mkdir(_beakerpath)
@@ -101,7 +111,7 @@ def statics(path):
 @index_app.route('/ftp/<path:path>')
 def ftp(path):
     #path = urllib.unquote(path)
-    return static_file(path,root="/home/lljli/ftp")
+    return static_file(path,root=_ftppath)
 
 
 # @index_app.route('/search/')
