@@ -47,7 +47,7 @@ project_png_fn0 = os.path.join(_defectpicpath,"ussproject0.png")
 project_fun_did = "ussprojectdid"
 
 ussfvt_users = ["lljli","yoga","rucy","wenzhong"]
-
+Lineitem_filter = ["3204","133","133.1","1981"]
 
 USSdefect_app = Bottle()
 
@@ -70,6 +70,7 @@ def defect():
     d_cancel = 0
     d_other = 0
     d_reject = 0
+    d_working = 0
     for r in rs:
         if r[8] == "open":
             d_open += 1
@@ -83,10 +84,12 @@ def defect():
             d_cancel += 1
         elif r[8] == "reject":
             d_reject += 1
+        elif r[8] == "working":
+            d_working += 1
         else:
             d_other += 1
     return template("ussdefect/defect.htm",user=request.user, defects=rs, d_total=d_total, d_open=d_open, d_verify=d_verify, d_close=d_close,
-                    d_returned=d_returned, d_cancel=d_cancel, d_reject=d_reject, d_other=d_other)
+                    d_returned=d_returned, d_cancel=d_cancel, d_reject=d_reject, d_working=d_working, d_other=d_other)
 
 @USSdefect_app.route("/defect/new/") 
 @login_required
@@ -311,7 +314,6 @@ def create_defect_csv123():
     ''' 
     result = []
     result.append("<b>create_defect_csv1()</b>")
-    Lineitem_filter = ["3204","133","133.1","1981"]
 
     # we only use the data between (START_YEAR,START_MONTH) and (CURRENT_YEAR, CURRENT_MONTH)
     START_YEAR = 2011
