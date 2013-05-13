@@ -30,7 +30,7 @@ _beakerpath = os.path.join(os.path.dirname(_curpath),"beaker")
 _uppath = os.path.dirname(_curpath)
 AQpath = os.path.join(_uppath,"AQUSS")
 if sys.platform == "win32":  # winXP, developer environment
-    _ftppath = os.path.join(AQpath,"ftp")
+    _ftppath = os.path.join(_uppath,"ftp")
 else:                        # linux server, running environment
     _ftppath = "/home/lljli/ftp"
 
