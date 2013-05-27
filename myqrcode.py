@@ -12,7 +12,7 @@ _curpath=os.path.normpath(os.path.join(os.getcwd(),_localDir))
 _staticpath = os.path.join(_curpath,"static")
 _uppath = os.path.dirname(_curpath)
 _picpath1 = os.path.join(_staticpath,"pics")
-logopath1 = os.path.join(_picpath1,"zblog_logo.jpg")
+
 
 if sys.platform == "win32":  # winXP, developer environment
     _ftppath = os.path.join(_uppath,"ftp")
@@ -51,9 +51,20 @@ def generate():
     if not size:
         return template("myerror.htm", user=request.user, msg="Error, can not find size")
 
+    error_correction = request.forms.get("error_correction","")
+    if not error_correction:
+        return template("myerror.htm", user=request.user, msg="Error, can not find error_correction")
 
-    print "lenth of data=%d,size=%s,logo=%s" % (len(data),size,logo)
+    print "lenth of data=%d,size=%s,logo=%s,error_correction=%s" % (len(data),size,logo,error_correction)
     
+    if error_correction == "ERROR_CORRECT_L":
+        error_correction0 = qrcode.constants.ERROR_CORRECT_L
+    elif error_correction == "ERROR_CORRECT_M":
+        error_correction0 = qrcode.constants.ERROR_CORRECT_M
+    elif error_correction == "ERROR_CORRECT_Q":
+        error_correction0 = qrcode.constants.ERROR_CORRECT_Q
+    elif error_correction == "ERROR_CORRECT_H":
+        error_correction0 = qrcode.constants.ERROR_CORRECT_H
     # if len(data) > 200:
     #     box_size1 = 5
     # elif len(data) > 100:
@@ -72,7 +83,7 @@ def generate():
     
     qr = qrcode.QRCode(
         version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        error_correction=error_correction0,
         box_size=size,
         border=4,
     )
@@ -81,6 +92,29 @@ def generate():
     m=qr.make_image()
     fn1 = os.path.join(_qrpath,url_1+".png")
     m.save(fn1)
+    
+    if logo != "None":
+        from PIL import Image
+
+        im1 = Image.open(fn1);  #1676x343
+        im =  im1.convert('RGB')
+        #print im.format, im.size, im.mode
+        width = im.size[0]
+        hight = im.size[1]
+
+        logopath1 = os.path.join(_picpath1,logo)
+        if not os.path.isfile(logopath1):
+            print logopath1
+            return template("myerror.htm", user=request.user, msg="Error, This logo does not exist! "+logo)
+
+        foreground = Image.open(logopath1);       
+        logosize = 60        
+        box = (0, 0, logosize, logosize)
+        box2 = ((width-logosize)/2,(hight-logosize)/2,(width+logosize)/2,(hight+logosize)/2)
+        region = foreground.crop(box)
+
+        im.paste(region, box2)
+        im.save(fn1)
     
     
     redirect("/myqrcode/display/"+url_1)
