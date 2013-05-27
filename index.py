@@ -13,6 +13,7 @@ from orderdinner import dinner_app
 from mycomment import comment_app
 from intern2013 import Intern2013_app
 from ussdefect1 import USSdefect_app
+from myqrcode import myqrcode_app
 import os
 import sys
 import datetime
@@ -61,6 +62,7 @@ session_opts = {
 @comment_app.hook('before_request')
 @Intern2013_app.hook('before_request')
 @USSdefect_app.hook('before_request')
+@myqrcode_app.hook('before_request')
 def get_user_request():
     #userid = request.get_cookie("userid","0")
     #username = request.get_cookie("username","")
@@ -99,6 +101,7 @@ index_app.mount("/dinner/",dinner_app)
 index_app.mount("/comment/",comment_app)
 index_app.mount("/Intern2013/",Intern2013_app)
 index_app.mount("/USSdefect/",USSdefect_app)
+index_app.mount("/myqrcode/",myqrcode_app)
 
 @index_app.route('/')
 def index():
@@ -161,6 +164,10 @@ def common_check():
     result.append("[request.headers]")
     for r in request.headers:
         result.append("&nbsp;&nbsp;&nbsp;"+r+","+request.headers[r])
+    result.append("remote_route has "+str(len(request.remote_route))+" elements")
+    for rr in request.remote_route:
+        result.append("&nbsp;&nbsp;&nbsp;&nbsp;"+rr)
+    result.append("remote_addr="+request.remote_addr)
         
     return "<br>".join(result)
 

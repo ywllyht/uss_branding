@@ -1,0 +1,83 @@
+<div class="container">
+<div class="row">
+  <div class="span12">
+
+
+    <form id="form1" name="form1"  class="form-horizontal"  method="POST" action="generate">
+    
+    
+    <div class="control-group">
+      <label class="control-label" for="inputPassword">
+        Text or URL:
+      </label>
+      <div class="controls">
+        <input type="text" name="data" id="data" value="" maxlength="200" style="width:600px;"> 
+      </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="inputPassword">
+            Logo?
+        </label>
+        
+      <div class="controls">
+        <!--
+        <label class="checkbox">
+          <input type="checkbox" name="logo_zswpublish"> zSW Publish
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" name="logo_huitailang"> huitailang
+        </label>
+        -->
+        <label class="radio">
+          <input type=radio name="logo" value="None" checked> None
+        </label>
+        <label class="radio">
+          <input type=radio name="logo" value="logo_zblog1.jpg"> logo_zswpublish
+        </label>
+        <label class="radio">
+          <input type=radio name="logo" value="logo_huitailang1.jpg"> logo_huitailang
+        </label>
+        
+      </div>
+    
+      
+    </div>
+    
+    <div class="control-group">
+        <label class="control-label" for="inputPassword">
+            Size
+        </label>
+        
+      <div class="controls">
+        <label class="checkbox">
+          <select name="size">
+            <option value="4">4
+            <option value="5">5
+            <option value="6" selected>6
+            <option value="7">7
+            <option value="8">8
+            <option value="9">9
+            <option value="10">10
+            <option>Peach
+          </select>
+        </label>
+      </div>
+    </div>
+
+    
+    <div class="control-group">
+      <label class="control-label" for="inputPassword">
+        300 character max:
+      </label>
+      <div class="controls">
+        <input type="submit" name="button" id="button" value="generate">
+      </div>
+    </div>
+    
+    </form>
+
+  </div>
+</div>
+</div>
+%rebase base.htm title="qrcode...",user=user
