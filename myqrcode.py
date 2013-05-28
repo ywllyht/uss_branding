@@ -5,7 +5,7 @@ import os
 import sys
 import time
 import qrcode
-
+from PIL import Image
 
 _localDir=os.path.dirname(__file__)
 _curpath=os.path.normpath(os.path.join(os.getcwd(),_localDir))
@@ -94,7 +94,6 @@ def generate():
     m.save(fn1)
     
     if logo != "None":
-        from PIL import Image
 
         im1 = Image.open(fn1);  #1676x343
         im =  im1.convert('RGB')
@@ -121,8 +120,39 @@ def generate():
 
 @myqrcode_app.route("/display/<urlname>")
 def display(urlname):
-    fn1 = "/ftp/temp/qrcode/"+urlname+".png"
-    return template("qrcode/display.htm",user=request.user, urlname=fn1)
+    ftp_fn1 = "/ftp/temp/qrcode/"+urlname+".png"
 
+    if sys.platform == "win32":  # winXP, developer environment
+        decode_data = ""
+    else:
+        abs_fn1 = os.path.join(_qrpath,urlname+".png")
+        try:
+           decode_data = zbar_read(abs_fn1)
+        except Exception,e:
+           decode_data = "zbar read Error! " + str(e)
 
-    
+    return template("qrcode/display.htm",user=request.user, ftp_fn1=ftp_fn1, decode_data=decode_data)
+
+def zbar_read(fn1):
+    # create a reader  
+    import zbar  
+    scanner = zbar.ImageScanner()  
+    # configure the reader  
+    scanner.parse_config('enable')  
+    # obtain image data  
+    pil = Image.open(fn1).convert('L')  
+    width, height = pil.size  
+    raw = pil.tostring()  
+    # wrap image data  
+    image = zbar.Image(width, height, 'Y800', raw)  
+    # scan the image for barcodes  
+    scanner.scan(image)  
+    # extract results  
+    result = []
+    for symbol in image:  
+        # do something useful with results  
+        result.append("decoded type=%s, data=%s" % (symbol.type,symbol.data))
+        print 'decoded', symbol.type, 'symbol', '"%s"' % symbol.data
+    # clean up  
+    del(image)
+    return "\n".join(result)
