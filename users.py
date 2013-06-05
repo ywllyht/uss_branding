@@ -44,9 +44,9 @@ def login_required(fn):
         #print request.fullpath
         #pprint(request.environ)
         try:
-	    nexturl = request.environ['REQUEST_URI']
-	except KeyError,e:
-	    nexturl = request.fullpath
+            nexturl = request.environ['REQUEST_URI']
+        except KeyError,e:
+            nexturl = request.fullpath
 
         if request.user.username == "":
             msg = 'sorry, you need to login first!'
