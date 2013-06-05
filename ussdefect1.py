@@ -46,7 +46,7 @@ project_png_fn0 = os.path.join(_defectpicpath,"ussproject0.png")
 
 project_fun_did = "ussprojectdid"
 
-ussfvt_users = ["lljli","yoga","rucy","wenzhong"]
+ussfvt_users = ["lljli","yoga","rucy","wenzhong","huangwji"]
 Lineitem_filter = ["3204","133","133.1","1981"]
 
 USSdefect_app = Bottle()
