@@ -15,6 +15,9 @@ _exampath = os.path.join(_uppath,"fastexam")
 
 MYSPLIT = "^^"
 
+TEMPLATE1_FILE = "template1.txt" # 
+END_FILE = "end.txt"             # if this examination is end
+
 if not os.path.isdir(_exampath):
     os.makedirs(_exampath)
 
@@ -22,6 +25,13 @@ fastexam_app = Bottle()
 
 @fastexam_app.route("/") 
 def index():
+    dirlist = os.listdir(_exampath)
+    for dd in dirlist:
+        dd2 = os.path.join(_exampath,dd)
+        template1_fn = os.path.join(dd2,TEMPLATE1_FILE)
+        end_fn = os.path.join(dd2,END_FILE)
+        
+    
     return template("fastexam/index.htm",user=request.user)
 
 @fastexam_app.route("/new/") 
@@ -55,10 +65,28 @@ def new_post():
     r = parse_conent(content,title,new_path)
     print "r=",r
     if r == "OK!":
-        redirect("/fastexam/")
+        redirect("../new_display/"+url_1+"/")
     else:
         return template("myerror.htm", user=request.user, msg=r)
     
+@fastexam_app.route("/new_display/<exam_path>/") 
+@login_required
+def new_display(exam_path):
+    new_path2 = os.path.join(_exampath,exam_path)
+    if not os.path.isdir(new_path2):
+        return template("myerror.htm", user=request.user, msg="Error, this path is empty")
+        
+    fn1 = os.path.join(new_path2, TEMPLATE1_FILE)
+    f1 = open(fn1,"r")
+    content = f1.read()
+    f1.close()
+    #content = content.replace("<","&lt;")
+    #content = content.replace(">","&gt;")
+    
+    return template("fastexam/new_display.htm",user=request.user, content=content)
+
+
+
 
 def parse_conent(content,title,new_path):
     questions = []
@@ -84,7 +112,6 @@ def parse_conent(content,title,new_path):
             question = sp1[1]
             if len(question) <= 1:
                 return "Error at line %d, illegal question" % (i+1)
-            print "question1=",question
         elif line.startswith("choice="):
             if len(choice) != 0:
                 return "Error at line %d, duplicate choice" % (i+1)
@@ -122,44 +149,62 @@ def parse_conent(content,title,new_path):
             else:
                 qtype = "single_choice"
 
-            print "question2=",question
             q_html = []
-            q_html.append("QQ_"+str(number)+"_START")
+            q_html.append("START_QQ_"+str(number))
             if qtype == "single_choice":
                 # <p>question1</p> 
                 # <input type=radio name="q_1" value="A" checked> None
                 # <input type=radio name="q_1" value="B"> logo_zswpublish
                 # <input type=radio name="q_1" value="C"> logo_huitailang
                 # <input type="hidden" name="q_1_expect" value="A">
+                # <input type="hidden" name="q_1_type" value="single_choice">
                 q_n = "<p>%s</p>" % question
                 q_html.append(q_n)
+                base_choice = 65  # A
                 for cc in choice:
                     q_n = "q_"+str(number)
-                    check_html = '<input type=radio name="%s">%s<p>' % (q_n,cc)
+                    check_html = '<input type=radio name="%s" value="%s">%s<p>' % (q_n,chr(base_choice),cc)
                     q_html.append(check_html)
+                    base_choice += 1
+                    
                 q_n = "q_"+str(number)+"_expect"
                 q_answer_expect = answer_expect[0]
-                q_value = base64.b64encode(q_n+MYSPLIT+q_answer_expect)
-                hidden_html = '<input type="hidden" name="%s" value="%s">' %(q_n,q_answer_expect)
+                q_base64value = base64.b64encode(q_n+MYSPLIT+q_answer_expect)
+                hidden_html = '<input type="hidden" name="%s" value="%s">' %(q_n,q_base64value)
+                q_html.append(hidden_html)
+
+                q_n = "q_"+str(number)+"_type"
+                hidden_html = '<input type="hidden" name="%s" value="single_choice">' % q_n
                 q_html.append(hidden_html)
             else:
                 # <p>question2</p>
-                # <input type=checkbox name="q_2_1">Banana<p>
-                # <input type=checkbox name="q_2_2" checked>Apple<p>
-                # <input type=checkbox name="q_2_3">Orange<p>
+                # <input type=checkbox name="q_2_A">Banana<p>
+                # <input type=checkbox name="q_2_B" checked>Apple<p>
+                # <input type=checkbox name="q_2_C">Orange<p>
                 # <hiden name="q_1_expect" value="A_B">
+                # <input type="hidden" name="q_1_type" value="multi_choice">
                 q_n = "<p>%s</p>" % question
                 q_html.append(q_n)
+                base_choice = 65
                 for cc in choice:
-                    q_n = "q_"+str(number)
+                    q_n = "q_"+str(number)+"_"+chr(base_choice)
                     check_html = '<input type=checkbox name="%s">%s<p>' % (q_n,cc)
                     q_html.append(check_html)
+                    base_choice += 1
+                    
                 q_n = "q_"+str(number)+"_expect"
-                q_answer_expect = answer_expect[0]
-                q_value = base64.b64encode(q_n+MYSPLIT+q_answer_expect)
-                hidden_html = '<input type="hidden" name="%s" value="%s">' %(q_n,q_answer_expect)
+                q_answer_expect = MYSPLIT.join(answer_expect)
+                q_base64value = base64.b64encode(q_n+MYSPLIT+q_answer_expect)
+                hidden_html = '<input type="hidden" name="%s" value="%s">' %(q_n,q_base64value)
                 q_html.append(hidden_html)
-            q_html.append("QQ_"+str(number)+"_END")
+
+                
+                q_n = "q_"+str(number)+"_type"
+                hidden_html = '<input type="hidden" name="%s" value="multi_choice">' % q_n
+                q_html.append(hidden_html)
+
+                
+            q_html.append("END_QQ_"+str(number))
             
             questions.append("\n".join(q_html))
             number += 1
@@ -168,7 +213,7 @@ def parse_conent(content,title,new_path):
             choice = []
             answer_expect = []
             
-    fn1 = os.path.join(new_path,"template1")
+    fn1 = os.path.join(new_path,TEMPLATE1_FILE)
     f1 = open(fn1,"w+")
     f1.write("\n".join(questions))
     f1.close()
