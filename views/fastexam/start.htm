@@ -1,0 +1,68 @@
+<div class="container">
+<div class="row">
+  <div class="span12">
+
+    <h3>{{title}}</h3>
+    <h3>total:{{number}}&nbsp;questions,&nbsp;&nbsp;each:{{per_score}} score</h3>
+
+    <form id="form1" name="form1"  class="form-horizontal"  method="POST" action=".">
+    
+    
+    <div class="control-group">
+      <label class="control-label" for="inputPassword">
+        name:
+      </label>
+      <div class="controls">
+        <input type="text" name="name" id="name" value="" maxlength="200" style="width:600px;"> 
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label" for="inputPassword">
+        SN(工号):
+      </label>
+      <div class="controls">
+        <input type="text" name="snid" id="snid" value="" maxlength="200" style="width:200px;"> 
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label" for="inputPassword">
+        notes ID or email:
+      </label>
+      <div class="controls">
+        <input type="text" name="notesid" id="notesid" value="" maxlength="200" style="width:400px;"> 
+      </div>
+    </div>
+
+    
+    <!--
+    <div class="control-group">
+      <label class="control-label" for="inputPassword">
+        content:
+      </label>
+      <div class="controls">
+      
+          <textarea name="content" rows="20" cols="120"  class="input-xxlarge" style="width:600px;" ></textarea>
+               <br/>
+      </div>
+    </div>
+    -->
+    
+    <div class="control-group">
+      <label class="control-label" for="inputPassword">
+        add:
+      </label>
+      <div class="controls">
+        <input type="submit" name="button" id="button" value="start">
+      </div>
+    </div>
+    
+    </form>
+
+
+
+  </div>
+</div>
+</div>
+%rebase base.htm title="fast examination",user=user

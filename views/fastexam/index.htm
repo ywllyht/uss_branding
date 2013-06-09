@@ -2,7 +2,27 @@
 <div class="row">
   <div class="span12">
       <p><a href="new/">new examination</a></p>
-
+      <table class="table">
+          <th>
+               <td>title</td>
+               <td>per_score</td>
+               <td>number</td>
+          </th>
+          %for exam in exams:
+          <tr>
+               <td><a href="./start/{{exam[3]}}/">start</a></td>
+               %if user.username != "":
+                   <td><a href="./new_display/{{exam[3]}}/">{{exam[0]}}</a>
+                   &nbsp;<a href="./summary/{{exam[3]}}/">summary</a>
+                   </td>
+               %else:
+                   <td>{{exam[0]}}</td>
+               %end
+               <td>{{exam[1]}}</td>
+               <td>{{exam[2]}}</td>
+          </tr>
+          %end
+      </table>
   </div>
 </div>
 </div>

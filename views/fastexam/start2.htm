@@ -1,0 +1,29 @@
+<div class="container">
+<div class="row">
+  <div class="span12">
+
+    <h3>{{title}}</h3>
+    <h3>total:{{number}}&nbsp;questions,&nbsp;&nbsp;each:{{per_score}} score,&nbsp;&nbsp;
+    name:{{name}}&nbsp;&nbsp;sn:{{snid}}&nbsp;&nbsp;notes:{{notesid}}</h3>
+
+    <form id="form1" name="form1"  class="form-horizontal"  method="POST" action=".">
+    
+    {{!paper}}
+    
+    <div class="control-group">
+      <label class="control-label" for="inputPassword">
+        final:
+      </label>
+      <div class="controls">
+        <input type="submit" name="button" id="button" value="submit">
+      </div>
+    </div>
+    
+    </form>
+
+
+
+  </div>
+</div>
+</div>
+%rebase base.htm title="fast examination",user=user
