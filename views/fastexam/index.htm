@@ -10,16 +10,23 @@
           </th>
           %for exam in exams:
           <tr>
-               <td><a href="./start/{{exam[3]}}/">start</a></td>
+               <td><a href="./start/{{exam[4]}}/">start</a></td>
                %if user.username != "":
-                   <td><a href="./new_display/{{exam[3]}}/">{{exam[0]}}</a>
-                   &nbsp;<a href="./summary/{{exam[3]}}/">summary</a>
+                   <td><a href="./new_display/{{exam[4]}}/">{{exam[0]}}</a>
+                   &nbsp;<a href="./summary/{{exam[4]}}/">summary</a>
                    </td>
                %else:
                    <td>{{exam[0]}}</td>
                %end
                <td>{{exam[1]}}</td>
-               <td>{{exam[2]}}</td>
+               <td>
+               %if user.username != "":
+               {{exam[3]}} / {{exam[2]}}
+               %else:
+               {{exam[3]}}
+               %end
+               </td>
+               
           </tr>
           %end
       </table>

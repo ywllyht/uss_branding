@@ -40,9 +40,9 @@ def index():
         end_fn = os.path.join(dd2,END_FILE)
         title_fn = os.path.join(dd2,TITLE_FILE)
         if os.path.isfile(title_fn) and os.path.isfile(template1_fn):
-            title,per_score,number = parse_TITLE_FILE(title_fn)
+            title,per_score,number,use_number = parse_TITLE_FILE(title_fn)
             if title != "":
-                exams.append((title,per_score,number,dd))
+                exams.append((title,per_score,number,use_number,dd))
 
         
     
@@ -60,9 +60,10 @@ def summary(exam_path):
 
     title = ""
     per_score = ""
-    number = ""
+    number = ""      # total number of questions
+    use_number = ""  # real number in a examination
     if os.path.isfile(title_fn) and os.path.isfile(template1_fn):
-        title,per_score,number = parse_TITLE_FILE(title_fn)
+        title,per_score,number,use_number = parse_TITLE_FILE(title_fn)
 
     
     scores_path = os.path.join(new_path2,"scores")
@@ -89,7 +90,7 @@ def summary(exam_path):
         students.append((name,snid,notesid,score,dd))
         
     return template("fastexam/summary.htm",user=request.user,students=students,title=title,per_score=per_score,
-                    number=number,exam_path=exam_path)
+                    number=number,use_number=use_number, exam_path=exam_path)
 
     
 @fastexam_app.route("/delscore/<exam_path>/<student_path0>/")
@@ -114,6 +115,50 @@ def delscore(exam_path,student_path0):
     os.rmdir(student_path)
     
     redirect("../../../summary/"+exam_path+"/")
+
+    
+@fastexam_app.route("/displayscore/<exam_path>/<student_path0>/")
+@login_required 
+def displayscore(exam_path,student_path0):
+    new_path2 = os.path.join(_exampath,exam_path)
+    if not os.path.isdir(new_path2):
+        return template("myerror.htm", user=request.user, msg="Error, exam_path path is empty")
+
+    template1_fn = os.path.join(new_path2,TEMPLATE1_FILE)
+    end_fn = os.path.join(new_path2,END_FILE)
+    title_fn = os.path.join(new_path2,TITLE_FILE)
+    
+    title = ""
+    per_score = ""
+    number = ""
+    use_number = ""
+    if os.path.isfile(title_fn) and os.path.isfile(template1_fn):
+        title,per_score,number,use_number = parse_TITLE_FILE(title_fn)
+    
+
+    scores_path = os.path.join(new_path2,"scores")
+    if not os.path.isdir(scores_path):
+        os.mkdir(scores_path)
+
+    student_path = os.path.join(scores_path,student_path0)
+    if not os.path.isdir(student_path):
+        os.makedirs(student_path)
+
+    # judge is this paper submitted?
+    score_fn = os.path.join(student_path,SCORE_FILE)
+    if not os.path.isfile(score_fn):
+        return template("myerror.htm", user=request.user, msg="Error, score file is not exist!")
+        
+    f1 = open(score_fn)
+    scorecontent = f1.read()
+    f1.close()
+
+    student_fn1 = os.path.join(student_path,STUDENT_FILE)  
+    name,snid,notesid = parse_STUDENT_FILE(student_fn1) 
+    
+    return template("fastexam/displayscore.htm",user=request.user, title=title,number=number,use_number=use_number,per_score=per_score,scorecontent=scorecontent,
+                    name=name, snid=snid, notesid=notesid, exam_path=exam_path)
+    
 
 
 @fastexam_app.route("/new/") 
@@ -184,6 +229,7 @@ def parse_conent(content,title,new_path):
     # answer_expect=A^^B
 
     per_score = ""
+    use_number = ""
     qtype = ""
     question = ""
     choice = []
@@ -199,6 +245,11 @@ def parse_conent(content,title,new_path):
                 return "Error at line %d, duplicate per_score" % (i+1)
             sp1 = line.split("=",1)
             per_score = sp1[1]
+        if line.startswith("use_number"):
+            if use_number != "":
+                return "Error at line %d, duplicate use_number" % (i+1)
+            sp1 = line.split("=",1)
+            use_number = sp1[1]            
         elif line.startswith("question="):
             if question:
                 return "Error at line %d, duplicate question" % (i+1)
@@ -252,12 +303,13 @@ def parse_conent(content,title,new_path):
                 # <input type=radio name="q_1" value="C"> logo_huitailang
                 # <input type="hidden" name="q_1_expect" value="A">
                 # <input type="hidden" name="q_1_type" value="single_choice">
+                q_html.append('<div id="div_q_%d">' % number )
                 q_n = "<p>%s</p>" % question
                 q_html.append(q_n)
                 base_choice = 65  # A
                 for cc in choice:
                     q_n = "q_"+str(number)
-                    check_html = '<input type=radio name="%s" value="%s">%s<p>' % (q_n,chr(base_choice),cc)
+                    check_html = '<input type=radio class="question" divid="div_q_%d" name="%s" value="%s">%s<p>' % (number, q_n,chr(base_choice),cc)
                     q_html.append(check_html)
                     base_choice += 1
                     
@@ -270,6 +322,7 @@ def parse_conent(content,title,new_path):
                 q_n = "q_"+str(number)+"_type"
                 hidden_html = '<input type="hidden" name="%s" value="single_choice">' % q_n
                 q_html.append(hidden_html)
+                q_html.append("</div>")
             else:
                 # <p>question2</p>
                 # <input type=checkbox name="q_2_A">Banana<p>
@@ -277,12 +330,13 @@ def parse_conent(content,title,new_path):
                 # <input type=checkbox name="q_2_C">Orange<p>
                 # <hiden name="q_1_expect" value="A_B">
                 # <input type="hidden" name="q_1_type" value="multi_choice">
+                q_html.append('<div id="div_q_%d">' % number )
                 q_n = "<p>%s</p>" % question
                 q_html.append(q_n)
                 base_choice = 65
                 for cc in choice:
                     q_n = "q_"+str(number)+"_"+chr(base_choice)
-                    check_html = '<input type=checkbox name="%s">%s<p>' % (q_n,cc)
+                    check_html = '<input type=checkbox class="question" divid="div_q_%d" name="%s">%s<p>' % (number,q_n,cc)
                     q_html.append(check_html)
                     base_choice += 1
                     
@@ -296,6 +350,7 @@ def parse_conent(content,title,new_path):
                 q_n = "q_"+str(number)+"_type"
                 hidden_html = '<input type="hidden" name="%s" value="multi_choice">' % q_n
                 q_html.append(hidden_html)
+                q_html.append("</div>")
 
                 
             q_html.append("END_QQ_"+str(number))
@@ -306,7 +361,9 @@ def parse_conent(content,title,new_path):
             question = ""
             choice = []
             answer_expect = []
-            
+
+    if int(use_number) > number:
+          return "Error use_number:%s > total_number:%d" % (use_number,number)
     fn1 = os.path.join(new_path,TEMPLATE1_FILE)
     f1 = open(fn1,"w+")
     f1.write("\n".join(questions))
@@ -317,6 +374,7 @@ def parse_conent(content,title,new_path):
     f2.write("title="+title+"\n")
     f2.write("per_score="+per_score+"\n")
     f2.write("number="+str(number)+"\n")
+    f2.write("use_number="+use_number+"\n")
     f2.close()
     
     return "OK!"
@@ -328,6 +386,7 @@ def parse_TITLE_FILE(title_fn):
     title = ""
     per_score = ""
     number = ""
+    use_number = ""
     for line in lines:
         line = line.strip()
         if line.startswith("title="):
@@ -339,7 +398,10 @@ def parse_TITLE_FILE(title_fn):
         elif line.startswith("number="):
             sp1 = line.split("=",1)
             number = sp1[1]
-    return (title,per_score,number)
+        elif line.startswith("use_number="):
+            sp1 = line.split("=",1)
+            use_number = sp1[1]
+    return (title,per_score,number,use_number)
     f1.close()
 
 def parse_TEMPLATE1_FILE(template1_fn):
@@ -398,8 +460,9 @@ def start(exam_path):
     title = ""
     per_score = ""
     number = ""
+    use_number = ""
     if os.path.isfile(title_fn) and os.path.isfile(template1_fn):
-        title,per_score,number = parse_TITLE_FILE(title_fn)
+        title,per_score,number,use_number = parse_TITLE_FILE(title_fn)
         #print "title=",title
         #print "number=",repr(number)
         #print "per_score=",repr(per_score)
@@ -411,7 +474,7 @@ def start(exam_path):
     if per_score == "" or not per_score.isdigit():
         return template("myerror.htm", user=request.user, msg="Error, per_score is illegal")
         
-    return template("fastexam/start.htm",user=request.user, title=title,number=number,per_score=per_score)
+    return template("fastexam/start.htm",user=request.user, title=title,number=number,per_score=per_score,use_number=use_number)
 
 
 @fastexam_app.route("/start/<exam_path>/",method="POST") 
@@ -443,15 +506,16 @@ def start_post(exam_path):
     title = ""
     per_score = ""
     number = ""
-    
+    use_number = ""
     if os.path.isfile(title_fn) and os.path.isfile(template1_fn):
-        title,per_score,number = parse_TITLE_FILE(title_fn)
+        title,per_score,number,use_number = parse_TITLE_FILE(title_fn)
 
     # generate random questions
     questions = parse_TEMPLATE1_FILE(template1_fn)
     total_number = int(number)
+    use_number = int(use_number)
     range1 = range(total_number)
-    range2 = random.sample(range1,total_number)
+    range2 = random.sample(range1,use_number)
     questions2 = []
 
     #print range2
@@ -525,9 +589,9 @@ def start2(exam_path,student_path0):
     title = ""
     per_score = ""
     number = ""
-    
+    use_number = ""
     if os.path.isfile(title_fn) and os.path.isfile(template1_fn):
-        title,per_score,number = parse_TITLE_FILE(title_fn)
+        title,per_score,number,use_number = parse_TITLE_FILE(title_fn)
 
     # get studentinfo 
     student_fn1 = os.path.join(student_path,STUDENT_FILE)  
@@ -542,7 +606,7 @@ def start2(exam_path,student_path0):
         lines = f1.readlines()
         score = lines[0].strip()
         f1.close()
-        return template("fastexam/score.htm",user=request.user, title=title,number=number,per_score=per_score,score=score,
+        return template("fastexam/score.htm",user=request.user, title=title,number=number,use_number=use_number,per_score=per_score,score=score,
                     name=name, snid=snid, notesid=notesid)
     else:
         # get paperinfo
@@ -551,7 +615,7 @@ def start2(exam_path,student_path0):
         paper = f1.read()
         f1.close()
 
-        return template("fastexam/start2.htm",user=request.user, title=title,number=number,per_score=per_score,paper=paper,
+        return template("fastexam/start2.htm",user=request.user, title=title,number=number,use_number=use_number,per_score=per_score,paper=paper,
                     name=name, snid=snid, notesid=notesid)
 
 
@@ -586,9 +650,9 @@ def start2(exam_path,student_path0):
     title = ""
     per_score = ""
     number = ""
-    
+    use_number = ""
     if os.path.isfile(title_fn) and os.path.isfile(template1_fn):
-        title,per_score,number = parse_TITLE_FILE(title_fn)
+        title,per_score,number,use_number = parse_TITLE_FILE(title_fn)
     per_score = int(per_score)
     
     # get studentinfo 
@@ -600,6 +664,7 @@ def start2(exam_path,student_path0):
 
 
     total_number = int(number)
+    use_number = int(use_number)
     results = []
     score = 0
     for i in range(total_number):
@@ -622,7 +687,8 @@ def start2(exam_path,student_path0):
         # check real info from POST
         q_type_2 = request.forms.get(q_type,"")
         if not q_type_2:
-            return template("myerror.htm", user=request.user, msg="Error, no type at question:"+str(i))
+            continue
+            #return template("myerror.htm", user=request.user, msg="Error, no type at question:"+str(i))
         q_expect2 = request.forms.get(q_expect,"")
         if not q_expect2:
             return template("myerror.htm", user=request.user, msg="Error, no expect at question:"+str(i))

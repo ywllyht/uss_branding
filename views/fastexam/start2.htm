@@ -1,10 +1,54 @@
+<script type="text/javascript" src="/static/js/lib/jquery/jquery-ui.min.js"></script>
+<link  rel="stylesheet" href="/static/css/jquery-ui.css" />     
+
+
+<style>
+.answered {
+  font-size: 18px; 
+  color: rgba(82, 168, 236, 0.8);
+
+}
+
+</style>
+
+<script type="text/javascript" language="javascript">
+  $(document).ready(function() {
+
+   flag1 = true;
+   $(".question").click(function() {
+     //alert("Hello world!");
+     divid1 = $(this).attr("divid");
+     //$(this).parents().parent().addClass("answered");
+     $("#"+divid1).addClass("answered");
+   });
+
+});
+</script>
+
 <div class="container">
 <div class="row">
   <div class="span12">
-
     <h3>{{title}}</h3>
-    <h3>total:{{number}}&nbsp;questions,&nbsp;&nbsp;each:{{per_score}} score,&nbsp;&nbsp;
-    name:{{name}}&nbsp;&nbsp;sn:{{snid}}&nbsp;&nbsp;notes:{{notesid}}</h3>
+    <table class="table">
+      <tr>
+
+      </tr>      
+      <tr>
+        <td>
+            <b>total:</b>{{use_number}}&nbsp;questions,&nbsp;&nbsp;<b>each:</b>{{per_score}} score,
+        </td>
+      </tr>
+      <tr>
+        <td>
+        <b>name:</b>{{name}}&nbsp;&nbsp;
+        <b>sn:</b>{{snid}}&nbsp;&nbsp;
+        <b>notes:</b>{{notesid}}
+        </td>
+      </tr>
+      <td>
+            <b>&nbsp;</b>
+      </td>
+    </table>
 
     <form id="form1" name="form1"  class="form-horizontal"  method="POST" action=".">
     

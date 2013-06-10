@@ -15,7 +15,7 @@
   <div class="span12">
       <p><a href="/fastexam/">main</a></p>
       <h3>{{title}}</h3>
-      <h3>total:{{number}}&nbsp;questions,&nbsp;&nbsp;each:{{per_score}} score,&nbsp;&nbsp;
+      <h3>total:{{number}}&nbsp;use:{{use_number}}&nbsp;questions,&nbsp;&nbsp;each:{{per_score}} score,&nbsp;&nbsp;
     	</h3>
           
       <table class="table">
@@ -27,7 +27,10 @@
           </th>
           %for student in students:
           <tr>
-               <td><a onClick="prom('../../delscore/{{exam_path}}/{{student[4]}}/')" href="#">del</a></td>
+               <td>
+                   <a onClick="prom('../../delscore/{{exam_path}}/{{student[4]}}/')" href="#">del</a>&nbsp;&nbsp;
+                   <a href="../../displayscore/{{exam_path}}/{{student[4]}}/">display</a>
+               </td>
                <td>{{student[0]}}</td>
                <td>{{student[1]}}</td>
                <td>{{student[2]}}</td>

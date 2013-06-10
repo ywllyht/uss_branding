@@ -1,12 +1,15 @@
+<script type="text/javascript" src="/static/js/lib/jquery/jquery-ui.min.js"></script>
+<link  rel="stylesheet" href="/static/css/jquery-ui.css" />     
+
+
 <div class="container">
 <div class="row">
   <div class="span12">
-    <p><a href="/fastexam/">main</a></p>
+    <p><a href="../../../summary/{{exam_path}}/">summary</a></p>
+    <h3>{{title}}</h3>
     <table class="table">
       <tr>
-        <td>
-            <b>{{title}}</b>
-        </td>
+
       </tr>      
       <tr>
         <td>
@@ -20,10 +23,14 @@
         <b>notes:</b>{{notesid}}
         </td>
       </tr>
-    <p>
+      <td>
+            <b>&nbsp;</b>
+      </td>
     </table>
-   <p> &nbsp;</p>
-   <h2>Your score: {{ score }} </h3>
+
+    <pre>
+{{scorecontent}}
+    </pre>
 
 
 
