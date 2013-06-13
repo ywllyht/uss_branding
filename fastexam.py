@@ -263,7 +263,7 @@ def parse_conent(content,title,new_path):
             sp1 = line.split("=",1)
             sp2 = sp1[1].split(MYSPLIT)
             choice = map(lambda x:x.strip(),sp2) # drop blanks
-            if len(choice) <= 2:
+            if len(choice) < 2:
                 return "Error at line %d, illegal choice" % (i+1)
             elif len(choice) > MAX_CHOICE:
                 return "Error at line %d, too much choice" % (i+1)
@@ -362,6 +362,10 @@ def parse_conent(content,title,new_path):
             choice = []
             answer_expect = []
 
+    if use_number == "":
+          return "Error user_number is empty"
+    if per_score == "":
+          return "Error per_score is empty"
     if int(use_number) > number:
           return "Error use_number:%s > total_number:%d" % (use_number,number)
     fn1 = os.path.join(new_path,TEMPLATE1_FILE)
