@@ -928,13 +928,11 @@ def projects_project_generate_post(did):
             plan_attempts = random.sample(range(total_num),lens)
             plan_succs = random.sample(range(total_num),lens)
         else:
-            plan_attempts = random.sample(range(total_num),lens-2)
-            plan_succs = random.sample(range(total_num),lens-2)
-     
-            plan_attempts.append(total_num)
-            plan_attempts.append(total_num)
-            plan_succs.append(total_num)
-            plan_succs.append(total_num)    
+            plan_attempts = []
+            plan_succs = []
+            for i in range(1,lens+1):
+                plan_attempts.append(total_num*i/lens)
+                plan_succs.append(total_num*i/lens - (lens-i))
         actual_attempts = [ 0 for x in xrange(lens)]
         actual_succs = [ 0 for x in xrange(lens)]
     elif gtype == "algorithm2":
