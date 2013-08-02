@@ -195,6 +195,9 @@ def zfsdriver():
         debug_data = "debug.txt does not exist!"
     return template("zfsdriver.htm",user=request.user, drivers=drivers, debug_data=debug_data)
 
+@index_app.route('/diff')
+def diff():
+    return template("diff.htm",user=request.user)
 
 
 @index_app.route('/hello')

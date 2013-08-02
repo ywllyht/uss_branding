@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<title>diff</title>
+
+<script type="text/javascript" src="/static/js/lib/jquery/jquery.js"></script>     
+
+<!-- Requires CodeMirror -->
+<script type="text/javascript" src="/static/js/lib/mergely/codemirror.js"></script>
+<link type="text/css" rel="stylesheet" href="/static/js/lib/mergely/codemirror.css" />
+
+<!-- Requires Mergely -->
+<script type="text/javascript" src="/static/js/lib/mergely/mergely.js"></script>
+<link type="text/css" rel="stylesheet" href="/static/js/lib/mergely/mergely.css" />
+	
+	<script type="text/javascript">
+
+        $(document).ready(function () {
+			$('#compare').mergely({
+				sidebar: true,
+				height: 700,
+				cmsettings: {
+					readOnly: false, 
+					lineNumbers: true,
+				},
+				lhs: function(setValue) {
+					setValue('the quick red fox jumped over the hairy dog');
+				},
+				rhs: function(setValue) {
+					setValue('the quick brown fox jumped over the lazy dog');
+				}
+			});
+
+
+		});
+	</script>
+
+</head>
+
+<body>
+
+
+
+		<div id="compare"></div>
+
+
+</body>
+</html>
