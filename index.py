@@ -31,6 +31,7 @@ _staticpath = os.path.join(_curpath,"static")
 _beakerpath = os.path.join(os.path.dirname(_curpath),"beaker")
 _uppath = os.path.dirname(_curpath)
 AQpath = os.path.join(_uppath,"AQUSS")
+dcedfbldpath = os.path.join(_uppath,"dcedfbld_zfsdriver")
 if sys.platform == "win32":  # winXP, developer environment
     _ftppath = os.path.join(_uppath,"ftp")
 else:                        # linux server, running environment
@@ -38,8 +39,8 @@ else:                        # linux server, running environment
 
 
 
-produce_environment_flag_file = os.path.join(os.path.dirname(_curpath),"produce_flag.txt")
-produce_environment_flag = os.path.isfile(produce_environment_flag_file)
+#produce_environment_flag_file = os.path.join(os.path.dirname(_curpath),"produce_flag.txt")
+#produce_environment_flag = os.path.isfile(produce_environment_flag_file)
 
  
 if not os.path.isdir(_beakerpath):
@@ -178,6 +179,23 @@ def common_check():
 @index_app.route('/ringmap')
 def ringmap():
     return template("ringmap.htm",user=request.user)
+
+
+@index_app.route('/zfsdriver')
+def zfsdriver():
+    zfsdriver_fn = os.path.join(dcedfbldpath,"zfsdriver.txt")
+    debug_fn = os.path.join(dcedfbldpath,"debug.txt")
+    if os.path.isfile(zfsdriver_fn):
+        drivers = open(zfsdriver_fn).read()
+    else:
+        drivers = "Error,zfsdriver.txt does not exist!"
+    if os.path.isfile(debug_fn):
+        debug_data = open(debug_fn).read()
+    else:
+        debug_data = "debug.txt does not exist!"
+    return template("zfsdriver.htm",user=request.user, drivers=drivers, debug_data=debug_data)
+
+
 
 @index_app.route('/hello')
 def hello():
