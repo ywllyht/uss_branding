@@ -291,7 +291,7 @@ def create_pic(targetpy, targetfun, targetcsv, targeteps, targetpng):
     result = []
     if sys.platform == "win32":
         command1 = targetpy + " " + targetfun + " " + targetcsv + " > " +targeteps
-        command2 = "gswin64c -dBATCH -dNOPAUSE -dEPSCrop -sDEVICE=png16m -r300 -sOutputFile="+targetpng+" "+targeteps
+        command2 = "gswin32c -dBATCH -dNOPAUSE -dEPSCrop -sDEVICE=png16m -r300 -sOutputFile="+targetpng+" "+targeteps
     else:
         command1 = "python " + targetpy + " " + targetfun + " " + targetcsv + " > " +targeteps
         command2 = "gs -dBATCH -dNOPAUSE -dEPSCrop -sDEVICE=png16m -r300 -sOutputFile="+targetpng+" "+targeteps

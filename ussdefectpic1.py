@@ -176,6 +176,27 @@ def ussprojectdid(fn1):
         name = name[:10]
     total_num = data[-1][1]
     data = data[:-1]
+
+    # data is 
+    #  [plan_att0, plan_succ0, actual_att0, actual_succ0 ]
+    #  [plan_att1, plan_succ1, actual_att1, actual_succ1 ]
+    #  ...
+    #  [plan_atti, plan_succi, actual_atti, actual_succi ]
+    #  ...
+    #  [plan_attn, plan_succn, actual_attn, actual_succn ]
+    #
+    # search the 0 value position in data, if actual_atti is 0 or actual_succi is 0
+    # we should not draw actual_att line and actual_succ line after i
+    #
+    pos_0 = 0
+    for i,d in enumerate(data):
+        if d[3] == 0 or d[4] == 0:
+            pos_0 = i
+            break
+
+    data2 = []
+    for i in xrange(pos_0):
+        data2.append( (data[i][0], data[i][3],data[i][4]) )
     
     
     # Draw the 1st graph. The Y upper bound is calculated automatically.
@@ -195,12 +216,12 @@ def ussprojectdid(fn1):
     #tick1.fill_style = fill_style.black
     #tick1.line_style = line_style.black
     
-    ar.add_plot(bar_plot.T(label="actual_att", data=data, hcol=1, cluster=(0, 2), fill_style=fill_style.green),
-                bar_plot.T(label="actual_succ",   data=data, hcol=2, cluster=(1, 2), fill_style=fill_style.blue)
+    ar.add_plot(bar_plot.T(label="plan_att", data=data, hcol=1, cluster=(0, 2), fill_style=fill_style.green),
+                bar_plot.T(label="plan_succ",   data=data, hcol=2, cluster=(1, 2), fill_style=fill_style.blue)
                 )
     
-    ar.add_plot(line_plot.T(label="plan_att",  data=data, ycol=3, tick_mark=tick_mark.star5, line_style=line_style.green), #data_label_format="/8{}%d",
-                line_plot.T(label="plan_succ",    data=data, ycol=4, tick_mark=tick_mark.Circle(), line_style=line_style.blue)
+    ar.add_plot(line_plot.T(label="actual_att",  data=data2, ycol=1, tick_mark=tick_mark.star5, line_style=line_style.green), #data_label_format="/8{}%d",
+                line_plot.T(label="actual_succ",    data=data2, ycol=2, tick_mark=tick_mark.Circle(), line_style=line_style.blue)
                 )
     
                 
