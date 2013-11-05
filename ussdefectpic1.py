@@ -197,7 +197,7 @@ def ussprojectdid(fn1):
         pos_0 = 1
  
     data2 = []
-    for i in xrange(pos_0):
+    for i in xrange(pos_0+1):
         data2.append( (data[i][0], data[i][3],data[i][4]) )
     
     
