@@ -190,8 +190,10 @@ def ussprojectdid(fn1):
     #
     pos_0 = 0
     for i,d in enumerate(data):
+        if i == 0:
+            continue
         if d[3] == 0 or d[4] == 0:
-            pos_0 = i
+            pos_0 = i-1
             break
     if pos_0 == 0:
         pos_0 = 1
