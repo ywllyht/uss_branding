@@ -15,6 +15,7 @@ from intern2013 import Intern2013_app
 from ussdefect1 import USSdefect_app
 from myqrcode import myqrcode_app
 from fastexam import fastexam_app
+from english import english_app
 import os
 import sys
 import datetime
@@ -66,6 +67,7 @@ session_opts = {
 @USSdefect_app.hook('before_request')
 @myqrcode_app.hook('before_request')
 @fastexam_app.hook('before_request')
+@english_app.hook('before_request')
 def get_user_request():
     #userid = request.get_cookie("userid","0")
     #username = request.get_cookie("username","")
@@ -106,6 +108,8 @@ index_app.mount("/Intern2013/",Intern2013_app)
 index_app.mount("/USSdefect/",USSdefect_app)
 index_app.mount("/myqrcode/",myqrcode_app)
 index_app.mount("/fastexam/",fastexam_app)
+index_app.mount("/english/",english_app)
+
 
 @index_app.route('/')
 def index():

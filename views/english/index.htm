@@ -1,0 +1,50 @@
+<div class="container">
+
+<div class="row">
+    <div class="span2"></div>
+    <div class="span10">
+
+<!-- case search -->
+<form id="form1" class="form-horizontal"  name="form1" method="GET" action=".">
+
+<div class="control-group">
+  <label class="control-label" for="inputPassword">
+    <span class="label  label-info">english search:&nbsp;</span>
+  </label>
+  <div class="controls">
+    <input type="text" name="searchtext" id="searchtext">
+    <input type="submit" name="button" id="button" class="btn" value="search">
+  </div>
+</div>
+
+</form>
+
+<!-- keyword search -->
+<hr>
+
+
+</div>
+</div>
+
+
+<div class="row">
+    <div class="span12">
+<h2>{{word}}</h2>
+<div id="explanation">
+    <pre>
+  {{explanation2}}
+    </pre>
+</div>
+
+
+%if word:
+<iframe src="http://www.iciba.com/{{word}}" width="1024" height="800"></iframe>
+%end
+
+    </div>
+</div>
+
+</div>
+    
+
+%rebase base.htm title=title,user=user
