@@ -53,7 +53,7 @@ def readDic(word):
     flag = False
     for i,line in enumerate(lines_f4):
         #print i,flag,line
-        if line.find("--"+word+"\n") >= 0:
+        if line.find("--"+word) == 0:
             flag = True
             continue
         if flag:
