@@ -23,13 +23,16 @@ english_app = Bottle()
 def index():      
     searchtext = request.query.searchtext
     searchtext = searchtext.encode("utf-8")
-    #print repr(searchtext)                       
-    if not searchtext[0].isalpha():
-        explanation2 = "Local DB does not support non-english words now!"
+    #print repr(searchtext)
+    if len(searchtext) > 0:                       
+        if not searchtext[0].isalpha():
+            explanation2 = "Local DB does not support non-english words now!"
+        else:
+            explanation = readDic(searchtext)
+            #print repr(explanation)
+            explanation2 = explanation.decode("utf-8")
     else:
-        explanation = readDic(searchtext)
-        #print repr(explanation)
-        explanation2 = explanation.decode("utf-8")
+        explanation2 = "input your words!"
     return template("english/index.htm",title="English dictionary ",user=request.user,explanation2=explanation2,word=searchtext)
 
 
