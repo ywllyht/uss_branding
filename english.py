@@ -44,7 +44,7 @@ def readDic(word):
     word_file_fn = prefix+".txt"
     word_file_path = os.path.join(words_en_path,word_file_fn)
     if not os.path.isfile(word_file_path):
-        return "DictFile Path does not exist! "+word_file_path
+        return "DictFile Path does not exist! "+word_file_fn
 
     f4 = open(word_file_path)
     lines_f4 = f4.readlines()
