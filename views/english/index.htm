@@ -45,6 +45,25 @@
 </div>
 
 </div>
-    
+
+<script language="javascript">
+$(document).keydown(function(event){
+    // console.log(event.keyCode);
+    var act = document.activeElement.id;
+    if(act != "#searchtext"){
+    	$("#searchtext").focus();
+     }
+     
+    /*
+    if(event.keyCode == 39){
+        $("#searchtext").focus();
+    }
+    else if(event.keyCode == 37){
+        $("#searchtext").focus();
+    }
+    */
+ });
+</script>
+
 
 %rebase base.htm title=title,user=user
