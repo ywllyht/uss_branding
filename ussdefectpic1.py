@@ -195,6 +195,10 @@ def ussprojectdid(fn1):
         if d[3] == 0 or d[4] == 0:
             pos_0 = i-1
             break
+        else:
+            pos_0 = i
+
+    # if all data are 0
     if pos_0 == 0:
         pos_0 = 1
  
